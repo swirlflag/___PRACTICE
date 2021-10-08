@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+}
+html,body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+}
+#canvas {
+    /* background-color: dodgerblue; */
+    background-color: #000;
+    width: 100%; height: 100%;
+    position: relative;
+}
+#point {
+width: 10px ; height: 10px;
+background-color: #d3d;
+position: absolute;
+top: 0; left: 0;
+z-index: 10;
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+
+<script>
+const canvas = document.querySelector('#canvas');
+
+const ctx = canvas.getContext('2d');
+
+const mouse = {
+    x : null,
+    y : null,
+};
+
+let drawing = false;
+
+const canvasSizeSync = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+};
+
+canvasSizeSync();
+
+// ctx.globalCompositeOperation = 'luminosity';
+
+window.addEventListener('resize' , canvasSizeSync);
+
+window.addEventListener('mousemove' , (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+const edge = 190;
+
+const Root = class {
+
+    constructor(x,y,color,centerX,centerY,) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.speed = 0.5;
+    }
+
+    draw() {
+        const randomX = (Math.random()*this.speed) * (Math.random() > 0.5 ? -1 : 1);
+        const randomY = (Math.random()*this.speed) * (Math.random() > 0.5 ? -1 : 1);
+        this.speedX += randomX;
+        this.speedY += randomY;
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        const distanceX = this.x - this.centerX;
+        const distanceY = this.y - this.centerY;
+
+        const distance = Math.sqrt((distanceX*distanceX) + (distanceY*distanceY));
+
+        const radius = (-distance / edge + 1) * (edge / 10);
+
+        if(radius > 0){
+            requestAnimationFrame(this.draw.bind(this));
+
+            ctx.beginPath();
+            ctx.arc(this.x,this.y, radius,0,2*Math.PI);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.strokeStyle = 'gold';
+            ctx.stroke();
+        }
+
+    }
+}
+
+const branchOut = () => {
+
+    const centerX = mouse.x;
+    const centerY = mouse.y;
+
+        const root = new Root(mouse.x, mouse.y, '#000', centerX, centerY);
+        root.draw();
+}
+
+window.addEventListener('mousemove' , () => {
+    if(!drawing){
+        return;
+    }
+    // ctx.fillStyle = 'rgba(0,0,0,0.03)';
+    // ctx.fillRect(0,0,window.innerWidth, window.innerHeight);
+
+    branchOut();
+});
+
+
+window.addEventListener('mousedown' , () => {
+    drawing = true;
+});
+
+window.addEventListener('mouseup' , () => {
+    drawing = false;
+});
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

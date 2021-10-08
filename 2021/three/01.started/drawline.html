@@ -1,0 +1,53 @@
+<!--
+https://threejs.org/docs/index.html#manual/en/introduction/Drawing-lines
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+    body { margin: 0; }
+</style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<body>
+
+<script>
+
+let scrrenRatio = window.innerWidth / window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const camera = new THREE.PerspectiveCamera(45, scrrenRatio , 1, 500);
+camera.position.set(0,0,100);
+camera.lookAt(0,0,0);
+
+const scene = new THREE.Scene();
+
+const material = new THREE.LineBasicMaterial({color : '#ddd'});
+
+const points = [
+    new THREE.Vector3(-10, 0, 0),
+    new THREE.Vector3(0, 10, 0),
+    new THREE.Vector3(10, 0, 0),
+];
+
+const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+
+const line = new THREE.Line(geometry, material);
+
+scene.add(line);
+
+renderer.render(scene, camera);
+
+
+
+</script>
+</body>
+</html>
