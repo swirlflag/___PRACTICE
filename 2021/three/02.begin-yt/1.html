@@ -1,0 +1,75 @@
+<!--
+    https://youtu.be/6oFvqLfRnsU?t=1248
+
+    https://www.youtube.com/watch?v=pUgWfqWZWmM
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+}
+canvas {
+    display: block;
+}
+</style>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.js"></script> -->
+<title>Document</title>
+</head>
+<body>
+
+
+
+<script>
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth/window.innerHeight,
+    0.1,
+    1000,
+);
+
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer({
+    antialias : true,
+});
+
+renderer.setClearColor('#eee');
+
+renderer.setSize(window.innerWidth,window.innerHeight);
+
+document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize' , () => {
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+
+const geometry = new THREE.SphereGeometry(1,4,4);
+const material = new THREE.MeshLambertMaterial({color: 'dodgerblue'});
+const mesh = new THREE.Mesh(geometry , material);
+
+const light = new THREE.PointLight('#fff', 1, 500, );
+light.position.set(10,0,25);
+
+scene.add(mesh);
+scene.add(light);
+
+renderer.render(scene, camera);
+
+
+</script>
+</body>
+</html>
