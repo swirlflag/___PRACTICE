@@ -10,10 +10,16 @@ interface Contact {
     phones: PhoneNumberDictionary;
 }
 
-// api
-// TODO: 아래 함수의 반환 타입을 지정해보세요.
+enum PhoneType {
+    Home = 'home',
+    Studio = 'studio',
+    Office = 'office',
+}
 
-function fetchContacts() {
+// api
+// TODO: 아래 함수의 반환 타입을 지정해보세요.;
+
+function fetchContacts(): Promise<Contact[]> {
     // TODO: 아래 변수의 타입을 지정해보세요.
     const contacts: Contact[] = [
         {
@@ -71,18 +77,14 @@ class AddressBook {
 
     /* TODO: 아래 함수들의 파라미터 타입과 반환 타입을 지정해보세요 */
     findContactByName(name: string): Contact[] {
-        return this.contacts.filter(
-            (contact: Contact) => contact.name === name
-        );
+        return this.contacts.filter(contact => contact.name === name);
     }
 
     findContactByAddress(address: string): Contact[] {
-        return this.contacts.filter(
-            (contact: Contact) => contact.address === address
-        );
+        return this.contacts.filter(contact => contact.address === address);
     }
 
-    findContactByPhone(phoneNumber: number, phoneType: string): Contact[] {
+    findContactByPhone(phoneNumber: number, phoneType: PhoneType): Contact[] {
         return this.contacts.filter(
             contact => contact.phones[phoneType].num === phoneNumber
         );
