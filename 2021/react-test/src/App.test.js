@@ -1,18 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import App from "./App";
 
-describe('화면 확인' , () => {
-    render(<App />);
+describe("화면 확인", () => {
+	render(<App />);
 
-    it('텍스트 확인 - "Learn React"', () => {
-        const { textContent } = screen.queryByText(/Learn React/i);
-        expect(textContent).toBe('Learn React');
+    it('카운터가 0부터 시작됨', () => {
+        // testid로 접근
+        const counterElement = screen.getByTestId('counter');
+        // counter가 0부터인지 테스트
+        expect(counterElement).toHaveTextContent(0);
     });
-    // it('텍스트 확인 - "hohoho"', async () => {
-    //     const text = await screen.findByText(/hohoho/i);
-    //     expect(text.textContent).toBe('hohoho');
-    //     console.log(text)
-    // });
-})
-
-
+});
