@@ -1,0 +1,262 @@
+<!-- 
+        https://youtu.be/pUgWfqWZWmM?t=2634
+        https://github.com/designcourse/threejs-webpack-starter/blob/master/src/script.js
+ -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+        integrity="sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    <title>Document</title>
+
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    html, body {
+        height: 100%;
+        background-color: #292929;
+    }
+    .webgl {
+        position: fixed;
+        top: 0; left: 0;
+        outline: none;
+    }
+    </style>
+</head>
+
+<body>
+<canvas class="webgl"></canvas>
+
+<script>
+
+// Loading
+const textureLoader = new THREE.TextureLoader();
+const normalTexture = textureLoader.load('./texture/NormalMap.png');
+
+// Debug
+const gui = new dat.GUI()
+
+// Canvas
+const canvas = document.querySelector('canvas.webgl')
+
+// Scene
+const scene = new THREE.Scene()
+
+// Objects
+const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
+const sphereGeometry = new THREE.SphereBufferGeometry(0.5, 64, 64);
+
+// Materials
+
+// const material = new THREE.MeshBasicMaterial()
+const material = new THREE.MeshStandardMaterial()
+material.metalness = 0.7;
+material.roughness = 0.2;
+material.color = new THREE.Color(0x292929)
+material.normalMap = normalTexture;
+
+// Mesh
+const sphere = new THREE.Mesh(sphereGeometry,material)
+scene.add(sphere)
+
+// Lights
+
+const pointLight = new THREE.PointLight(0xffffff, 0.1)
+pointLight.position.x = 2
+pointLight.position.y = 3
+pointLight.position.z = 4
+// scene.add(pointLight);
+
+const pointLight1 = new THREE.PointLight(0xff00000, 2)
+pointLight1.position.set(-1.86,1,-1.66);
+pointLight1.intensity = 10;
+scene.add(pointLight1);
+
+const pointLight2 = new THREE.PointLight('#005c9d', 2)
+pointLight2.position.set(1.26,-1.31,-1);
+pointLight2.intensity = 10;
+scene.add(pointLight2);
+
+
+const pointLightHelper = new THREE.PointLightHelper(pointLight2, 1);
+scene.add(pointLightHelper);
+
+const folderLight1 = gui.addFolder('Light 1');
+const folderLight2 = gui.addFolder('Light 2');
+
+const light2Color = {
+    color: '#005c9d',
+}
+
+
+folderLight1.add(pointLight1.position, 'x').min(-3).max(3).step(0.01);
+folderLight1.add(pointLight1.position, 'y').min(-6).max(6).step(0.01);
+folderLight1.add(pointLight1.position, 'z').min(-3).max(3).step(0.01);
+folderLight1.add(pointLight1, 'intensity').min(0).max(10).step(0.01);
+
+folderLight2.add(pointLight2.position, 'x').min(-3).max(3).step(0.01);
+folderLight2.add(pointLight2.position, 'y').min(-6).max(6).step(0.01);
+folderLight2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
+folderLight2.add(pointLight2, 'intensity').min(0).max(10).step(0.01);
+folderLight2.addColor(light2Color , 'color')
+.onChange((color) => {
+    pointLight2.color.set(color);
+})
+
+
+/**
+ * Sizes
+ */
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+}
+
+window.addEventListener('resize', () =>
+{
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    // Update camera
+    camera.aspect = sizes.width / sizes.height
+    camera.updateProjectionMatrix()
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+/**
+ * Camera
+ */
+// Base camera
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+camera.position.x = 0
+camera.position.y = 0
+camera.position.z = 2
+scene.add(camera)
+
+// Controls
+// const controls = new OrbitControls(camera, canvas)
+// controls.enableDamping = true
+
+/**
+ * Renderer
+ */
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true,
+})
+renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+/**
+ * Animate
+ */
+
+const mousePoint = {
+    x: 0,
+    y: 0,
+    xPer : 0,
+    yPer : 0,
+};
+
+document.addEventListener('mousemove',(event) => {
+    mousePoint.x = event.clientX;
+    mousePoint.y = event.clientY;
+    mousePoint.xPer = event.clientX/window.innerWidth;
+    mousePoint.yPer = event.clientY/window.innerHeight;
+});
+
+const scrub = (from,to,ratio = 0.5, fps = 60) => {
+    const standardFps = 60;
+    return from + (((to- from )* ratio) * fps/standardFps);
+};
+
+const tickRotateX = () => {
+    const value = scrub(sphere.rotation.x, mousePoint.yPer - 0.5, 0.05 , 60)
+    sphere.rotation.x = value;
+};
+
+const clock = new THREE.Clock();
+
+let beforeTime = 0;
+let time = 0;
+
+
+class Frames {
+    constructor() {
+        this.fps = 60;
+        this.frameCount = 0;
+        // this.frameAllDelta = 0;
+
+        this.time = 0;
+        this.deltaTime = 0;
+        this.startTime = Date.now();
+
+        this.secondCount = 0;
+
+        this.tick();
+    }
+
+    tick() {
+        ++this.frameCount;
+        const currentTime = Date.now() - this.startTime;
+        this.deltaTime = currentTime - this.time;
+        this.time = currentTime;
+
+        if(this.time < 1000) {
+            this.fps = 1000/this.deltaTime;
+        }
+
+        if(this.secondCount !== Math.floor(this.time*0.001)) {
+            this.secondCount = Math.floor(this.time*0.001);
+            // this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.frameAllDelta = 0;
+        }
+        // console.log(currentTime);
+
+        requestAnimationFrame(() => {
+            this.tick();
+        });
+    }
+}
+
+const frame = new Frames();
+
+
+const tick = () => {
+
+    const elapsedTime = clock.getElapsedTime();
+
+    // Update objects
+    sphere.rotation.y = 0.5 * elapsedTime
+    tickRotateX();
+
+    // Update Orbital Controls
+    // controls.update()
+
+    // Render
+    renderer.render(scene, camera)
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick)
+}
+
+tick()
+</script>
+</body>
+
+</html>
