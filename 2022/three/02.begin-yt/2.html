@@ -27,14 +27,40 @@
         background-color: #292929;
     }
     .webgl {
-        position: fixed;
+        position: absolute;
+        width: 100%; height: 100%;
         top: 0; left: 0;
         outline: none;
+        /* opacity: 0.92; */
+        pointer-events: none;
+        mix-blend-mode: color-dodge;
+    }
+    .container {
+        width: 100%; height: 100vh;
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+        /* z-index: 2; */
+    }
+    h1 {
+        font-size: 8rem;
+        text-transform: uppercase;
+        color: #fff;
+        text-align: center;
+        position: relative;
+        letter-spacing: -0.03em;
+        font-weight: 900;
     }
     </style>
 </head>
 
 <body>
+<div class="container">
+    <h1>
+        Quisque volutpat metus
+    </h1>
+</div>
 <canvas class="webgl"></canvas>
 
 <script>
@@ -78,12 +104,12 @@ pointLight.position.z = 4
 // scene.add(pointLight);
 
 const pointLight1 = new THREE.PointLight(0xff00000, 2)
-pointLight1.position.set(-1.86,1,-1.66);
+pointLight1.position.set(-1.86,1,-0.5);
 pointLight1.intensity = 10;
 scene.add(pointLight1);
 
 const pointLight2 = new THREE.PointLight('#005c9d', 2)
-pointLight2.position.set(1.26,-1.31,-1);
+pointLight2.position.set(1.26,-1.31,0);
 pointLight2.intensity = 10;
 scene.add(pointLight2);
 
@@ -121,6 +147,7 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
+
 
 window.addEventListener('resize', () =>
 {
@@ -184,49 +211,44 @@ const scrub = (from,to,ratio = 0.5, fps = 60) => {
     return from + (((to- from )* ratio) * fps/standardFps);
 };
 
-const tickRotateX = () => {
-    const value = scrub(sphere.rotation.x, mousePoint.yPer - 0.5, 0.05 , 60)
-    sphere.rotation.x = value;
-};
 
 const clock = new THREE.Clock();
 
 let beforeTime = 0;
 let time = 0;
 
-
 class Frames {
     constructor() {
         this.fps = 60;
-        this.frameCount = 0;
-        // this.frameAllDelta = 0;
-
+        this.secondFrameCount = 0;
+        this.secondAllDelta = 0;
         this.time = 0;
         this.deltaTime = 0;
-        this.startTime = Date.now();
-
         this.secondCount = 0;
 
-        this.tick();
+        requestAnimationFrame(() => {
+            this.startTime = Date.now();
+            requestAnimationFrame(() => {
+                this.tick();
+            })
+        });
     }
 
     tick() {
-        ++this.frameCount;
+        ++this.secondFrameCount;
         const currentTime = Date.now() - this.startTime;
         this.deltaTime = currentTime - this.time;
+        this.secondAllDelta = this.secondAllDelta + this.deltaTime;
+
         this.time = currentTime;
 
-        if(this.time < 1000) {
-            this.fps = 1000/this.deltaTime;
-        }
+        this.fps = 1000 / (this.secondAllDelta/this.secondFrameCount);
 
         if(this.secondCount !== Math.floor(this.time*0.001)) {
             this.secondCount = Math.floor(this.time*0.001);
-            // this.fps = this.frameCount;
-            this.frameCount = 0;
-            this.frameAllDelta = 0;
+            this.secondFrameCount = 0;
+            this.secondAllDelta = 0;
         }
-        // console.log(currentTime);
 
         requestAnimationFrame(() => {
             this.tick();
@@ -237,13 +259,38 @@ class Frames {
 const frame = new Frames();
 
 
+const el_h1 = document.querySelector('h1');
+
+let scrubValue = {
+    h1Y: 0,
+    sphereRotateY : 0,
+    spherePosZ : 0,
+}
+
+const tickRotateX = (fps = 60) => {
+    const y = mousePoint.yPer - 0.5;
+    scrubValue.h1Y = scrub(scrubValue.h1Y, y * -50, 0.15 , fps);
+    scrubValue.sphereRotateY = scrub(scrubValue.sphereRotateY, y * 1.5 , 0.05 , fps);
+    scrubValue.spherePosZ = scrub(scrubValue.spherePosZ, mousePoint.yPer , 0.2 , fps);
+
+    el_h1.style.transform = `translate3d(0,${scrubValue.h1Y}px,0)`;
+    sphere.rotation.x = scrubValue.sphereRotateY;
+    sphere.position.z = scrubValue.spherePosZ;
+    // console.log(scrubValue.spherePosZ);
+};
+
 const tick = () => {
 
     const elapsedTime = clock.getElapsedTime();
 
     // Update objects
-    sphere.rotation.y = 0.5 * elapsedTime
-    tickRotateX();
+
+    const fps = frame.fps;
+
+    sphere.rotation.y = 0.5 * elapsedTime;
+
+    tickRotateX(fps);
+
 
     // Update Orbital Controls
     // controls.update()
@@ -256,6 +303,7 @@ const tick = () => {
 }
 
 tick()
+
 </script>
 </body>
 
