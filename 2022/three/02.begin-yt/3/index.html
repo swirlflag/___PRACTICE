@@ -1,19 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
         body {
             padding: 0;
             margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .font-exo {
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .font-space-mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        #app {
+            border: 1px solid #000;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: 2;
+            display: grid;
+            place-items: center center;
         }
     </style>
-  </head>
-  <body>
-    <div id="app"></div>
+</head>
+
+<body>
+    <div id="app" class="relative">
+        <div class="absolute text-center text-white">
+            <h1 class="font-space-mono text-sm">
+                vestibulum
+            </h1>
+            <p class="font-exo text-2xl uppercase tracking-wide font-bold max-w-3xl">
+                quis viverra. Vestibulum egestas nec sem vitae laoreet. Nullam a ornare leo.
+            </p>
+            <button class="border px-4 py-2 rounded-lg text-sm uppercase mt-8 font-space-mono hover:bg-white hover:text-gray-800">
+                aliquet
+            </button>
+        </div>
+    </div>
     <script type="module" src="./main.js"></script>
-  </body>
+</body>
+
 </html>
