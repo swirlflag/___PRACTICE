@@ -1,0 +1,16 @@
+* {
+    margin: 0; padding: 0;
+    outline: none;
+}
+
+html,body {
+    height: 100%;
+}
+body {
+    overflow: hidden;
+}
+#root,
+#root .page,
+#root .webgl-container {
+    height: 100%;
+}
