@@ -1,0 +1,16 @@
+{
+    "name": "nodebird",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "next",
+        "build": "next build"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "next": "^12.1.5"
+    }
+}
