@@ -1,10 +1,11 @@
 import React from 'react';
+import AppLayout from '../components/AppLayout.jsx';
 
 const MSH = () => {
     return (
-        <div>
+        <AppLayout>
             hello msh;
-        </div>
+        </AppLayout>
     )
 }
 

@@ -1,10 +1,11 @@
 import React from 'react';
+import AppLayout from '../components/AppLayout.jsx';
 
 const Signup = () => {
     return (
-        <div>
+        <AppLayout>
             회원가입 페이지
-        </div>
+        </AppLayout>
     )
 };
 
