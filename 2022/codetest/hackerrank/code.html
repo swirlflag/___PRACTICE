@@ -42,7 +42,7 @@
                 return result;
             }
 
-            const result = findNumber(inputArray, inputKey);
+            // const result = findNumber(inputArray, inputKey);
             // console.log(result);
         })();
 
@@ -76,10 +76,186 @@
                 return [plusRatio, minusRatio, zeroRatio];
             }
 
-            const result = plusMinus(inputArray);
+            // const result = plusMinus(inputArray);
             // console.log(result);
-
         })();
+
+        (() => {
+            // 배열중에 가장 작은 수를 제외한, 큰 수를 제외한 모든 값을 더한 값 2개 찾기
+            const inputArray = [
+                1, 2, 3, 4, 5,
+            ];
+            const solution = (arr) => {
+                let result = null;
+
+                const all = arr.reduce((p, c) => p + c, 0);
+                const max = Math.max(...arr);
+                const min = Math.min(...arr);
+
+                return [all - min, all - max];
+            }
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-time-conversion/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-one&h_r=next-challenge&h_v=zen
+            // AM,PM이 포함된 문자열을 24시간계 문자열로 변환하기
+            const inputString =
+                "12:01:00AM"
+            // "07:05:45AM"
+
+            const solution = (string) => {
+                let result = null;
+
+                const time = string.slice(0, 8);
+                const meridiem = string.slice(8);
+                let [HH, MM, SS] = time.split(':').map((c) => +c);
+
+                const isPM = meridiem === "PM";
+
+                if (isPM && HH < 12) {
+                    HH += 12;
+                }
+                if (!isPM && HH === 12) {
+                    HH = 0;
+                }
+
+                result = [HH, MM, SS].map((c) => c < 10 ? '0' + c : c.toString()).join(':');
+
+                return result;
+            };
+
+            // const result = solution(inputString);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-lonely-integer/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-two
+            // 배열내 중복되지 않는 요소 찾아서 반홚하기
+            const inputArray = [
+                15, 60, 74, 1, 94, 93, 28, 48, 70, 98, 45, 94, 42, 45, 48, 1, 72, 9, 24, 93, 41, 70, 60, 28, 11, 20, 72, 35, 11, 98, 31, 74, 31, 41, 9, 42, 20, 35, 24
+            ];
+
+            const solution = (arr) => {
+                let result = null;
+                let memo = {};
+
+                for (let i = 0, l = arr.length; i < l; ++i) {
+                    switch (memo[arr[i]]) {
+                        case (undefined): {
+                            memo[arr[i]] = true;
+                            break;
+                        }
+                        case (true): {
+                            memo[arr[i]] = false;
+                            break;
+                        }
+                        case (false):
+                        default: {
+                            continue;
+                        }
+                    }
+                }
+
+                result = Object.entries(memo).filter(([k, v]) => v)[0][0];
+
+                return result;
+            };
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-diagonal-difference/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-two&h_r=next-challenge&h_v=zen
+            // n*n 개의 2차원 행렬에서 좌, 우 대각선의 합 2개의 값끼리의 차이값을 반환하기
+
+            const inputArray = [
+                [1, 2, 3],
+                [1, 2, 3],
+                [3, 3, 3],
+            ];
+
+            const solution = (arr) => {
+                let result = null;
+
+                let left = 0;
+                let right = 0;
+                for (let i = 0, l = arr.length - 1; i <= l; ++i) {
+                    left += arr[i][i];
+                    right += arr[i][l - i];
+                }
+                // const [ left, right ] = arr.reduce((p,c,i) => [p[0] + c[i], p[1] + c[arr.length - 1 - i]], [0,0]);
+
+                result = Math.abs(left - right);
+
+                return result;
+            };
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-countingsort1/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-two&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen
+            // 배열의 내용이 순차 정렬된 기준으로 높아지는 순서대로 중복되는 갯수를 기록하는 문제 (없는 숫자도 0으로 기록)
+
+            let inputArray = [
+                0,0, 3, 2, 2, 2,
+            ];
+
+            const solution = (arr) => {
+                let result = [];
+
+                const max = Math.max(...arr);
+
+                result = new Array(100).fill(0);
+
+                for (let i = 0, l = arr.length; i < l; ++i) {
+                    ++result[arr[i]];
+                }
+
+                return result;
+            };
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-caesar-cipher-1/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-three
+            // 알파벳 순서를 다이얼 형태로 밀어내서 치환하는 암호를 생성하는 문제
+
+            let inputString = "hello";
+            let inputNubmer = 1;
+            const solution = (string,number) => {
+                let result = "";
+
+                let alphabetLower = "abcdefghijklmnopqrstuvwxyz";
+                let alphabetUpper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                let conversion = number%alphabetLower.length;
+
+                const alphabetCodeLower = alphabetLower.slice(conversion) + alphabetLower.slice(0,conversion);
+                const alphabetCodeUpper = alphabetUpper.slice(conversion) + alphabetUpper.slice(0,conversion);
+
+                const wordDict = {};
+
+                alphabetLower.split('').forEach((char,i) => wordDict[char] = alphabetCodeLower[i]);
+                alphabetUpper.split('').forEach((char,i) => wordDict[char] = alphabetCodeUpper[i]);
+
+                for(let i = 0, l = string.length; i < l; ++i) {
+                    result += !wordDict[string[i]] ? string[i] : wordDict[string[i]];
+                }
+
+                return result;
+            };
+
+            const result = solution(inputString,inputNubmer);
+            console.log(result);
+        })();
+
     </script>
 </body>
 
