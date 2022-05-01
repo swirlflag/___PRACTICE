@@ -1,6 +1,7 @@
-const fs = require('fs');
+// const inputs = fs.readFileSync('/dev/stdin', 'utf8').toString().trim().split('\n');
 
-const inputs = fs.readFileSync('text.txt', 'utf8').toString().trim().split('\n');
+const fs = require('fs');
+const inputs = fs.readFileSync('./dev/stdin', 'utf8').toString().trim().split('\n');
 const inputArray = inputs.map((c) => +c);
 
 let solution = (numbers) => {
