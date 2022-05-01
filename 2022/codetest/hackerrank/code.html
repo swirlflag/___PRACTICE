@@ -252,9 +252,63 @@
                 return result;
             };
 
-            const result = solution(inputString,inputNubmer);
+            // const result = solution(inputString,inputNubmer);
+            // console.log(result);
+        })();
+
+        (() => {
+            // https://www.hackerrank.com/challenges/one-week-preparation-kit-grid-challenge/problem?isFullScreen=true&h_l=interview&playlist_slugs%5B%5D=preparation-kits&playlist_slugs%5B%5D=one-week-preparation-kit&playlist_slugs%5B%5D=one-week-day-four
+            // 2차원 배열에서 가로, 세로 방향으로 문자열이 알파벳 순서가 맞는지 체크하는 기능 만들기
+            let inputArray = [
+                'eabcd',
+                'fghij',
+                'olkmn',
+                'trpqs',
+                'xywuv',
+            ];
+
+            const solution = (grid) => {
+
+                let result = "";
+
+                grid = grid.map((line) => line.split('').map((char) => char.charCodeAt()));
+                console.log(grid);
+
+                // let rowGrid = grid[0].map(() => []);
+
+                // for(let i = 0; i < grid.length; ++i) {
+                //     const line = grid[i];
+                //     for(let j = 0; j < line.length; ++j) {
+                //         const item = line[j];
+                //         rowGrid[j].push(item);
+                //     }
+                // }
+
+                // const flat = grid = [...grid, ...rowGrid];
+
+                // line: for(let i = 0; i < flat.length; ++i) {
+                //     char: for(let j = 0; j < flat[i].length; ++j) {
+                //         const beforeNum = j === 0 ? 0 : flat[i][j-1].charCodeAt();
+                //         const currentNum = flat[i][j].charCodeAt();
+                //         console.log(beforeNum, currentNum);
+                //         if(beforeNum > currentNum) {
+                //             result = 'NO';
+                //             break line;
+                //         }
+                //     }
+                //     if(i === flat.length - 1) {
+                //         result = 'YES';
+                //     }
+                // }
+                // console.log(flat);
+
+                // return result;
+            };
+
+            const result = solution(inputArray);
             console.log(result);
         })();
+
 
     </script>
 </body>

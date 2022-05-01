@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        (() => {
+            // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
+            // input 배열 값들을 더하거나 뺐을때 input 숫자값이 나올수 있는 수식 경우의 수 찾기
+            // DFS
+            let inputArray = [
+               4,1,2,1
+            ];
+            let inputNumber = 4;
+
+            const solution = (numbers, target) => {
+                let result = 0;
+                let entire = [];
+
+                const loop = (index,values) => {
+                    if(index === numbers.length) {
+                        entire.push(values);
+                    }else {
+                        loop(index + 1, [...values, numbers[index]]);
+                        loop(index + 1, [...values, numbers[index] * -1]);
+                    }
+                }
+
+                loop(0,[]);
+
+                const entireCalc = entire.map((numbers) => numbers.reduce((p,c) => p + c, 0));
+                const entireMatch = entireCalc.filter((number) => number === target);
+
+                result = entireMatch.length;
+
+                return result;
+            };
+
+            // const result = solution(inputArray, inputNumber);
+            // console.log(result);
+
+        })();
+
+        (() => {
+
+            let inputArray = [["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]
+
+            inputArray = [["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL","SFO"]]
+
+            let solution = (allTickets) => {
+                let result = [];
+
+                const firstString = 'ICN';
+
+                const plans = [];
+
+                const go = (restTickets, plan) => {
+                    const isFirst = !plan.length;
+                    const isLast = !restTickets.length;
+
+                    if(isLast) {
+                        plans.push(plan);
+                        return;
+                    }
+
+                    const start = isFirst ? firstString : plan[plan.length-1];
+                    isFirst && (plan = [firstString]);
+
+                    restTickets.forEach((next,i) => {
+                        if(next[0] === start) {
+                            const nextAll = [...restTickets];
+                            const nextPlan = [...plan];
+                            nextAll.splice(i,1);
+                            nextPlan.push(next[1]);
+                            go(nextAll, nextPlan);
+                        }
+                    });
+                };
+
+                go(allTickets,[]);
+                plans.sort();
+                result = plans[0];
+
+                return result;
+            };
+
+            const result = solution(inputArray);
+            console.log(result);
+        })();
+
+    </script>
+</body>
+
+</html>
