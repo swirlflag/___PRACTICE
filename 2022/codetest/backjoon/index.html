@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        let inputArray = [1,2,3,4,5,6,7,8,9,10];
+//         inputArray = [42
+// ,84
+// ,252
+// ,420
+// ,840
+// ,126
+// ,42
+// ,84
+// ,420
+// ,126
+
+// ]
+inputArray = [
+39
+,40
+,41
+,42
+,43
+,44
+,82
+,83
+,84
+,85
+]
+
+        let solution = (numbers) => {
+            let result = 0;
+            const divNumber = 42;
+
+            let countArray = [];
+
+            for(let i = 0; i < numbers.length; ++i) {
+                console.log(numbers[i]);
+                const number = numbers[i]%divNumber;
+
+                if(!countArray.includes(number)) {
+                    countArray.push(number);
+                }
+            }
+
+            console.log(countArray);
+
+            result = countArray.length;
+
+            return result;
+        }
+        const result = solution(inputArray);
+
+        console.log(result);
+    </script>
+</body>
+</html>
