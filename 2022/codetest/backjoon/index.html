@@ -5,10 +5,288 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+<style>
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+}
+div {
+    display: flex;
+}
+span {
+width: 10px; height: 10px;
+display: inline-block;
+background-color: #000;
+border: 1px solid #aaa;
+box-sizing: border-box;
+
+}
+span.empty {
+    background-color: transparent;
+}
+</style>
+
 </head>
 <body>
 
-    <script>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+
+
+
+
+<script>
+let inputNumber = 3;
+inputNumber = 9;
+// inputNumber = 27;
+// inputNumber = 81;
+
+//code
+const solution = (fullNumber) => {
+
+    const isCenterCheck = (ratio) => {
+        return ratio >= 1/3 && ratio < 2/3;
+    }
+
+    const fill = 'O';
+    const empty = 'X';
+
+    const loop = (count, allEmpty) => {
+        const map = [];
+
+        for(let x = 0; x < 3; ++x) {
+            let line = [];
+            for(let y = 0; y < 3; ++y) {
+                const isCenterRow = isCenterCheck(x/(3-1)) ;
+                const isCenterCol = isCenterCheck(y/(3-1)) ;
+                const isCenter = isCenterRow && isCenterCol;
+                const isEmpty = isCenter || allEmpty;
+                const isStar = count === 1;
+                const unit = isStar ? [fill, empty] : [ loop(count/3) , loop(count/3, true)];
+                line.push(isEmpty ? unit[1]: unit[0]);
+            }
+            map.push(line);
+        }
+
+        return map;
+    }
+
+    const map = loop(fullNumber/3);
+
+
+    const rd = (item,line) => {
+        const div = document.querySelectorAll('div')[line];
+        const span = document.createElement('span');
+        span.classList.toggle('empty' , item === 'X');
+        div.appendChild(span);
+    }
+
+// `000 111 222 000 111 222 000 111 222
+// 333 444 555 333 444 555 333 444 555
+// 666 777 888 666 777 888 666 777 888`
+
+    let x = 0;
+    let y = 0;
+    let aaa = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+
+    ];
+
+    let lineCount = 0;
+    const render = (item) => {
+        item.forEach((child,i) => {
+            if(typeof child[0] === 'string') {
+                child.forEach((char,charIndex) => {
+                    console.log(charIndex*i);
+                    aaa[i].push(char);
+                });
+            }else {
+                render(child);
+            }
+        });
+    };
+
+    render(map,0,0);
+    console.log(aaa);
+    // console.log(map);
+
+};
+
+//result
+const result = solution(inputNumber);
+
+// console.log(result);
 
 
     </script>

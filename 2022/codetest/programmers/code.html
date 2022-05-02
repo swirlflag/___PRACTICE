@@ -18,7 +18,7 @@
 
 
             let inputArray = [
-               4,1,2,1
+                4, 1, 2, 1
             ];
             let inputNumber = 4;
 
@@ -26,18 +26,18 @@
                 let result = 0;
                 let entire = [];
 
-                const loop = (index,values) => {
-                    if(index === numbers.length) {
+                const loop = (index, values) => {
+                    if (index === numbers.length) {
                         entire.push(values);
-                    }else {
+                    } else {
                         loop(index + 1, [...values, numbers[index]]);
                         loop(index + 1, [...values, numbers[index] * -1]);
                     }
                 }
 
-                loop(0,[]);
+                loop(0, []);
 
-                const entireCalc = entire.map((numbers) => numbers.reduce((p,c) => p + c, 0));
+                const entireCalc = entire.map((numbers) => numbers.reduce((p, c) => p + c, 0));
                 const entireMatch = entireCalc.filter((number) => number === target);
 
                 result = entireMatch.length;
@@ -74,7 +74,7 @@
 
             let inputArray = [["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]
 
-            inputArray = [["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL","SFO"]]
+            inputArray = [["ICN", "SFO"], ["ICN", "ATL"], ["SFO", "ATL"], ["ATL", "ICN"], ["ATL", "SFO"]]
 
             let solution = (allTickets) => {
                 let result = [];
@@ -87,26 +87,26 @@
                     const isFirst = !plan.length;
                     const isLast = !restTickets.length;
 
-                    if(isLast) {
+                    if (isLast) {
                         plans.push(plan);
                         return;
                     }
 
-                    const start = isFirst ? firstString : plan[plan.length-1];
+                    const start = isFirst ? firstString : plan[plan.length - 1];
                     isFirst && (plan = [firstString]);
 
-                    restTickets.forEach((next,i) => {
-                        if(next[0] === start) {
+                    restTickets.forEach((next, i) => {
+                        if (next[0] === start) {
                             const nextAll = [...restTickets];
                             const nextPlan = [...plan];
-                            nextAll.splice(i,1);
+                            nextAll.splice(i, 1);
                             nextPlan.push(next[1]);
                             go(nextAll, nextPlan);
                         }
                     });
                 };
 
-                go(allTickets,[]);
+                go(allTickets, []);
                 plans.sort();
                 result = plans[0];
 
@@ -150,22 +150,128 @@
             //     return entries.sort()[0];
             // };
 
-            const result = solution(inputArray);
-            console.log(result);
+            // const result = solution(inputArray);
+            // console.log(result);
         })();
 
         (() => {
-            // https://programmers.co.kr/learn/courses/30/lessons/43162?language=javascript
-            let inputArray = [[1, 1, 0], [1, 1, 0], [0, 0, 1]];
-            let inputNumber = 2;
-            let solution = (inputNumber, inputArray) => {
+            // https://programmers.co.kr/learn/courses/30/lessons/42885?language=javascript
+            // 
+            let inputArray = [
+                70, 50, 80, 50
+            ];
+            let inputNumber = 100;
+
+            let solution = (peoples, limit) => {
                 let result = null;
+                let count = 0;
+
+                peoples.sort((a, b) => b - a);
+
+                let pointL = 0;
+                let pointR = peoples.length - 1;
+
+                while (pointL <= pointR) {
+                    const first = peoples[pointL];
+                    const last = peoples[pointR];
+                    const secondLimit = limit - first;
+
+                    ++pointL;
+
+                    if (last <= secondLimit) {
+                        --pointR;
+                    }
+
+                    ++count;
+                }
+
+                result = count;
+                return count;
+            };
+
+            // const result = solution(inputArray, inputNumber);
+            // console.log('result:',result);
+        })();
+
+        (() => {
+        // https://programmers.co.kr/learn/courses/30/lessons/42746?language=javascript
+            let inputArray =
+                [
+                    // 1, 2, 3, 4, 20,
+                    //    3, 30, 34, 5, 9,
+                    //    0,0,0,0
+                    // 92,992,919
+                    // 100004, 1
+                    // 978, 97,
+                    // 9,997,99,878,87,
+                    // 1000, 100,
+                    // 998,9,
+                    // 0,0,
+                    // 403,40 ,
+                    // 151, 15, 1,
+                    // 23, 232, 21, 212,
+                    // 1000, 100,
+                    // 0, 5, 10, 15, 20,
+                    // 1000, 0, 5, 99, 100,
+                    // 3, 30, 34, 5, 9, 4, 40, 42,
+                ];
+            let solution = (numbers) => {
+                let result = null;
+
+                const sortCallback = (a, b) => {
+                    a = (a + '').split('').map((c) => parseInt(c));
+                    b = (b + '').split('').map((c) => parseInt(c));
+
+                    const l = Math.max(a.length, b.length);
+
+                    for (let i = 0; i < l; ++i) {
+                        const ai = a[i] === undefined ? Math.max(...a.map(c => c)) : a[i];
+                        const bi = b[i] === undefined ? Math.max(...b.map(c => c)) : b[i];
+
+                        if (ai === bi) {
+                            continue;
+                        }
+
+                        return bi - ai;
+                    }
+                };
+
+                numbers.sort(sortCallback);
+
+                result = parseInt(numbers.map((c) => c + '').join('')) + '';
+
                 return result;
-            }
-            const result = solution(inputNumber,inputArray);
+            };
+
+            // solution = (numbers) => {
+            //     let result = null;
+            //     let entry = 0;
+
+            //     const loop = (rest, plan) => {
+            //         if(!rest.length) {
+            //             const value = parseInt(plan.map(c => c + '').join(''));
+            //             entry = entry < value ? value : entry;
+            //             return;
+            //         }
+            //         for (let i = 0, l = rest.length; i < l; ++i) {
+            //             const copyRest = [...rest];
+            //             const copyPlan = [...plan];
+            //             const target = copyRest[i];
+            //             copyRest.splice(i,1);
+            //             loop( copyRest, [...copyPlan, target]);
+            //         }
+            //     }
+
+            //     loop(numbers, []);
+
+            //     result = parseInt(entry) + '';
+
+            //     return result;
+            // }
+
+            // const result = solution(inputArray);
+            // console.log(result);
         })();
 
     </script>
 </body>
-
-</html>
