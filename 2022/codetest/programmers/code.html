@@ -15,12 +15,14 @@
             // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
             // input 배열 값들을 더하거나 뺐을때 input 숫자값이 나올수 있는 수식 경우의 수 찾기
             // DFS
+
+
             let inputArray = [
                4,1,2,1
             ];
             let inputNumber = 4;
 
-            const solution = (numbers, target) => {
+            let solution = (numbers, target) => {
                 let result = 0;
                 let entire = [];
 
@@ -42,6 +44,25 @@
 
                 return result;
             };
+
+            // 복습
+            // solution = (numbers, target) => {
+            //     let count = 0;
+            //     const loop = (index,value) => {
+            //         if(index === numbers.length) {
+            //             if(value === target) {
+            //                 ++count;
+            //             }
+            //         }else {
+            //             loop(index + 1 , value + numbers[index]);
+            //             loop(index + 1 , value + numbers[index] * -1);
+            //         }
+            //     }
+
+            //     loop(0,0);
+
+            //     return count;
+            // }
 
             // const result = solution(inputArray, inputNumber);
             // console.log(result);
@@ -92,8 +113,45 @@
                 return result;
             };
 
-            // const result = solution(inputArray);
-            // console.log(result);
+            // 복습
+            // solution = (allTickets) => {
+            //     const entries = [];
+            //     const mustFirst = 'ICN';
+
+            //     const loop = (rest, plan) => {
+
+            //         if(!rest.length) {
+            //             entries.push(plan);
+            //             return;
+            //         }
+
+            //         let start = null;
+            //         if(!plan) {
+            //             start = mustFirst;
+            //             plan = [start];
+            //         }else {
+            //             start = plan[plan.length-1];
+            //         }
+
+            //         rest.forEach((ticket,i) => {
+            //             if(start === ticket[0]) {
+            //                 const arrive = ticket[1];
+            //                 const nextRest = [...rest];
+            //                 const nextPlan = [...plan, arrive];
+            //                 nextRest.splice(i,1);
+            //                 loop(nextRest, nextPlan);
+            //             }
+            //         });
+
+            //     }
+
+            //     loop(allTickets);
+
+            //     return entries.sort()[0];
+            // };
+
+            const result = solution(inputArray);
+            console.log(result);
         })();
 
         (() => {
