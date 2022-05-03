@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // solution set
+        (() => {
+            let inputArray = [];
+
+            let solution = () => {
+                let result = null;
+
+                return result;
+            };
+
+            const result = solution(inputArray);
+            console.log(result);
+        });
+
+        // code sheet
+        (() => {
+            const array = [1, 2, 3, 4, 5];
+
+            let value = null;
+const fc = (n) => n > 1 ? n * fc(n-1) : 1;
+
+            // 맨 앞 요소 삭제 / 반환 : 삭제한 요소
+            value = array.shift();
+            // value = 1, array = [2,3,4,5]
+
+            // 맨 뒤 요소 삭제 / 반환 : 삭제한 요소
+            value = array.pop();
+            // value = 5, array = [1,2,3,4]
+
+            // 요소를 맨 앞으로 추가 / 반환 : 추가후 길이
+            value = array.unshift(9);
+            // value = 6, array = [6,1,2,3,4,5]
+
+            // 요소를 맨 뒤로 추가 / 반환 : 추가후 길이
+            value = array.push(9);
+            // value = 6, array = [1,2,3,4,5,9]
+
+            // 요소의 n1을 시작으로 n2길이만큼 삭제 혹은 ...n3로 교체 (기본적으로 1개 인덱스, 나열한만큼 고정 추가) / 반환: 잘라낸 배열
+            value = array.splice(2, 2, '0')
+            // value = [3] / array = [1,2,'0',4,5]
+
+            // 요소의 n1부터 n2까지 자른 값을 복사만해서 반환 n2없을경우 끝까지 (원본 손상 X)
+            value = array.slice(1, 3); // value = [2,3] / array = [1,2,3,4,5]
+            value = array.slice(2); // value = [3,4,5] / array = [1,2,3,4,5]
+            value = array.slice(-2); // value = [4,5] / array = [1,2,3,4,5]
+            value = array.slice(0, 3); // value = [1,2,3] / array = [1,2,3,4,5]
+
+            // 요소의 마지막 인덱스의 위치를 찾아서 반환
+            value = [...array, ...array].lastIndexOf(4);
+            // value = 8;
+
+            // 요소가 판별 함수를 통과하는지 테스트
+            // some = 한개라도 통과하면 true
+            // every = 모두 통과해야 true
+            value = array.some((c) => c > 3); //value = true;
+            value = array.every((c) => c > 3); //value = false;
+
+            // 키,쌍 배열을 객체로 변경해서 반환
+            const array_kv = [['color', 'blue'], ['size', 20]];
+            value = Object.fromEntries(array_kv);
+            // value = { color: 'blue' , size: 20 }
+
+
+
+
+        });
+
+
+        (() => {
+            // 이진탐색
+            const inputArray = [
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+            ];
+
+            const solution = (numbers, target) => {
+                let result = false;
+                const length = numbers.length;
+
+                let low = 0;
+                let high = length;
+
+                numbers.sort((a, b) => a - b);
+
+                while (low <= high) {
+                    let mid = Math.floor((high + low) / 2);
+
+                    const key = numbers[mid];
+
+                    if (key === target) {
+                        result = true;
+                        break;
+                    }
+
+                    if (key > target) {
+                        high = mid - 1;
+                    } else {
+                        low = mid + 1;
+                    }
+                };
+
+                return result;
+            }
+
+            // const result = solution(inputArray, 15);
+            // console.log(result);
+        });
+
+        (() => {
+            //DFS
+            const inputArray = [
+                'a', 'b', 'c', 'd', 'e', 'f'
+            ]
+
+            const solution = (lists) => {
+                let result = null;
+                const entries = [];
+                const loop = (restList, progress) => {
+                    if (!restList.length) {
+                        entries.push(progress);
+                        return;
+                    }
+                    for (let i = 0, l = restList.length; i < l; ++i) {
+                        const nextList = [...restList];
+                        nextList.splice(i, 1);
+                        const nextProgress = [...progress, restList[i]];
+                        loop(nextList, nextProgress);
+                    }
+                }
+
+                loop(lists, []);
+                result = entries.length;
+                return result;
+            }
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        });
+
+        // transpose 전치행렬
+        (() => {
+            const transpose = (matrix) => {
+                return matrix.reduce((p, c) => c.map((_, i) => [...(p[i] || []), c[i]]), []);
+            };
+
+            const inputArray = [
+                [1, 2, 3, 4, 5],
+                [1, 2, 3, 4, 5],
+                [1, 2, 3, 4, 5],
+            ];
+
+            // console.log(transpose(inputArray))
+        });
+
+        // 집합 : 합집합, 교집합, 차집합
+        (() => {
+            // 합집합: 중복도 같이 제거
+            const union = (first, second) => {
+                const union = [...first];
+                second.forEach((value) => { !union.includes(value) && union.push(value); })
+                return union;
+            };
+
+            // 합집합: 중복도 같이 제거
+            const intersect = (first, second) => {
+                return first.filter((value) => second.includes(value)); // 둘 다 있으면 교집합
+            };
+
+            // 차집합
+            const complement = (first, second) => {
+                return first.filter((value) => !second.includes(value));
+            };
+        });
+
+        // 배열 중복 제거
+        (() => {
+            const deduplication = (array) => {
+                return [...new Set(array)];
+            };
+        });
+
+        // 최대공약수 , 최소공배수
+        (() => {
+            // 최대공약수
+            let GCD = (num1, num2) => {
+                let gcd = 1;
+
+                for (let i = 2; i <= Math.min(num1, num2); i++) {
+                    if (num1 % i === 0 && num2 % i === 0) {
+                        gcd = i;
+                    }
+                }
+
+                return gcd;
+            };
+
+            // 최소공배수
+            let LCM = (num1, num2) => {
+                let lcm = 1;
+
+                while (true) {
+                    if ((lcm % num1 === 0) && (lcm % num2 === 0)) {
+                        break;
+                    }
+                    lcm++;
+                }
+
+                return lcm;
+            };
+
+        });
+
+    </script>
+</body>

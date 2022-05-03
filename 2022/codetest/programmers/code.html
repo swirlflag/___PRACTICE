@@ -11,12 +11,9 @@
 <body>
 
     <script>
+        // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
+        // input 배열 값들을 더하거나 뺐을때 input 숫자값이 나올수 있는 수식 경우의 수 찾기 (완)
         (() => {
-            // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
-            // input 배열 값들을 더하거나 뺐을때 input 숫자값이 나올수 있는 수식 경우의 수 찾기
-            // DFS
-
-
             let inputArray = [
                 4, 1, 2, 1
             ];
@@ -69,8 +66,9 @@
 
         })();
 
+        // 여행 경로 (완)
+        // https://programmers.co.kr/learn/courses/30/lessons/43164?language=javascript
         (() => {
-            // https://programmers.co.kr/learn/courses/30/lessons/43164?language=javascript
 
             let inputArray = [["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]
 
@@ -154,8 +152,9 @@
             // console.log(result);
         })();
 
+        // 구명 보트 (완)
+        // https://programmers.co.kr/learn/courses/30/lessons/42885?language=javascript
         (() => {
-            // https://programmers.co.kr/learn/courses/30/lessons/42885?language=javascript
             // 
             let inputArray = [
                 70, 50, 80, 50
@@ -193,8 +192,9 @@
             // console.log('result:',result);
         })();
 
-        (() => {
+        // 큰수 찾기
         // https://programmers.co.kr/learn/courses/30/lessons/42746?language=javascript
+        (() => {
             let inputArray =
                 [
                     // 1, 2, 3, 4, 20,
@@ -272,6 +272,399 @@
             // const result = solution(inputArray);
             // console.log(result);
         })();
+
+        // 크레인 인형뽑기 게임 (완)
+        // https://programmers.co.kr/learn/courses/30/lessons/64061?language=javascript
+        (() => {
+            let inputArray = [
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 3],
+                [0, 2, 5, 0, 1],
+                [4, 2, 4, 4, 2],
+                [3, 5, 1, 3, 1]
+            ];
+            let inputArray2 = [1, 5, 3, 5, 1, 2, 1, 4];
+
+            let solution = (boards, moves) => {
+                let result = null;
+
+                moves = moves.map((c) => c - 1);
+
+                const stack = [];
+                let popCount = 0;
+
+                const addStack = (addItem) => {
+                    const lastItem = stack[stack.length - 1];
+                    stack.push(addItem);
+                    checkPop();
+                }
+
+                const checkPop = () => {
+                    for (let i = 0, l = stack.length - 1; i < l; ++i) {
+                        if (stack[i] === stack[i + 1]) {
+                            stack.splice(i, 2);
+                            popCount += 2;
+                            checkPop();
+                        }
+                    }
+                };
+
+                moves.forEach((x) => {
+                    for (let y = 0, l = boards.length; y < l; ++y) {
+                        const space = boards[y][x];
+                        if (space !== 0) {
+                            addStack(space);
+                            boards[y][x] = 0;
+                            break;
+                        }
+                    }
+                });
+
+                result = popCount;
+
+                return result;
+            };
+
+            // const result = solution(inputArray,inputArray2);
+            // console.log(result);
+        })();
+
+        // 괄호 정렬
+        // https://programmers.co.kr/learn/courses/30/lessons/60058
+        (() => {
+            let inputString =
+                // "(()())()";
+                // "()))((()";
+                "() ))((() ";
+
+            let solution = (originString) => {
+                let result = null;
+
+                const strArray = originString.split('');
+                let entries = [];
+
+                const checkProper = (string) => {
+                    let countLeft = 0;
+                    let countRight = 0;
+                    let isProper = true;
+                    let splitCheck = false;
+                    let splitIndex = 0;
+
+                    if (string[0] === ')' || string[string.length - 1] === '(') {
+                        isProper = false;
+                    }
+
+                    for (let i = 0, l = string.length; i < l; ++i) {
+                        const char = string[i];
+                        if (char === '(') {
+                            ++countLeft;
+                        }
+                        if (char === ')') {
+                            ++countRight;
+                        }
+
+                        if (countRight > countLeft) {
+                            isProper = false;
+                        }
+
+                        if (!splitCheck && countRight === countLeft) {
+                            splitCheck = true;
+                            splitIndex = i;
+                        }
+                    }
+
+                    return [isProper, splitIndex];
+                };
+
+                const sort = (arr) => {
+                    // arr.pop();
+                    // arr.shift();
+
+                    arr = arr.map((c) => {
+                        if (c === '(') {
+                            return ')'
+                        }
+                        if (c === ')') {
+                            return '('
+                        }
+                    });
+
+                    // arr.unshift('(');
+                    // arr.push(')');
+                    return arr;
+
+                }
+
+                const loop = (rest) => {
+
+                    let [isProper, splitIndex] = checkProper(rest);
+                    // console.log(isProper,splitIndex);
+
+                    if (isProper) {
+                        console.log('균형 잡힘!');
+                        entries = [...entries, ...rest];
+                    } else {
+                        console.log('정렬을 시도.');
+                        let splitLeft = rest.slice(0, splitIndex + 1);
+                        let splitRight = rest.slice(splitIndex + 1);
+
+                        splitLeft = sort(splitLeft);
+                        splitRight = sort(splitRight);
+                        console.log(splitLeft, splitRight);
+
+                        // loop(splitLeft);
+                        // loop(splitRight);
+                        // console.log(splitLeft, splitRight);
+
+                        // let [ isProper , splitIndex ] = checkProper(rest);
+
+                        // if(isProper) {
+                        //     entries = [...entries , ...rest];
+                        // }else {
+                        //     loop(splitLeft);
+                        //     loop(splitRight);
+                        // }
+                    }
+
+                };
+
+                loop(strArray,);
+                console.log(entries.join(''));
+
+                return result;
+
+            };
+
+            // const result = solution(inputString);
+            // console.log(result);
+        })();
+
+        // H- index
+        // https://programmers.co.kr/learn/courses/30/lessons/42747?language=javascript
+        (() => {
+            let inputArray = [
+                // 1, 4, 5, 9, 10, 10, 10, 9969968,
+                // 350, 452, 877,2,1,0,0,0,0,0,0,0,0,0,0
+
+                // 10, 3, 0, 0, 0,
+                // 6,6,6,6,6
+                // 2,2,2,
+                // 10,100
+                0, 0, 0, 0, 0
+                // 3,0,6,1,5,
+                // 6,5,3,1,0
+            ];
+
+            let solution = (citations) => {
+                let result = 0;
+
+                if (citations.every((c) => c === 0)) {
+                    return 0
+                }
+
+                citations.sort((a, b) => b - a);
+
+                for (let i = 0, l = citations.length - 1; i < l; ++i) {
+                    const ii = i + 1;
+                    const now = citations[i];
+                    const next = citations[ii];
+
+                    if (next <= ii) {
+                        result = ii;
+                        break;
+                    }
+
+                    if (ii === l) {
+                        result = citations.length;
+                        break;
+                    }
+                }
+
+                return result;
+            };
+
+            // const result = solution(inputArray);
+            // console.log(result);
+        })();
+
+        (() => {
+            let inputNumber = 8;
+            let inputArray = [1, 2, 20, 8, 8, 1, 2, 5, 8, 0];
+            let inputArray2 = [100, 2];
+
+            let solution = (X, arr, indexes) => {
+                let result = null;
+
+                const keyMap = arr.map((c, i) => c === X ? i + 1 : false).filter((c) => c);
+
+                result = indexes.map((c) => keyMap[c - 1] || -1);
+
+                return result;
+            };
+
+            // const result = solution(inputNumber, inputArray, inputArray2);
+            // console.log(result);
+        })();
+
+        (() => {
+            let inputArray = [2, 10, 5, 4, 8]
+            let inputArray2 = [3, 1, 7, 8];
+            // [2,4]
+            inputArray = [2, 10, 5, 4, 8];
+            inputArray2 = [3, 1, 7, 8];
+
+            inputArray = [1, 4, 2, 4];
+            inputArray2 = [3, 5];
+
+            
+            // inputArray2 = [0];
+            // inputArray2 = [10,0,0,0];
+
+            let solution = (teamK, teamB) => {
+                let result = null;
+
+                teamK.sort((a, b) => a - b);
+
+                const entries = [];
+                for (let i = 0, bl = teamB.length; i < bl; ++i) {
+                    const currnetTeamB = teamB[i];
+
+                    if (currnetTeamB >= teamK[teamK.length - 1]) {
+                        entries.push(teamK.length);
+                        continue;
+                    }
+
+                    if (currnetTeamB < teamK[0]) {
+                        entries.push(0);
+                        continue;
+                    }
+
+                    let low = 0;
+                    let high = teamK.length;
+                    let count = 0;
+
+                    while (low <= high) {
+
+                        let mid = Math.floor((high + low) / 2);
+
+                        const key = teamK[mid];
+
+                        if (key === currnetTeamB) {
+                            count = mid;
+                            break;
+                        }
+
+                        if (key > currnetTeamB) {
+                            if (teamK[mid - 1] <= currnetTeamB) {
+                                count = mid - 1;
+                                break;
+                            }
+                            high = mid - 1;
+                        } else {
+                            if (teamK[mid + 1] <= currnetTeamB) {
+                                count = mid + 1;
+                                break;
+                            }
+                            low = mid + 1;
+                        }
+
+                    };
+
+                    count = count + 1;
+
+                    entries.push(count);
+                }
+
+                result = entries;
+
+                return result;
+            };
+
+            const result = solution(inputArray, inputArray2);
+            console.log(result);
+        })();
+
+        (() => {
+            let inputNumber = 5;
+            let inputArray = [1];
+
+            let solution = (n, infectedHouses) => {
+                let result = null;
+
+                // 전체 섬 상태
+                const allHouseState = [...new Array(n)].map((c, i) => infectedHouses.indexOf(i + 1) > -1 ? '감염' : '*');
+
+                // 전체 시나리오 리스트
+                const scenario = [];
+
+                // 감염되는 집들 리스트를 받아, 감염 순서 경우의수를 반환함
+                const todayDFS = (houses) => {
+                    const entries = [];
+                    const loop = (restHouses, progress) => {
+                        if (!restHouses.length) {
+                            entries.push(progress);
+                            return;
+                        }
+                        for (let i = 0, l = restHouses.length; i < l; ++i) {
+                            const nextList = [...restHouses];
+                            nextList.splice(i, 1);
+                            const nextProgress = [...progress, restHouses[i]];
+                            loop(nextList, nextProgress);
+                        }
+                    }
+                    loop(houses, []);
+                    return entries;
+                };
+
+                // 하루 단위의 감염 프로세스
+                const infectionDay = (todayState, progress, day) => {
+                    // 모든 집이 감염이라면 시나리오 리스트에 진행된 경과를 추가하고 종료.
+                    if (todayState.every((c) => c === '감염')) {
+                        if (day) {
+                            scenario.push(progress);
+                        }
+                        return;
+                    }
+
+                    // 기존 감염된 집을 기준으로 앞.뒷 집의 오늘 감염 여부를 체크함
+                    const todayInfectHouse = [];
+                    const guessNextState = [...todayState];
+                    for (let i = 0; i < todayState.length; ++i) {
+                        if (todayState[i] === '감염') {
+                            if (guessNextState[i - 1] === '*') {
+                                guessNextState[i - 1] = '감염';
+                                todayInfectHouse.push(i - 1);
+                            }
+                            if (guessNextState[i + 1] === '*') {
+                                guessNextState[i + 1] = '감염';
+                                todayInfectHouse.push(i + 1);
+                            }
+                        }
+                    }
+
+                    // 오늘 감염되는 집들의 경우의수 순서 리스트를 구함
+                    const todayCases = todayDFS(todayInfectHouse);
+
+                    // 오늘 감염된 순서의 갯수만큼 그 다음날의 시나리오 체크
+                    for (let i = 0; i < todayCases.length; ++i) {
+                        infectionDay(guessNextState, [...progress, ...todayCases[i]], day + 1);
+                    }
+                };
+
+                infectionDay(allHouseState, [], 0);
+
+                const allCount = scenario.length;
+
+                result = allCount % (10 ** 9 + 7);
+
+                return result;
+            };
+
+            // const result = solution(inputNumber, inputArray);
+            // console.log(result);
+        })();
+
+
 
     </script>
 </body>
