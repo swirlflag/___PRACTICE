@@ -4,7 +4,6 @@ import { StopOutlined } from '@ant-design/icons';
 
 const FollowList = (props) => {
 	const { header, data } = props;
-    console.log(data);
 	return (
 		<List
 			grid={{ gutter: 4, xs: 2, md: 3 }}

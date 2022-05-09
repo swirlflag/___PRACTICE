@@ -1,16 +1,13 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import PropTypes from "prop-types";
+import styled, { createGlobalStyle } from "styled-components";
 import { Menu, Input, Row, Col } from "antd";
-import {
-	MailOutlined,
-	AppstoreOutlined,
-	SettingOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined } from "@ant-design/icons";
 
 import UserProfile from "../components/UserProfile";
 import LoginForm from "../components/LoginForm";
+import { logoutAction } from '../reducers';
 
 const SearchInput = styled(Input.Search)`
 	vertical-align: middle;
@@ -59,18 +56,16 @@ const Mymenu = () => {
 const AppLayout = (props) => {
 	const { children } = props;
 
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+    const dispatch = useDispatch();
 
 	return (
-		<div>
+		<>
 			<Mymenu />
 			<Row gutter={[8]}>
 				<Col xs={24} md={6}>
-					{isLoggedIn ? (
-						<UserProfile setIsLoggedIn={setIsLoggedIn} />
-					) : (
-						<LoginForm setIsLoggedIn={setIsLoggedIn} />
-					)}
+					{isLoggedIn ? <UserProfile /> : <LoginForm />}
 				</Col>
 				<Col xs={24} md={12}>
 					{children}
@@ -79,7 +74,7 @@ const AppLayout = (props) => {
 					오른쪽 메뉴
 				</Col>
 			</Row>
-		</div>
+		</>
 	);
 };
 
