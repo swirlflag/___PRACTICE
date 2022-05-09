@@ -67,7 +67,7 @@ class Particle {
         this.baseX = this.centerX + Math.cos(this.angle * Math.PI/180) * centerDistance;
         this.baseY = this.centerY + Math.sin(this.angle * Math.PI/180) * centerDistance;
         this.size = Math.random() * 4 + 0.5;
-        
+
         this.x = this.baseX;
         this.y = this.baseY;
     };
@@ -96,7 +96,7 @@ class Particle {
         this.update();
         this.draw();
     };
-    
+
 }
 
 const particleNumber = 20;
@@ -161,8 +161,6 @@ const animate = () => {
             }
         }
 
-        
-    
         p.frame();
     }
 }
@@ -170,6 +168,7 @@ const animate = () => {
 setInterval(() => {
     animate();
 },16)
+
 // },200)
 // },500)
 // },1000)
