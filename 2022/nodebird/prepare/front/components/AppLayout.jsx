@@ -5,9 +5,9 @@ import styled, { createGlobalStyle } from "styled-components";
 import { Menu, Input, Row, Col } from "antd";
 import { AppstoreOutlined } from "@ant-design/icons";
 
-import UserProfile from "../components/UserProfile";
-import LoginForm from "../components/LoginForm";
-import { logoutAction } from '../reducers';
+import UserProfile from "/components/UserProfile";
+import LoginForm from "/components/LoginForm";
+import { logoutAction } from '/reducers/user';
 
 const SearchInput = styled(Input.Search)`
 	vertical-align: middle;

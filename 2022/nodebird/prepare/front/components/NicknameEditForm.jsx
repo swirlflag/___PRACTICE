@@ -1,12 +1,47 @@
-import React, { useMemo } from "react";
-import { Form, Input } from "antd";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Form, Input, Button } from "antd";
+import styled, { createGlobalStyle } from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { changeNickname } from "/reducers/user";
+
+const StyledForm = styled(Form)`
+	margin-bottom: 20px;
+	border: 1px solid #d9d9d9;
+	padding: 20px;
+`;
 
 const NicknameEditForm = () => {
-	const style = useMemo(() => ({marginBottom:'20px', border:'1px solid #d9d9d9', padding : '20px'}), []);
+	const dispatch = useDispatch();
+
+	const user = useSelector((state) => state.user);
+
+	const [wantNickname, setWantNickname] = useState(user.user);
+
+	useEffect(() => {
+		setWantNickname(user.user);
+	}, [user.isLoggedIn]);
+
+	const onChangeInput = (event) => {
+		setWantNickname(event.target.value);
+	};
+
+	const onClickButton = useCallback(() => {
+        if(user.user === wantNickname) {
+            return;
+        }
+		dispatch(changeNickname(wantNickname));
+	}, [wantNickname]);
+
 	return (
-		<Form style={style}>
-			<Input.Search addonBefore="닉네임" enterButton="수정" />
-		</Form>
+		<StyledForm>
+			<Input.Search
+				addonBefore="닉네임"
+				enterButton="수정"
+                onSearch={onClickButton}
+				value={wantNickname}
+				onChange={onChangeInput}
+			/>
+		</StyledForm>
 	);
 };
 

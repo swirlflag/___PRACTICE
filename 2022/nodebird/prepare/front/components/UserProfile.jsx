@@ -1,13 +1,15 @@
 import React, { useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import { Card, Avatar, Button } from "antd";
 
-import { logoutAction } from "../reducers";
+import { logoutAction } from "/reducers/user";
 
 const UserProfile = (props) => {
     const dispatch = useDispatch();
+
+    const user = useSelector((state) => state.user);
 
 	const onLogOut = useCallback(() => {
 		dispatch(logoutAction());
@@ -30,7 +32,7 @@ const UserProfile = (props) => {
 				</div>,
 			]}
 		>
-			<Card.Meta avatar={<Avatar>swirlflag</Avatar>} title="swirlflag" />
+			<Card.Meta avatar={<Avatar>{user.user}</Avatar>} title={user.user} />
 			<Button onClick={onLogOut}>로그아웃</Button>
 		</Card>
 	);

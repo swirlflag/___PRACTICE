@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import Link from "next/link";
 import { Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { useInput } from '../hooks';
+import { useInput } from '/hooks';
 
-import { loginAction } from "../reducers";
+import { loginAction } from "/reducers/user";
 
 const FormButtons = styled.div`
 	margin-top: 10px;
