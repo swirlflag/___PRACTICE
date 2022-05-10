@@ -19,8 +19,8 @@ const Home = () => {
                 isLoggedIn ? <PostForm /> : <div>로그인하시면 PostForm을 볼수 있습니다</div>
             }
             {
-                mainPosts.map((post) => {
-                    return <PostCard  key={post.id} post={post}/>
+                mainPosts.map((post,idx) => {
+                    return <PostCard  key={post.id + idx} post={post}/>
                 })
             }
 		</AppLayout>

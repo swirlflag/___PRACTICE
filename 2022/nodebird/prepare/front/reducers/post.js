@@ -44,7 +44,7 @@ const initialState = {
 	],
 };
 
-const dummypost = {
+const dummyPost = {
     id: 2,
     User: {
         id: 1,
@@ -97,10 +97,9 @@ const reducer = (state = initialState, action) => {
 		case ADD_POST: {
             return {
                 ...state,
-                postAdded: true,
                 mainPosts : [
-                    dummyPost,
                     ...state.mainPosts,
+                    dummyPost,
                 ],
             }
 		}

@@ -7,7 +7,8 @@ const PostCard = (props) => {
 
     return (
         <div>
-            {post.id}
+            {/* {post.id} */}
+            [post card!]
             {/* {post} */}
         </div>
     )
