@@ -32,7 +32,7 @@ const UserProfile = (props) => {
 				</div>,
 			]}
 		>
-			<Card.Meta avatar={<Avatar>{user.user}</Avatar>} title={user.user} />
+			<Card.Meta avatar={<Avatar>{user.me}</Avatar>} title={user.me} />
 			<Button onClick={onLogOut}>로그아웃</Button>
 		</Card>
 	);

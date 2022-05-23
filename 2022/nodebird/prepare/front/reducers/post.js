@@ -6,7 +6,7 @@ const initialState = {
 				id: 1,
 				nickname: "제련소",
 			},
-			content: "첫번째 게시글",
+			content: "첫번째 게시글 입니다..",
 			Images: [
 				{
 					src: "https://i.picsum.photos/id/985/200/300.jpg?hmac=lb8fpWYv02mksKzlZbeEoz95iCF79_svqRJetHcEvnQ",
@@ -45,12 +45,12 @@ const initialState = {
 };
 
 const dummyPost = {
-    id: 2,
+    id: 9999,
     User: {
-        id: 1,
-        nickname: "제련소",
+        id: 9999,
+        nickname: "dummy bot",
     },
-    content: "두번째 게시글",
+    content: "더미 데이터입니다!!!",
     Images: [
         {
             src: "https://i.picsum.photos/id/102/200/300.jpg?hmac=nMR8Al8ea36mJZJbJNFVaddoG8aP4gUCDiEm4r6PUbk",

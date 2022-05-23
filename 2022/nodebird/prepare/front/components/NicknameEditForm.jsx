@@ -15,10 +15,10 @@ const NicknameEditForm = () => {
 
 	const user = useSelector((state) => state.user);
 
-	const [wantNickname, setWantNickname] = useState(user.user);
+	const [wantNickname, setWantNickname] = useState(user.me);
 
 	useEffect(() => {
-		setWantNickname(user.user);
+		setWantNickname(user.me);
 	}, [user.isLoggedIn]);
 
 	const onChangeInput = (event) => {
@@ -26,7 +26,7 @@ const NicknameEditForm = () => {
 	};
 
 	const onClickButton = useCallback(() => {
-        if(user.user === wantNickname) {
+        if(user.me === wantNickname) {
             return;
         }
 		dispatch(changeNickname(wantNickname));
