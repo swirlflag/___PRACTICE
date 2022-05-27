@@ -8,24 +8,56 @@ const initialState = {
     loginData: {},
 };
 
-export const loginAction = (id, password) => ({
-	type: "LOG_IN",
+export const loginAction = () => {
+    return (dispatch, getState) => {
+        const state = getState();
+        dispatch(loginRequestAction());
+        axios.post('')
+            .then((res) => {
+                dispatch(loginSuccessAction(res));
+            })
+            .catch((err) => {
+                dispatch(loginFailureAction(err));
+            })
+        ;
+    }
+}
+
+export const loginRequestAction = (id, password) => ({
+	type: "LOG_IN_REQUEST",
 	data: {id, password},
 });
 
-export const logoutAction = () => ({
-	type: "LOG_OUT",
+export const loginSuccessAction = (id, password) => ({
+	type: "LOG_IN_SUCCESS",
+	data: {id, password},
 });
 
-export const changeNickname = (nickname) => ({
+export const loginFailureAction = () => ({
+	type: "LOG_IN_FAILURE",
+	data: {id: null, password: null,},
+});
+
+export const logoutRequestAction = () => ({
+	type: "LOG_OUT_REQUEST",
+});
+
+export const logoutSuccessAction = () => ({
+	type: "LOG_OUT_SUCCESS",
+});
+
+export const logoutFailureAction = () => ({
+	type: "LOG_OUT_FAILURE",
+});
+
+export const requestChangeNickname = (nickname) => ({
 	type: "CHANGE_NICKNAME",
 	data: nickname,
 });
 
-
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
-        case "LOG_IN": {
+        case "LOG_IN_REQUEST": {
             const { id, password, nickname } = action.data;
 			return {
 				...state,
@@ -36,7 +68,7 @@ const reducer = (state = initialState, action) => {
                 },
 			};
 		}
-		case "LOG_OUT": {
+		case "LOG_OUT_REQUEST": {
 			return {
 				...state,
 				isLoggedIn: false,

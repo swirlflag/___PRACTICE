@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import { Card, Avatar, Button } from "antd";
 
-import { logoutAction } from "/reducers/user";
+import { logoutRequestAction } from "/reducers/user";
 
 const UserProfile = (props) => {
     const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const UserProfile = (props) => {
     const id = useSelector((state) => state.user?.me.id);
 
 	const onLogOut = useCallback(() => {
-		dispatch(logoutAction());
+		dispatch(logoutRequestAction());
 	}, []);
 
 	return (

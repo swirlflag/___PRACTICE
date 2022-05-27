@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, Input, Button } from "antd";
 import styled, { createGlobalStyle } from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { changeNickname } from "/reducers/user";
+import { requestChangeNickname } from "/reducers/user";
 
 const StyledForm = styled(Form)`
 	margin-bottom: 20px;
@@ -29,7 +29,7 @@ const NicknameEditForm = () => {
 		if (user.me === wantNickname) {
 			return;
 		}
-		dispatch(changeNickname(wantNickname));
+		dispatch(requestChangeNickname(wantNickname));
 	}, [wantNickname]);
 
 	return (

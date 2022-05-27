@@ -5,7 +5,6 @@ import AppLayout from "../components/AppLayout.jsx";
 import PostForm  from "../components/PostForm";
 import PostCard from "../components/PostCard";
 
-
 const Home = () => {
 	const user = useSelector((state) => (state.user));
     const post = useSelector((state) => (state.post));

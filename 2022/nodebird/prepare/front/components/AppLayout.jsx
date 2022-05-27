@@ -7,7 +7,7 @@ import { AppstoreOutlined } from "@ant-design/icons";
 
 import UserProfile from "/components/UserProfile";
 import LoginForm from "/components/LoginForm";
-import { logoutAction } from '/reducers/user';
+import { logoutRequestAction } from '/reducers/user';
 
 const GlobalStyle = createGlobalStyle`
     .ant-row {

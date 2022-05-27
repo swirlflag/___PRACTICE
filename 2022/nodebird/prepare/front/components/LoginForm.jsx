@@ -6,7 +6,7 @@ import { Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { useInput } from '/hooks';
 
-import { loginAction } from "/reducers/user";
+import { loginRequestAction } from "/reducers/user";
 
 const FormButtons = styled.div`
 	margin-top: 10px;
@@ -23,7 +23,7 @@ const LoginForm = (props) => {
     const [password, onChangePassword] = useInput("");
 
 	const onSubmitForm = useCallback((event) => {
-        dispatch(loginAction(id,password));
+        dispatch(loginRequestAction(id,password));
     },[id, password]);
 
 	return (
