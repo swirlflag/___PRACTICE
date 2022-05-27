@@ -15,20 +15,20 @@ const NicknameEditForm = () => {
 
 	const user = useSelector((state) => state.user);
 
-	const [wantNickname, setWantNickname] = useState(user.me);
+	const [wantNickname, setWantNickname] = useState(user.me.nickname);
 
 	useEffect(() => {
-		setWantNickname(user.me);
-	}, [user.isLoggedIn]);
+		setWantNickname(user.me.nickname);
+	}, [user.me.nickname]);
 
 	const onChangeInput = (event) => {
 		setWantNickname(event.target.value);
 	};
 
 	const onClickButton = useCallback(() => {
-        if(user.me === wantNickname) {
-            return;
-        }
+		if (user.me === wantNickname) {
+			return;
+		}
 		dispatch(changeNickname(wantNickname));
 	}, [wantNickname]);
 
@@ -37,7 +37,7 @@ const NicknameEditForm = () => {
 			<Input.Search
 				addonBefore="닉네임"
 				enterButton="수정"
-                onSearch={onClickButton}
+				onSearch={onClickButton}
 				value={wantNickname}
 				onChange={onChangeInput}
 			/>

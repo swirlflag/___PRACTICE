@@ -8,18 +8,17 @@ import { useInput } from "/hooks";
 const CommentForm = (props) => {
 	const { post } = props;
 
-    const user = useSelector((state) => (state.user));
+    const id = useSelector((state) => (state.user?.me.id));
 
 	const [commentText, onChangeCommentText] = useInput("");
 
 	const onSubmitComment = useCallback(() => {
 		console.log(post.id,commentText);
-
-        console.log(user.isLoggedIn);
 	}, [commentText]);
 
 	return (
 		<Form onFinish={onSubmitComment}>
+            ~~~id : {id}
 			<Input.TextArea
 				value={commentText}
 				onChange={onChangeCommentText}
@@ -29,7 +28,7 @@ const CommentForm = (props) => {
                 type="primary"
                 htmlType="submit"
             >
-                tweet!
+                tweet!11
             </Button>
 		</Form>
 	);

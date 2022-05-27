@@ -1,45 +1,58 @@
 const initialState = {
     isLoggedIn: false,
-    me: null,
+    me: {
+        id: null,
+        nickname: null,
+    },
     signUpData: {},
     loginData: {},
 };
 
-export const loginAction = (value) => ({
+export const loginAction = (id, password) => ({
 	type: "LOG_IN",
-	data: value,
+	data: {id, password},
 });
 
 export const logoutAction = () => ({
 	type: "LOG_OUT",
 });
 
-export const changeNickname = (value) => ({
+export const changeNickname = (nickname) => ({
 	type: "CHANGE_NICKNAME",
-	data: value,
+	data: nickname,
 });
 
 
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
         case "LOG_IN": {
+            const { id, password, nickname } = action.data;
 			return {
 				...state,
 				isLoggedIn: true,
-                me: action.data,
+                me: {
+                    ...state.me,
+                    id,
+                },
 			};
 		}
 		case "LOG_OUT": {
 			return {
 				...state,
 				isLoggedIn: false,
-                me: null,
+                me: {
+                    ...state.me,
+                    id: null,
+                },
 			};
 		}
 		case "CHANGE_NICKNAME": {
 			return {
 				...state,
-				me: action.data,
+				me: {
+                    ...state.me,
+                    nickname : action.data,
+                },
 			};
 		}
 		default: {

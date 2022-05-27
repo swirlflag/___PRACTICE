@@ -2,6 +2,7 @@ import React, { useCallback, useState, useRef } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../reducers/post";
+import { CommentForm } from './CommentForm';
 
 const PostForm = (props) => {
     const dispatch = useDispatch();

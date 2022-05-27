@@ -6,16 +6,16 @@ const initialState = {
 				id: 1,
 				nickname: "제련소",
 			},
-			content: "첫번째 게시글 입니다..",
+			content: "첫번째 게시글 입니다.. #첫번째 #해시태그_되나?",
 			Images: [
 				{
-					src: "https://i.picsum.photos/id/985/200/300.jpg?hmac=lb8fpWYv02mksKzlZbeEoz95iCF79_svqRJetHcEvnQ",
+					src: "https://i.picsum.photos/id/702/800/800.jpg?hmac=I3zFzdBlDPMNZCcLdhkhcOmpV1rGpMXY557ilz9JA9Y",
 				},
 				{
-					src: "https://i.picsum.photos/id/559/200/300.jpg?hmac=lNV_-XwwjsYJn2cX4Pq7EFx4GA57ekwh_ZoR1dc09H0",
+					src: "https://i.picsum.photos/id/960/800/800.jpg?hmac=Wk7vp2DErAMJMv3rV1_OivBuvOWrAOLY0KqRYh_W77o",
 				},
 				{
-					src: "https://i.picsum.photos/id/660/200/300.jpg?hmac=j7s3I-0KukW6B1Vt4AJzCYxM8kbZz5kTMOEl9Y7zUOg",
+					src: "https://i.picsum.photos/id/876/800/800.jpg?hmac=On__m7iyhPlTIQpzjmHwRHqB1HvqSQaA3SvHzPIClMM",
 				},
 			],
 			Comments: [

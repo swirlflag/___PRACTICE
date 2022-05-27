@@ -9,7 +9,7 @@ import { logoutAction } from "/reducers/user";
 const UserProfile = (props) => {
     const dispatch = useDispatch();
 
-    const user = useSelector((state) => state.user);
+    const id = useSelector((state) => state.user?.me.id);
 
 	const onLogOut = useCallback(() => {
 		dispatch(logoutAction());
@@ -32,7 +32,7 @@ const UserProfile = (props) => {
 				</div>,
 			]}
 		>
-			<Card.Meta avatar={<Avatar>{user.me}</Avatar>} title={user.me} />
+			<Card.Meta avatar={<Avatar>{id}</Avatar>} title={id} />
 			<Button onClick={onLogOut}>로그아웃</Button>
 		</Card>
 	);

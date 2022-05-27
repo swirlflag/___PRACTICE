@@ -6,9 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        a[href&="#"] {
+        background-color: #d3d;
+        }
+    </style>
 </head>
 
 <body>
+    <a href="#">1</a>
 
     <script>
         // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
@@ -63,6 +69,36 @@
 
             // const result = solution(inputArray, inputNumber);
             // console.log(result);
+
+            
+
+            // const inputArray = [
+            //     1,1,1,1,1,
+            // ];
+            // const inputNumber = 3;
+
+            // const solution = (numbers, target) => {
+            //     let result = 0;
+            //     const answers = [];
+
+            //     const loop = (stack = [], index = 0) => {
+            //         if(index === numbers.length) {
+            //             const isMatchTarget = stack.reduce((p,c) => p + c, 0) === target;
+            //             if(isMatchTarget) {
+            //                 answers.push(stack);
+            //             }
+            //             return;
+            //         }
+
+            //         loop([...stack, numbers[index]] , index + 1);
+            //         loop([...stack, -numbers[index]] , index + 1);
+            //     };
+
+            //     loop();
+
+            //     result = answers.length;
+            //     return result;
+            // };
 
         })();
 
@@ -580,8 +616,8 @@
                 return result;
             };
 
-            const result = solution(inputArray, inputArray2);
-            console.log(result);
+            // const result = solution(inputArray, inputArray2);
+            // console.log(result);
         })();
 
         (() => {
@@ -664,7 +700,202 @@
             // console.log(result);
         })();
 
+    // 튜플
+    // https://programmers.co.kr/learn/courses/30/lessons/64065?language=javascript
+        (() => {
+            let inputString = "{{1,2,3},{2,1},{1,2,4,3},{2}}";
+            const complement = (first, second) => {
+                return ;
+            };
+
+            let solution = (s) => {
+                let result = null;
+
+                s = s.slice(2,-2).trim();
+
+                let arr = s.split('},{')
+                    .map((c => c.split(',').map(c => +c)))
+                    .sort((a,b) => a.length - b.length);
+
+                let before = [];
+                let sifter = [];
+
+                for(item of arr) {
+                    const target = item.filter((value) => !before.includes(value))[0];
+                    sifter.push(target);
+                    before = item;
+                }
+
+                result = sifter;
+
+                return result;
+            };
+
+            // const result = solution(inputString);
+            // console.log(result);
+        })();
+
+    // DFS, BFS 직접구현
+    // https://velog.io/@sangbooom/JS-BFS-DFS
+        (() => {
+            const inputGraph = {
+                A: ["B", "C"],
+                B: ["A", "D"],
+                C: ["A", "G", "H", "I"],
+                D: ["B", "E", "F"],
+                E: ["D"],
+                F: ["D"],
+                G: ["C"],
+                H: ["C"],
+                I: ["C", "J"],
+                J: ["I"]
+            };
+
+            const DFS = (graph,start) => {
+
+                const visited = [];
+                const needVisit = [];
+
+                const loop = (restVisit) => {
+                    const key = restVisit.shift();
+                    const child = graph[key];
+                    visited.push(key);
+
+                    for(item of child) {
+                        const isVisited = visited.includes(item);
+                        if(isVisited === false) {
+                            restVisit.push(item);
+                            if(restVisit.length) {
+                                loop(restVisit);
+                            }
+                        }
+                    }
+                }
+
+                needVisit.push(start);
+                loop(needVisit);
+
+                return visited;
+            };
+
+            BFS = (graph, start) => {
+
+                const visited = [];
+                const needVisit = [];
+
+                const loop = (restVisit) => {
+                    const key = restVisit.shift();
+                    const child = graph[key];
+                    visited.push(key);
+
+                    for(item of child) {
+                        const isVisited = visited.includes(item);
+                        if(isVisited === false) {
+                            restVisit.push(item);
+                        }
+                    }
+
+                    if(restVisit.length) {
+                        loop(restVisit);
+                    }
+                }
+
+                needVisit.push(start);
+                loop(needVisit);
+
+                return visited;
+            };
+
+            // console.log(DFS(inputGraph,'A'));
+            // console.log(BFS(inputGraph,'A'));
+
+        })();
 
 
+    // 예상 대진표
+    // https://programmers.co.kr/learn/courses/30/lessons/12985?language=javascript
+        (() => {
+            const inputN = 16;
+            const inputA = 9;
+            const inputB = 12;
+
+            const solution = (n,a,b) => {
+                let count = 1;
+
+                let red = Math.min(a,b);
+                let blue = Math.max(a,b);
+
+                while(n !== 1) {
+                    const isMatched = (red%2 && red + 1 === blue) || (!red%2 && red - 1 === blue);
+
+                    if(isMatched) {
+                        break;
+                    }
+
+                    red = red%2 ? (red+1)/2 : red/2 ;
+                    blue = blue%2 ? (blue+1)/2 : blue/2;
+
+                    ++count;
+                    n = n/2;
+                }
+
+                return count
+            };
+
+            // const result = solution(inputN,inputA,inputB);
+
+        })();
+
+
+
+    // 메뉴 리뉴얼
+    // https://programmers.co.kr/learn/courses/30/lessons/72411?language=javascript
+        (() => {
+            const inputArray = 	["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"];
+            const inputArray2 = [2, 3, 4];
+            const solution = (orders, course) => {
+                let result = null;
+
+                course = course[0];
+
+                orders = orders[0].split('');
+
+                let answers = [];
+
+                const loop = (arr, selectNumber) => {
+
+                    arr.forEach((item) => {
+                        // console.log(item);
+
+                        const rest = arr.slice(1);
+                        console.log(item, rest);
+                        // const key = item.slice(0,1);
+
+                        // const combine = loop(rest, selectNumber - 1);
+                        // console.log(combine);
+
+                        // console.log(key);
+
+                        // rest.forEach(() => {
+
+                        // });
+
+                        // const combine = [key,]
+                    });
+
+                    return 1;
+                    // loop
+                };
+
+                loop(orders,course);
+
+
+                // for(let i = 0; i < orders.length; ++i) {
+                    
+                // }
+            };
+
+            // solution(inputArray, inputArray2);
+        })();
     </script>
 </body>

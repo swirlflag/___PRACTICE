@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState ,useMemo } from "react";
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Card, Popover, Button, Avatar, List ,Comment} from "antd";
@@ -12,14 +12,14 @@ import {
 
 import PostImages from "./PostImages";
 import CommentForm from './CommentForm';
+import PostCardContent from "./PostCardContent";
 
 const PostCard = (props) => {
 	const { post } = props;
 	const [liked, setLiked] = useState(false);
 	const [commentFormOpened, setCommentFormOpened] = useState(false);
 	const user = useSelector((state) => state.user);
-	const id = user.me?.id;
-	const me = user.me;
+	const id = useMemo(() => user?.me.id, [user]);
 
 	const onToggleLiked = useCallback(() => {
 		setLiked((prev) => !prev);
@@ -31,7 +31,6 @@ const PostCard = (props) => {
 
 	return (
         <>
-        
             <Card
                 cover={post.Images[0] && <PostImages images={post.Images} />}
                 actions={[
@@ -67,7 +66,7 @@ const PostCard = (props) => {
                 <Card.Meta
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                     title={post.User.nickname}
-                    description={post.content}
+                    description={<PostCardContent postData={post.content}/>}
                 />
             </Card>
             {commentFormOpened && (
