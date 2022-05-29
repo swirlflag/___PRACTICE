@@ -42,6 +42,12 @@ const initialState = {
 			postAdded: false,
 		},
 	],
+    isAddPostLoading: false,
+    isAddPostDone: false,
+    isAddPostError: false,
+    isAddCommentLoading: false,
+    isAddCommentDone: false,
+    isAddCommentError: false,
 };
 
 const dummyPost = {
@@ -52,55 +58,86 @@ const dummyPost = {
     },
     content: "더미 데이터입니다!!!",
     Images: [
-        {
-            src: "https://i.picsum.photos/id/102/200/300.jpg?hmac=nMR8Al8ea36mJZJbJNFVaddoG8aP4gUCDiEm4r6PUbk",
-        },
-        {
-            src: "https://i.picsum.photos/id/42/200/300.jpg?hmac=RFAv_ervDAXQ4uM8dhocFa6_hkOkoBLeRR35gF8OHgs",
-        },
-        {
-            src: "https://i.picsum.photos/id/955/200/300.jpg?hmac=I4JBGrEHxErLo6XCZM73YcpyhJjX3GxLPggnlxcdU24",
-        },
     ],
     Comments: [
-        {
-            User: {
-                nickname: "ee",
-            },
-            content: "e안녕하세요",
-        },
-        {
-            User: {
-                nickname: "e2",
-            },
-            content: "e안녕하세요2",
-        },
-        {
-            User: {
-                nickname: "e3~",
-            },
-            content: "안e녕하세요3~ㅎㅎ",
-        },
     ],
     imagePaths: [],
     postAdded: false,
 };
 
-const ADD_POST = "ADD_POST";
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
-export const addPost = {
-	type: ADD_POST,
-};
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const addPostAction = (data) => ({
+	type: ADD_POST_REQUEST,
+    data,
+});
+
+export const addCommentAction = (data) => ({
+	type: ADD_COMMENT_REQUEST,
+    data,
+});
 
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
-		case ADD_POST: {
+		case ADD_POST_REQUEST: {
             return {
                 ...state,
+                isAddPostLoading: true,
+                isAddPostDone: false,
+                isAddPostError: false,
+            }
+		}
+        case ADD_POST_SUCCESS: {
+            return {
+                ...state,
+                isAddPostLoading: false,
+                isAddPostDone: true,
+                isAddPostError: false,
                 mainPosts : [
                     ...state.mainPosts,
-                    dummyPost,
+                    {
+                        ...dummyPost,
+                        content: action.data,
+                    }
                 ],
+            }
+		}
+        case ADD_POST_FAILURE: {
+            return {
+                ...state,
+                isAddPostLoading: false,
+                isAddPostDone: false,
+                isAddPostError: true,
+            }
+		}
+        case ADD_COMMENT_REQUEST: {
+            return {
+                ...state,
+                isAddCommentLoading: true,
+                isAddCommentDone: false,
+                isAddCommentError: false,
+            }
+		}
+        case ADD_COMMENT_SUCCESS: {
+            return {
+                ...state,
+                isAddCommentLoading: false,
+                isAddCommentDone: true,
+                isAddCommentError: false,
+            }
+		}
+        case ADD_COMMENT_FAILURE: {
+            return {
+                ...state,
+                isAddCommentLoading: false,
+                isAddCommentDone: false,
+                isAddCommentError: true,
             }
 		}
 		default: {

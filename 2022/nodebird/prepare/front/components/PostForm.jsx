@@ -1,14 +1,14 @@
 import React, { useCallback, useState, useRef } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { addPost } from "../reducers/post";
+import { addPostAction } from "../reducers/post";
 import { CommentForm } from './CommentForm';
 
 const PostForm = (props) => {
     const dispatch = useDispatch();
 
 	const [text, setText] = useState("");
-	const post = useSelector((state) => state.post);
+	const { isAddPostLoading } = useSelector((state) => state.post);
     const $imageInput = useRef(null);
 
 	const imagePaths = [];
@@ -22,7 +22,7 @@ const PostForm = (props) => {
     },[$imageInput.current]);
 
     const onSubmit = useCallback(() => {
-		dispatch(addPost);
+		dispatch(addPostAction(text));
         setText("");
 	}, [text]);
 
@@ -45,6 +45,7 @@ const PostForm = (props) => {
 					type="primary"
 					style={{ float: "right" }}
 					htmlType="submit"
+                    loading={isAddPostLoading}
 				>
 					트윗!
 				</Button>

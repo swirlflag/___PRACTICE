@@ -6,19 +6,17 @@ import PostForm  from "../components/PostForm";
 import PostCard from "../components/PostCard";
 
 const Home = () => {
-	const user = useSelector((state) => (state.user));
+	const { isLogin } = useSelector((state) => (state.user));
     const post = useSelector((state) => (state.post));
-	const { isLoggedIn } = user;
-    const { mainPosts } = post;
 
 	return (
 		<AppLayout>
 
             {
-                isLoggedIn ? <PostForm /> : <div>로그인하시면 PostForm을 볼수 있습니다</div>
+                isLogin ? <PostForm /> : <div>로그인하시면 PostForm을 볼수 있습니다</div>
             }
             {
-                mainPosts.map((post,idx) => {
+                post.mainPosts.map((post,idx) => {
                     return <PostCard  key={post.id + idx} post={post}/>
                 })
             }

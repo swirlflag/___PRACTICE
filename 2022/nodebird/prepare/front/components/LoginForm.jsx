@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React, { useState, useCallback } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Link from "next/link";
 import { Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { useInput } from '/hooks';
 
-import { loginRequestAction } from "/reducers/user";
+import { loginAction , loginSuccessAction} from "/reducers/user";
 
 const FormButtons = styled.div`
 	margin-top: 10px;
@@ -19,11 +19,13 @@ const FormWrapper = styled(Form)`
 const LoginForm = (props) => {
     const dispatch = useDispatch();
 
+    const { isLoginLoading } = useSelector((state) => state.user);
+
 	const [id, onChangeId] = useInput("");
     const [password, onChangePassword] = useInput("");
 
 	const onSubmitForm = useCallback((event) => {
-        dispatch(loginRequestAction(id,password));
+        dispatch(loginAction(id,password));
     },[id, password]);
 
 	return (
@@ -50,7 +52,7 @@ const LoginForm = (props) => {
 				/>
 			</div>
 			<FormButtons>
-				<Button type="primary" htmlType="submit" loading={false}>
+				<Button type="primary" htmlType="submit" loading={isLoginLoading}>
 					로그인
 				</Button>
 				<Link href="/signup">

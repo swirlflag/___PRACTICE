@@ -7,7 +7,7 @@ import { AppstoreOutlined } from "@ant-design/icons";
 
 import UserProfile from "/components/UserProfile";
 import LoginForm from "/components/LoginForm";
-import { logoutRequestAction } from '/reducers/user';
+import { logoutAction } from '/reducers/user';
 
 const GlobalStyle = createGlobalStyle`
     .ant-row {
@@ -70,7 +70,7 @@ const Mymenu = () => {
 const AppLayout = (props) => {
 	const { children } = props;
 
-	const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+	const { isLogin } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
 
@@ -80,7 +80,7 @@ const AppLayout = (props) => {
 			<Mymenu />
 			<Row gutter={[8]}>
 				<Col xs={24} md={6}>
-					{isLoggedIn ? <UserProfile /> : <LoginForm />}
+					{isLogin ? <UserProfile /> : <LoginForm />}
 				</Col>
 				<Col xs={24} md={12}>
 					{children}

@@ -98,7 +98,7 @@ PostCard.propTypes = {
 		createdAt: PropTypes.object,
 		Comments: PropTypes.arrayOf(PropTypes.object),
 		imagePaths: PropTypes.arrayOf(PropTypes.object),
-		postAdded: PropTypes.bool,
+		// postAdded: PropTypes.bool,
 	}).isRequired,
 };
 
