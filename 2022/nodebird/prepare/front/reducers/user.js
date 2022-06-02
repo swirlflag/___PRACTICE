@@ -1,7 +1,8 @@
 const emptyMe = {
     id: null,
+    email: null,
     nickname: null,
-}
+};
 
 const dynamicStates = {
     isLoginLoading: false,
@@ -16,7 +17,7 @@ const dynamicStates = {
     isSignoutLoading: false,
     isSignoutDone: false,
     isSignoutError: false,
-}
+};
 
 const initialState = {
     ...dynamicStates,
@@ -29,16 +30,15 @@ const initialState = {
     loginData: {},
 };
 
-
 const dummyUser = (data) => ({
     ...data,
     nickname: '제련소',
-    id: 1,
+    id: 10,
+    email: 1,
     Posts: [],
     Followers: [],
     Followings: [],
 });
-
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -68,9 +68,9 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 
-export const loginAction = (id, password) => ({
+export const loginAction = (email, password) => ({
 	type: LOG_IN_REQUEST,
-	data: {id, password},
+	data: {email, password},
 });
 
 export const logoutAction = () => ({
@@ -82,10 +82,15 @@ export const changeNicknameAction = (nickname) => ({
 	data: nickname,
 });
 
+export const signupAction = (email,password,nickname) => ({
+    type: SIGN_UP_REQUEST,
+    data: {email,password,nickname},
+});
+
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
         case LOG_IN_REQUEST: {
-            const { id, password, nickname } = action.data;
+            const { email, password, nickname } = action.data;
 			return {
 				...state,
                 isLoginLoading: true,
@@ -94,7 +99,7 @@ const reducer = (state = initialState, action) => {
 			};
 		}
         case LOG_IN_SUCCESS: {
-            const { id, password, nickname } = action.data;
+            const { email, password, nickname } = action.data;
 			return {
 				...state,
 				isLoginLoading: false,

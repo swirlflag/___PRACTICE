@@ -1,4 +1,5 @@
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useEffect } from "react";
+import { useInput } from '../hooks';
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostAction } from "../reducers/post";
@@ -7,15 +8,11 @@ import { CommentForm } from './CommentForm';
 const PostForm = (props) => {
     const dispatch = useDispatch();
 
-	const [text, setText] = useState("");
-	const { isAddPostLoading } = useSelector((state) => state.post);
+	const [text, onChangeText, setText] = useInput("");
+	const { isAddPostLoading, isAddPostDone } = useSelector((state) => state.post);
     const $imageInput = useRef(null);
 
 	const imagePaths = [];
-
-	const onChangeText = useCallback((event) => {
-		setText(event.target.value);
-	}, []);
 
     const onClickImageUpload = useCallback((event) => {
         $imageInput.current.click();
@@ -23,8 +20,13 @@ const PostForm = (props) => {
 
     const onSubmit = useCallback(() => {
 		dispatch(addPostAction(text));
-        setText("");
 	}, [text]);
+
+    useEffect(() => {
+        if(isAddPostDone) {
+            setText("");
+        }
+    }, [isAddPostDone]);
 
 	return (
 		<Form

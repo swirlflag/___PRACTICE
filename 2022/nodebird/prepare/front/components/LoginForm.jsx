@@ -21,23 +21,23 @@ const LoginForm = (props) => {
 
     const { isLoginLoading } = useSelector((state) => state.user);
 
-	const [id, onChangeId] = useInput("");
+	const [email, onChangeEmail] = useInput("");
     const [password, onChangePassword] = useInput("");
 
-	const onSubmitForm = useCallback((event) => {
-        dispatch(loginAction(id,password));
-    },[id, password]);
+	const onSubmitForm = useCallback(() => {
+        dispatch(loginAction(email,password));
+    },[email, password]);
 
 	return (
 		<FormWrapper onFinish={onSubmitForm}>
 			<div>
-				<label htmlFor="user-id">아이디</label>
+				<label htmlFor="user-email">이메일</label>
 				<br />
 				<Input
-					name="user-id"
+					name="user-email"
 					type="text"
-					value={id}
-					onChange={onChangeId}
+					value={email}
+					onChange={onChangeEmail}
 					required
 				/>
 			</div>

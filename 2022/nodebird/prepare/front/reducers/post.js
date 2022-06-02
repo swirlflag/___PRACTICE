@@ -73,14 +73,16 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
-export const addPostAction = (data) => ({
+export const addPostAction = (text) => ({
 	type: ADD_POST_REQUEST,
-    data,
+    data : text,
 });
 
-export const addCommentAction = (data) => ({
+export const addCommentAction = (content, postId, userId) => ({
 	type: ADD_COMMENT_REQUEST,
-    data,
+    data : {
+        content, postId, userId,
+    },
 });
 
 const reducer = (state = initialState, action) => {

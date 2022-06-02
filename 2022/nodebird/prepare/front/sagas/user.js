@@ -6,6 +6,7 @@ import {
 	delay,
 	takeLatest,
 	throttle,
+    call,
 } from "redux-saga/effects";
 
 import {
@@ -21,9 +22,11 @@ const API_login = (data) => {
 const API_logout = () => {
 	return axios.post("/api/logout");
 };
+const API_signup = (options) => {
+    return axios.post("/api/signup", options);
+};
 
 function* login(action) {
-console.log('saga login')
 	try {
 		// const result = yield call(API_login, action.data);
 		yield delay(1000);
@@ -55,8 +58,8 @@ function* logout() {
 }
 
 function* signup(action) {
-
     try {
+        // const result = yield call(API_signup , {...action.data});
         yield delay(1000);
         yield put({
             type: SIGN_UP_SUCCESS,
@@ -85,7 +88,7 @@ function* signout(action) {
     }
 }
 
-function* watchLoginAction() {    console.log('watch login')
+function* watchLoginAction() {
 	yield takeLatest(LOG_IN_REQUEST, login);
 }
 

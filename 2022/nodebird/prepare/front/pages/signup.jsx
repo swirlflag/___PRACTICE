@@ -1,17 +1,23 @@
 import React, { useCallback, useState, useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from 'next/router';
 import styled, { createGlobalStyle } from "styled-components";
 import { Form, Input, Checkbox, Button } from "antd";
 
 import { useInput } from "../hooks";
 import AppLayout from "../components/AppLayout.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { signupAction } from "../reducers/user";
 
 const ErrorMessage = styled.div`
 	color: red;
 `;
 
 const Signup = () => {
-	const [id, onChangeId] = useInput("");
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const { isSignupLoading, isSignupDone  } = useSelector((state) => state.user);
+	const [email, onChangeEmail] = useInput("");
 	const [nickname, onChangeNickname] = useInput("");
 
 	const [password, onChangePassword] = useInput("");
@@ -29,14 +35,21 @@ const Signup = () => {
 		setTermError(false);
 	}, []);
 
-	const onSubmit = useCallback(() => {
+    const onSubmit = useCallback(() => {
 		if (password !== passwordCheck) {
 			return setPasswordError(true);
 		}
 		if (!term) {
 			return setTermError(true);
 		}
+        dispatch(signupAction(email,password, nickname));
 	}, [password, passwordCheck, term]);
+
+    // useEffect(() => {
+    //     if(isSignupDone) {
+    //         router.push('/');
+    //     }
+    // }, [isSignupDone]);
 
 	return (
 		<>
@@ -46,12 +59,13 @@ const Signup = () => {
 			<AppLayout>
 				<Form onFinish={onSubmit}>
 					<div>
-						<label htmlFor="user-id">아이디</label>
+						<label htmlFor="user-email">이메일</label>
 						<Input
-							name="user-id"
-							value={id}
+							name="user-email"
+							value={email}
 							required
-							onChange={onChangeId}
+							onChange={onChangeEmail}
+                            // type="email"
 						/>
 					</div>
 
@@ -107,10 +121,10 @@ const Signup = () => {
 						)}
 					</div>
 					<div style={{ marginTop: 10 }}>
-						<Button type="primary" htmlType="submit">
+						<Button type="primary" htmlType="submit" loading={isSignupLoading}>
 							가입하기
 						</Button>
-					</div>
+ 					</div>
 				</Form>
 			</AppLayout>
 		</>
