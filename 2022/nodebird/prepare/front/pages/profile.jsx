@@ -1,13 +1,23 @@
+import React, { useEffect } from 'react';
 import Head from 'next/head';
-import AppLayout from '../components/AppLayout.jsx';
-
-import NicknameEditForm from '../components/NicknameEditForm.jsx';
-import FollowList from '../components/FollowList.jsx';
+import Link from "next/link";
+import Router from "next/router";
 import { useSelector } from 'react-redux';
+import { useDidUpdateEffect } from '../hooks';
+
+import AppLayout from '../components/AppLayout';
+import NicknameEditForm from '../components/NicknameEditForm';
+import FollowList from '../components/FollowList';
 
 const Profile = () => {
 
     const { me, isLogin } =  useSelector((state) => state.user);
+
+    useDidUpdateEffect(() => {
+        if(!isLogin) {
+            Router.push('/');
+        }
+    },[isLogin]);
 
     return (
         <>
@@ -27,6 +37,8 @@ const Profile = () => {
                 (
                     <div>
                         [로그인이 필요합니다.]
+                        <br /><br />
+                        <Link href="/"><a>홈으로</a></Link>
                     </div>
                 )
             }

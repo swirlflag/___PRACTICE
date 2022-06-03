@@ -48,6 +48,7 @@ const PostForm = (props) => {
 					style={{ float: "right" }}
 					htmlType="submit"
                     loading={isAddPostLoading}
+                    disabled={!text}
 				>
 					트윗!
 				</Button>

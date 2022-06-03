@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export const useInput = (initalValue) => {
 	const [value, setValue] = useState(initalValue);
@@ -6,4 +6,16 @@ export const useInput = (initalValue) => {
 		setValue(event.target.value);
 	}, []);
 	return [value, handler, setValue];
+};
+
+export const useDidUpdateEffect = (fn, defs) => {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        if(!isMounted) {
+            setIsMounted(true);
+            return;
+        }
+        fn();
+    },defs)
 };

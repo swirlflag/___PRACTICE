@@ -1,3 +1,5 @@
+import produce from "immer";
+
 const emptyMe = {
     id: null,
     email: null,
@@ -34,10 +36,16 @@ const dummyUser = (data) => ({
     ...data,
     nickname: '제련소',
     id: 10,
-    email: 1,
-    Posts: [],
-    Followers: [],
-    Followings: [],
+    email: 'swirlflag@gmail.com',
+    Posts: [
+        {id: 1,}
+    ],
+    Followers: [
+        {nickname: '모르가나' }, {nickname: '직스'}, {nickname: '다리우스'},
+    ],
+    Followings: [
+        {nickname: '하이머딩거' },
+    ],
 });
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
@@ -68,6 +76,9 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 
+export const ADD_POST_ME = "ADD_POST_ME";
+export const REMOVE_POST_ME = "REMOVE_POST_ME";
+
 export const loginAction = (email, password) => ({
 	type: LOG_IN_REQUEST,
 	data: {email, password},
@@ -87,136 +98,113 @@ export const signupAction = (email,password,nickname) => ({
     data: {email,password,nickname},
 });
 
-const reducer = (state = initialState, action) => {
-	switch (action.type) {
-        case LOG_IN_REQUEST: {
-            const { email, password, nickname } = action.data;
-			return {
-				...state,
-                isLoginLoading: true,
-                isLoginDone: false,
-                isLoginError: false,
-			};
-		}
-        case LOG_IN_SUCCESS: {
-            const { email, password, nickname } = action.data;
-			return {
-				...state,
-				isLoginLoading: false,
-                isLoginDone: true,
-                isLoginError: false,
-                isLogin: true,
-                me: dummyUser(action.data),
-			};
-		}
-        case LOG_IN_FAILURE: {
-			return {
-				...state,
-				isLoginLoading: false,
-                isLoginDone: false,
-                isLoginError: true,
-                me: {
-                    ...emptyMe,
-                }
-			};
-		}
-		case LOG_OUT_REQUEST: {
-			return {
-				...state,
-                isLogoutLoading: true,
-                isLogoutDone: false,
-                isLogoutError: false,
-			};
-		}
-        case LOG_OUT_SUCCESS: {
-			return {
-				...state,
-                isLogoutLoading: false,
-                isLogoutDone: true,
-                isLogoutError: false,
-                isLogin: false,
-                me: {
-                    ...emptyMe,
-                }
-			};
-		}
-        case LOG_OUT_FAILURE: {
-			return {
-				...state,
-                isLogoutLoading: false,
-                isLogoutDone: false,
-                isLogoutError: true,
-			};
-		}
-        case SIGN_UP_REQUEST: {
-			return {
-				...state,
-                isSignupLoading: true,
-                isSignupDone: false,
-                isSignupError: false,
-			};
-		}
-        case SIGN_UP_SUCCESS: {
-			return {
-				...state,
-                isSignupLoading: false,
-                isSignupDone: true,
-                isSignupError: false,
-                isLogin: false,
-                me: {
-                    ...emptyMe,
-                }
-			};
-		}
-        case SIGN_UP_FAILURE: {
-			return {
-				...state,
-                isSignupLoading: false,
-                isSignupDone: false,
-                isSignupError: true,
-			};
-		}
-        case SIGN_OUT_REQUEST: {
-			return {
-				...state,
-                isSignoutLoading: true,
-                isSignoutDone: false,
-                isSignoutError: false,
-			};
-		}
-        case SIGN_OUT_SUCCESS: {
-			return {
-				...state,
-                isSignoutLoading: false,
-                isSignoutDone: true,
-                isSignoutError: false,
-                isLogin: false,
-                me: {
-                    ...emptyMe,
-                }
-			};
-		}
-        case SIGN_OUT_FAILURE: {
-			return {
-				...state,
-                isSignoutLoading: false,
-                isSignoutDone: false,
-                isSignoutError: true,
-			};
-		}
-		case CHANGE_NICKNAME_REQUEST: {
-			return {
-				...state,
-				me: {
-                    ...state.me,
-                    nickname : action.data,
-                },
-			};
-		}
-		default: {
-			return state;
-		}
-	}
-};
+const reducer = (state = initialState, action) => (
+    produce(state, (draft) => {
+        switch (action.type) {
+            case LOG_IN_REQUEST: {
+                // const { email, password, nickname } = action.data;
+                draft.isLoginLoading = true;
+                draft.isLoginDone = false;
+                draft.isLoginError = false;
+                break;
+            }
+            case LOG_IN_SUCCESS: {
+                // const { email, password, nickname } = action.data;
+                draft.me = dummyUser(action.data);
+                draft.isLogin = true;
+                draft.isLoginLoading = false;
+                draft.isLoginDone = true;
+                draft.isLoginError = false;
+                break;
+            }
+            case LOG_IN_FAILURE: {
+                draft.me = {...emptyMe,};
+                draft.isLoginLoading = false;
+                draft.isLoginDone = false;
+                draft.isLoginError = true;
+                break;
+            }
+            case LOG_OUT_REQUEST: {
+                draft.isLogoutLoading = true;
+                draft.isLogoutDone = false;
+                draft.isLogoutError = false;
+                break;
+            }
+            case LOG_OUT_SUCCESS: {
+                draft.me = {...emptyMe,};
+                draft.isLogin = false;
+                draft.isLogoutLoading = false;
+                draft.isLogoutDone = true;
+                draft.isLogoutError = false;
+                break;
+            }
+            case LOG_OUT_FAILURE: {
+                draft.isLogoutLoading = false;
+                draft.isLogoutDone = false;
+                draft.isLogoutError = true;
+                break;
+            }
+            case SIGN_UP_REQUEST: {
+                draft.isSignupLoading = true;
+                draft.isSignupDone = false;
+                draft.isSignupError = false;
+                break;
+            }
+            case SIGN_UP_SUCCESS: {
+                draft.me = { ...emptyMe };
+                draft.isLogin = false;
+                draft.isSignupLoading = false;
+                draft.isSignupDone = true;
+                draft.isSignupError = false;
+                break;
+            }
+            case SIGN_UP_FAILURE: {
+                draft.isSignupLoading = false;
+                draft.isSignupDone = false;
+                draft.isSignupError = true;
+                break;
+            }
+            case SIGN_OUT_REQUEST: {
+                draft.isSignoutLoading = true;
+                draft.isSignoutDone = false;
+                draft.isSignoutError = false;
+                break;
+            }
+            case SIGN_OUT_SUCCESS: {
+                draft.me = {...emptyMe};
+                draft.isLogin = false;
+                draft.isSignoutLoading = false;
+                draft.isSignoutDone = true;
+                draft.isSignoutError = false;
+                break;
+            }
+            case SIGN_OUT_FAILURE: {
+                draft.isSignoutLoading = false;
+                draft.isSignoutDone = false;
+                draft.isSignoutError = true;
+                break;
+            }
+            case CHANGE_NICKNAME_REQUEST: {
+                draft.me.nickname = action.data;
+                break;
+            }
+            case ADD_POST_ME : {
+                const { postId } = action.data;
+                draft.me.Posts.unshift({id: postId});
+                break;
+            }
+            case REMOVE_POST_ME: {
+                const { postId } = action.data;
+                const changePosts = draft.me.Posts.filter((v) => v.id !== postId);
+                draft.me.Posts = changePosts;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        return draft;
+    })
+);
 
 export default reducer;

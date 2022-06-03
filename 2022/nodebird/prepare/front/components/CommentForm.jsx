@@ -11,12 +11,15 @@ const CommentForm = (props) => {
 
 	const { post } = props;
 
-    const { email } = useSelector((state) => (state.user?.me));
-    const { isAddCommentDone }= useSelector((state) => (state.post));
+    const { id , email } = useSelector((state) => (state.user?.me));
+    const { isAddCommentLoading, isAddCommentDone }= useSelector((state) => (state.post));
 
 	const [commentText, onChangeCommentText, setCommentText] = useInput("");
 
 	const onSubmitComment = useCallback(() => {
+        if(!commentText) {
+            return;
+        }
 		dispatch(addCommentAction(commentText, post.id, id));
 	}, [commentText]);
 
@@ -28,7 +31,8 @@ const CommentForm = (props) => {
 
 	return (
 		<Form onFinish={onSubmitComment}>
-            ~~~email : {email}
+            {/* ~~~email : {email}
+            id: {id} */}
 			<Input.TextArea
 				value={commentText}
 				onChange={onChangeCommentText}
@@ -37,8 +41,10 @@ const CommentForm = (props) => {
             <Button
                 type="primary"
                 htmlType="submit"
+                loading={isAddCommentLoading}
+                disabled={!commentText}
             >
-                tweet!11
+                댓글 작성
             </Button>
 		</Form>
 	);

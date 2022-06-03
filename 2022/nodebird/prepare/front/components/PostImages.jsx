@@ -49,7 +49,7 @@ const PostImages = (props) => {
 					/>
 				)}
 				{images.length > 2 && (
-					<div role="presentation" onClick={onZoom}>
+					<div role="presentation" onClick={onZoom} style={{cursor: 'pointer'}}>
 						<PlusOutlined />
 						<br />
 						{images.length - 1} 개의 사진 더보기
