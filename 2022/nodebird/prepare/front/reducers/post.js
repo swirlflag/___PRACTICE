@@ -47,7 +47,7 @@ const initialState = {
 		// },
 	],
 
-    isHasMorePost: true,
+    isNoMorePost: false,
 
     isLoadPostLoading: false,
     isLoadPostDone: false,
@@ -68,7 +68,7 @@ export const generateDummyPost = (number) => (
         const dummey = {
 			id: shortid.generate(),
 			User: {
-				id: 10,
+				id: faker.datatype.number(),
 				nickname: faker.name.findName(),
 			},
 			content: faker.lorem.paragraph(),
@@ -171,7 +171,7 @@ const reducer = (state = initialState, action) => (
                 const { loadedPosts } = action.data;
                 // draft.mainPosts.push(...generateDummyPost(number));
                 draft.mainPosts.push(...loadedPosts);
-                draft.isHasMorePost = draft.mainPosts.length < 50;
+                draft.isNoMorePost = draft.mainPosts.length >= 30;
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = true;
                 draft.isLoadPostError = false;

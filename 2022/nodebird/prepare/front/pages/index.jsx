@@ -7,32 +7,42 @@ import AppLayout from "../components/AppLayout";
 import PostForm  from "../components/PostForm";
 import PostCard from "../components/PostCard";
 
+const world = {
+    isLoadPostLoading : false,
+    isNoMorePost : false,
+};
+
 const Home = () => {
     const dispatch = useDispatch();
 	const { isLogin } = useSelector((state) => (state.user));
-    const { mainPosts, isLoadPostLoading } = useSelector((state) => (state.post));
-
-    const onScroll = useCallback(() => {
-        if(isLoadPostLoading) {
-            return;
-        }
-        const scrollEndDistance = 300;
-        const { scrollY } = window;
-        const { scrollHeight , clientHeight } = document.scrollingElement;
-        const isScrollNeedMorePost = scrollY >= scrollHeight - clientHeight - scrollEndDistance;
-        if(isScrollNeedMorePost) {
-            dispatch(loadPostsAction(10));
-        }
-    },[isLoadPostLoading]);
+    const { mainPosts, isLoadPostLoading, isNoMorePost } = useSelector((state) => (state.post));
 
     useEffect(() => {
         dispatch(loadPostsAction(10));
     },[]);
 
     useEffect(() => {
-        window.addEventListener('scroll',onScroll);
+        world.isLoadPostLoading = isLoadPostLoading;
+        world.isNoMorePost = isNoMorePost;
+    }, [isLoadPostLoading,isNoMorePost]);
+
+    useEffect(() => {
+        const scrollEndDistance = 400;
+        const onScroll = () => {
+            if(world.isLoadPostLoading || world.isNoMorePost) {
+                return;
+            }
+            const { scrollY } = window;
+            const { scrollHeight , clientHeight } = document.scrollingElement;
+            const isScrollNeedMorePost = scrollY >= scrollHeight - clientHeight - scrollEndDistance;
+
+            if(isScrollNeedMorePost) {
+                dispatch(loadPostsAction(10));
+            }
+        };
+        window.addEventListener('scroll', onScroll);
         return () => {
-            window.removeEventListener('scroll',onScroll);
+            window.removeEventListener('scroll', onScroll);
         }
     },[]);
 
@@ -52,6 +62,10 @@ const Home = () => {
             {
                 isLoadPostLoading && <div>* 포스트 로딩중...</div>
             }
+            {
+                isNoMorePost && <div>더이상 포스트가 없습니다.</div>
+            }
+            <div>전체 포스트 수 : {mainPosts.length}</div>
 		</AppLayout>
 	);
 };

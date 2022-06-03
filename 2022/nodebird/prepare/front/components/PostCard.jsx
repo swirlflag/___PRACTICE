@@ -15,6 +15,7 @@ import { removePostAction } from '../reducers/post';
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
+import FollowButton from './FollowButton';
 
 const PostCard = (props) => {
     const dispatch = useDispatch();
@@ -73,6 +74,7 @@ const PostCard = (props) => {
 						<EllipsisOutlined />
 					</Popover>,
 				]}
+                extra={isLogin && <FollowButton post={post}/>}
 			>
 				{/* <Image></Image> */}
 				{/* <Content></Content> */}

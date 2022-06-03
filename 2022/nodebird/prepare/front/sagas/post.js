@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { all, fork,put, delay,takeLatest } from "redux-saga/effects";
+import { all, fork,put, delay,takeLatest,throttle } from "redux-saga/effects";
 import shortid from 'shortid';
 import {
     LOAD_POSTS_REQUEST,
@@ -101,7 +101,7 @@ function* addComment(action) {
 };
 
 function* watchLoadPosts() {
-    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
+    yield takeLatest( LOAD_POSTS_REQUEST, loadPosts);
 }
 function* watchAddPost() {
 	yield takeLatest(ADD_POST_REQUEST, addPost);

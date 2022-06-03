@@ -19,6 +19,12 @@ const dynamicStates = {
     isSignoutLoading: false,
     isSignoutDone: false,
     isSignoutError: false,
+    isFollowLoading: false,
+    isFollowDone: false,
+    isFollowError: false,
+    isUnfollowLoading: false,
+    isUnfollowDone: false,
+    isUnfollowError: false,
 };
 
 const initialState = {
@@ -96,6 +102,16 @@ export const changeNicknameAction = (nickname) => ({
 export const signupAction = (email,password,nickname) => ({
     type: SIGN_UP_REQUEST,
     data: {email,password,nickname},
+});
+
+export const followAction = (userId) => ({
+    type: FOLLOW_REQUEST,
+    data: { userId },
+});
+
+export const unfollowAction = (userId) => ({
+    type: UNFOLLOW_REQUEST,
+    data: { userId }
 });
 
 const reducer = (state = initialState, action) => (
@@ -197,6 +213,46 @@ const reducer = (state = initialState, action) => (
                 const { postId } = action.data;
                 const changePosts = draft.me.Posts.filter((v) => v.id !== postId);
                 draft.me.Posts = changePosts;
+                break;
+            }
+            case FOLLOW_REQUEST: {
+                draft.isFollowLoading = true;
+                draft.isFollowDone = false;
+                draft.isFollowError = false;
+                break;
+            }
+            case FOLLOW_SUCCESS: {
+                const { userId } = action.data;
+                draft.me.Followings.push({id: userId});
+                draft.isFollowLoading = false;
+                draft.isFollowDone = true;
+                draft.isFollowError = false;
+                break;
+            }
+            case FOLLOW_FAILURE: {
+                draft.isFollowLoading = false;
+                draft.isFollowDone = false;
+                draft.isFollowError = true;
+                break;
+            }
+            case UNFOLLOW_REQUEST: {
+                draft.isUnfollowLoading = true;
+                draft.isUnfollowDone = false;
+                draft.isUnfollowError = false;
+                break;
+            }
+            case UNFOLLOW_SUCCESS: {
+                const { userId } = action.data;
+                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== userId);
+                draft.isUnfollowLoading = false;
+                draft.isUnfollowDone = true;
+                draft.isUnfollowError = false;
+                break;
+            }
+            case UNFOLLOW_FAILURE: {
+                draft.isUnfollowLoading = false;
+                draft.isUnfollowDone = false;
+                draft.isUnfollowError = true;
                 break;
             }
             default: {
