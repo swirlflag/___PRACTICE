@@ -4,6 +4,9 @@ const emptyMe = {
     id: null,
     email: null,
     nickname: null,
+    Posts: [],
+    Followers: [],
+    Followings: [],
 };
 
 const dynamicStates = {
@@ -40,7 +43,7 @@ const initialState = {
 
 const dummyUser = (data) => ({
     ...data,
-    nickname: '제련소',
+    nickname: '더미더미',
     id: 10,
     email: 'swirlflag@gmail.com',
     Posts: [
@@ -125,8 +128,11 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LOG_IN_SUCCESS: {
-                // const { email, password, nickname } = action.data;
-                draft.me = dummyUser(action.data);
+                const { email, nickname } = action.data;
+                draft.me = {
+                    ...emptyMe,
+                    email, nickname,
+                };
                 draft.isLogin = true;
                 draft.isLoginLoading = false;
                 draft.isLoginDone = true;

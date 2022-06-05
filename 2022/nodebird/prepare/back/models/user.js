@@ -31,7 +31,9 @@ module.exports = class Comment extends Model {
     static associate(db) {
         db.User.hasMany(db.Post);
         db.User.hasMany(db.Comment);
-        db.User.belongsToMany(db.Post , { through: "like" });
+        db.User.belongsToMany(db.User , { through: "Like", as: "Liked" });
+        db.User.belongsToMany(db.User , { through: "Follow", as: "Followers", foreginKey: "FollowingId" });
+        db.User.belongsToMany(db.User , { through: "Follow", as: "Followings", foreginKey: "FollowerId" });
     }
 }
 

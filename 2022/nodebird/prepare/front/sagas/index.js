@@ -1,4 +1,5 @@
 import { all, fork, call, put, take, takeEvery, takeLatest, throttle, delay} from "redux-saga/effects";
+import axios from 'axios';
 import userSaga from "./user";
 import postSaga from "./post";
 // put = dispatch
@@ -7,6 +8,8 @@ import postSaga from "./post";
 // takeEvery : while(true)의 효과를 래핑. 비동기로 동작
 // takeLatest: 마지막 호출만 실행됨
 // takeLeading : 첫째 호출만 실행
+
+axios.defaults.baseURL = "http://localhost:3065";
 
 export default function* rootSaga() {
 	yield all([

@@ -13,30 +13,31 @@ import {
 	LOG_IN_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE,
 	LOG_OUT_REQUEST, LOG_OUT_SUCCESS, LOG_OUT_FAILURE,
     SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
-    SIGN_OUT_REQUEST, SIGN_OUT_SUCCESS, SIGN_OUT_FAILURE, 
+    SIGN_OUT_REQUEST, SIGN_OUT_SUCCESS, SIGN_OUT_FAILURE,
 
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
     UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
 
 } from "../reducers/user";
 
+
 const API_login = (data) => {
-	return axios.post("/api/login");
+	return axios.post("/api/user/login", data);
 };
 const API_logout = () => {
-	return axios.post("/api/logout");
+	return axios.post("/api/user/logout");
 };
-const API_signup = (options) => {
-    return axios.post("/api/signup", options);
+const API_signup = (data) => {
+    return axios.post("/api/user", data);
 };
+
 
 function* login(action) {
 	try {
-		// const result = yield call(API_login, action.data);
-		yield delay(1000);
+		const result = yield call(API_login, action.data);
 		yield put({
 			type: LOG_IN_SUCCESS,
-			data: action.data,
+			data: result.data,
 		});
 	} catch (err) {
 		yield put({
@@ -48,8 +49,8 @@ function* login(action) {
 
 function* logout() {
 	try {
-		// const result = yield call(API_logout);
-		yield delay(300);
+		const result = yield call(API_logout);
+        console.log(result);
 		yield put({
 			type: LOG_OUT_SUCCESS,
 		});
@@ -63,8 +64,7 @@ function* logout() {
 
 function* signup(action) {
     try {
-        // const result = yield call(API_signup , {...action.data});
-        yield delay(1000);
+        const result = yield call(API_signup , {...action.data});
         yield put({
             type: SIGN_UP_SUCCESS,
             data: action.data,

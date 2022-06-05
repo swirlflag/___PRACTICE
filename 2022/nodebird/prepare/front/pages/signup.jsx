@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styled, { createGlobalStyle } from "styled-components";
 import { Form, Input, Checkbox, Button } from "antd";
 
-import { useInput } from "../hooks";
+import { useInput , useDidUpdateEffect } from "../hooks";
 import AppLayout from "../components/AppLayout.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { signupAction } from "../reducers/user";
@@ -16,7 +16,22 @@ const ErrorMessage = styled.div`
 const Signup = () => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { isSignupLoading, isSignupDone  } = useSelector((state) => state.user);
+    const { isSignupLoading, isSignupDone, isSignupError } = useSelector((state) => state.user);
+
+    useDidUpdateEffect(() => {
+        console.log(isSignupDone);
+        if(isSignupDone) {
+            alert('회원가입 완료 로그인 해주세요');
+            router.push('/');
+        }
+    },[isSignupDone]);
+
+    useDidUpdateEffect(() => {
+        if(isSignupError) {
+            alert('회원가입 중 오류가 발생');
+        }
+    }, [ isSignupError]);
+
 	const [email, onChangeEmail] = useInput("");
 	const [nickname, onChangeNickname] = useInput("");
 
@@ -43,13 +58,7 @@ const Signup = () => {
 			return setTermError(true);
 		}
         dispatch(signupAction(email,password, nickname));
-	}, [password, passwordCheck, term]);
-
-    // useEffect(() => {
-    //     if(isSignupDone) {
-    //         router.push('/');
-    //     }
-    // }, [isSignupDone]);
+	}, [email, nickname, password, passwordCheck, term]);
 
 	return (
 		<>

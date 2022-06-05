@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from "next/link";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { useSelector } from 'react-redux';
 import { useDidUpdateEffect } from '../hooks';
 
@@ -10,12 +10,13 @@ import NicknameEditForm from '../components/NicknameEditForm';
 import FollowList from '../components/FollowList';
 
 const Profile = () => {
+    const router = useRouter();
 
     const { me, isLogin } =  useSelector((state) => state.user);
 
     useDidUpdateEffect(() => {
         if(!isLogin) {
-            Router.push('/');
+            router.push('/');
         }
     },[isLogin]);
 

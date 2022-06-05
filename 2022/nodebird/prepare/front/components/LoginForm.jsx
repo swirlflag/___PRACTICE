@@ -21,8 +21,8 @@ const LoginForm = (props) => {
 
     const { isLoginLoading } = useSelector((state) => state.user);
 
-	const [email, onChangeEmail] = useInput("");
-    const [password, onChangePassword] = useInput("");
+	const [email, onChangeEmail] = useInput("swirlflag@gmail.com");
+    const [password, onChangePassword] = useInput("a1t2g3ma1051");
 
 	const onSubmitForm = useCallback(() => {
         dispatch(loginAction(email,password));

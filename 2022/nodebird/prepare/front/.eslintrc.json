@@ -33,6 +33,7 @@
 			}
 		],
 		"no-param-reassign": "off",
-        "import/prefer-default-export" : "off"
+        "import/prefer-default-export" : "off",
+        "default-param-last": "off"
 	}
 }
