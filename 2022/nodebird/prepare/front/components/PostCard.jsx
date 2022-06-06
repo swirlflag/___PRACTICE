@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 
 import { removePostAction } from '../reducers/post';
+import { likePostAction, unlikePostAction } from "../reducers/post.js";
 
 import PostImages from "./PostImages";
 import CommentForm from "./CommentForm";
@@ -28,9 +29,14 @@ const PostCard = (props) => {
 	const [liked, setLiked] = useState(false);
 	const [commentFormOpened, setCommentFormOpened] = useState(false);
 
-	const onToggleLiked = useCallback(() => {
-		setLiked((prev) => !prev);
-	}, []);
+
+    const onLike = useCallback(() => {
+        dispatch(likePostAction(post.id));
+    },[]);
+
+    const onUnlike = useCallback(() => {
+        dispatch(unlikePostAction(post.id));
+    },[]);
 
 	const onToggleComment = useCallback(() => {
 		setCommentFormOpened((prev) => !prev);
@@ -50,10 +56,10 @@ const PostCard = (props) => {
 					liked ? (
 						<HeartTwoTone
 							twoToneColor="red"
-							onClick={onToggleLiked}
+							onClick={onUnlike}
 						/>
 					) : (
-						<HeartOutlined key="heart" onClick={onToggleLiked} />
+						<HeartOutlined key="heart" onClick={onLike} />
 					),
 					<MessageOutlined key="comment" onClick={onToggleComment} />,
 					<Popover
@@ -113,11 +119,10 @@ PostCard.propTypes = {
 		id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 		User: PropTypes.object,
 		content: PropTypes.string,
-		createdAt: PropTypes.object,
+		createdAt: PropTypes.string,
 		Comments: PropTypes.arrayOf(PropTypes.object),
 		imagePaths: PropTypes.arrayOf(PropTypes.object),
         Images: PropTypes.array
-		// postAdded: PropTypes.bool,
 	}).isRequired,
 };
 

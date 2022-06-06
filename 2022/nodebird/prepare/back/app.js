@@ -4,12 +4,14 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
 
 dotenv.config();
 
 const app = express();
 
 const postRouter = require("./routes/post.js");
+const postsRouter = require("./routes/posts.js");
 const userRouter = require("./routes/user.js");
 
 const db = require("./models/index.js");
@@ -27,9 +29,9 @@ db.sequelize.sync({ force: false })
 ;
 
 app.use(cors({
-    origin: true,
     // origin: "http://localhost:3000",
-    // credentials: false,
+    origin: true,
+    credentials: true,
 }));
 
 app.use(express.json());
@@ -42,21 +44,18 @@ app.use(passport.session({
     resave: false,
     secret: process.env.COOKIE_SECRET,
 }));
-
-app.get("/posts", (req, res) => {
-	res.json([
-        { id: 1, content: "hello1" },
-        { id: 2, content: "hello2" },
-        { id: 3, content: "hello3" },
-    ]);
-});
+app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
 	res.send("hello express");
 });
 
 app.use('/api/post', postRouter);
+app.use('/api/posts', postsRouter);
 app.use('/api/user', userRouter);
+
+// error 미들웨어 : next에 변수가 오면 이곳으로이동 (이미 자동으로 있긴함)
+// app.use((err, req, res, next) => {});
 
 app.listen(3065, () => {
 	console.log("서버 실행 !");

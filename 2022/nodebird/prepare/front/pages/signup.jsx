@@ -16,19 +16,25 @@ const ErrorMessage = styled.div`
 const Signup = () => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const { isSignupLoading, isSignupDone, isSignupError } = useSelector((state) => state.user);
+    const { isSignupLoading, isSignupDone, isSignupError, isLogin } = useSelector((state) => state.user);
+
+    useDidUpdateEffect(() => {
+        if(isLogin) {
+            router.replace('/');
+        }
+    }, [isLogin]);
 
     useDidUpdateEffect(() => {
         console.log(isSignupDone);
         if(isSignupDone) {
-            alert('회원가입 완료 로그인 해주세요');
+            alert('front ok: 회원가입 완료! 로그인 해주세요');
             router.push('/');
         }
     },[isSignupDone]);
 
     useDidUpdateEffect(() => {
         if(isSignupError) {
-            alert('회원가입 중 오류가 발생');
+            alert(isSignupError);
         }
     }, [ isSignupError]);
 

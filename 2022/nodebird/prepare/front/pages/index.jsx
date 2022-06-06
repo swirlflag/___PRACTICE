@@ -56,7 +56,7 @@ const Home = () => {
             }
             {
                 mainPosts.map((post,idx) => (
-                    <PostCard key={post.id + idx} post={post}/>
+                    <PostCard key={'' + post.id + idx} post={post}/>
                 ))
             }
             {

@@ -10,6 +10,7 @@ module.exports = () => {
 				usernameField: "email",
 				passwordField: "password",
 			},
+            // done (에러내용, 유저의 데이터, 반환 정보?)
 			async (email, password, done) => {
                 try {
                     const user = await db.User.findOne({

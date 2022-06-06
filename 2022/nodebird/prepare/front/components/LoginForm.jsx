@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import Link from "next/link";
 import { Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { useInput } from '/hooks';
+import { useInput, useDidUpdateEffect } from '/hooks';
 
 import { loginAction , loginSuccessAction} from "/reducers/user";
 
@@ -19,7 +19,13 @@ const FormWrapper = styled(Form)`
 const LoginForm = (props) => {
     const dispatch = useDispatch();
 
-    const { isLoginLoading } = useSelector((state) => state.user);
+    const { isLoginLoading , isLoginError } = useSelector((state) => state.user);
+
+    useDidUpdateEffect(() => {
+        if(isLoginError) {
+            alert(isLoginError);
+        }
+    },[isLoginError]);
 
 	const [email, onChangeEmail] = useInput("swirlflag@gmail.com");
     const [password, onChangePassword] = useInput("a1t2g3ma1051");

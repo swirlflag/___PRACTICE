@@ -43,7 +43,6 @@ const initialState = {
 		// 		},
 		// 	],
 		// 	imagePaths: [],
-		// 	postAdded: false,
 		// },
 	],
 
@@ -51,16 +50,22 @@ const initialState = {
 
     isLoadPostLoading: false,
     isLoadPostDone: false,
-    isLoadPostError: false,
+    isLoadPostError: null,
     isAddPostLoading: false,
     isAddPostDone: false,
-    isAddPostError: false,
+    isAddPostError: null,
     isRemovePostLoading: false,
     isRemovePostDone: false,
-    isRemovePostError: false,
+    isRemovePostError: null,
     isAddCommentLoading: false,
     isAddCommentDone: false,
-    isAddCommentError: false,
+    isAddCommentError: null,
+    isLikeLoading: false,
+    isLikeDone: false,
+    isLikeError: null,
+    isUnlikeLoading: false,
+    isUnlikeDone: false,
+    isUnlikeError: null,
 };
 
 export const generateDummyPost = (number) => (
@@ -90,7 +95,6 @@ export const generateDummyPost = (number) => (
                 },
             ],
 			imagePaths: [],
-			postAdded: false,
 		};
         return dummey;
     })
@@ -107,7 +111,6 @@ const dummyPost = ({postId, content}) => {
         Images: [],
         Comments: [],
         imagePaths: [],
-        postAdded: false,
     }
 };
 const dummyComment = (content) => {
@@ -135,9 +138,17 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
-export const addPostAction = (text) => ({
+export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
+export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
+
+export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
+
+export const addPostAction = (content) => ({
 	type: ADD_POST_REQUEST,
-    data : text,
+    data : { content },
 });
 
 export const removePostAction = (postId) => ({
@@ -157,6 +168,15 @@ export const addCommentAction = (content, postId, userId) => ({
     },
 });
 
+export const likePostAction = (postId) => ({
+    type: LIKE_POST_REQUEST,
+    data: { postId, },
+});
+export const unlikePostAction = (postId) => ({
+    type: UNLIKE_POST_REQUEST,
+    data: { postId, },
+});
+
 // 이전 상태를 받은 액션을 통해 다음 상태로 만들어주는 함수
 const reducer = (state = initialState, action) => (
     produce(state , (draft) => {
@@ -164,49 +184,58 @@ const reducer = (state = initialState, action) => (
             case LOAD_POSTS_REQUEST : {
                 draft.isLoadPostLoading = true;
                 draft.isLoadPostDone = false;
-                draft.isLoadPostError = false;
+                draft.isLoadPostError = null;
                 break;
             }
             case LOAD_POSTS_SUCCESS : {
-                const { loadedPosts } = action.data;
-                // draft.mainPosts.push(...generateDummyPost(number));
-                draft.mainPosts.push(...loadedPosts);
+                console.log(action.data)
+                draft.mainPosts.push(...action.data);
                 draft.isNoMorePost = draft.mainPosts.length >= 30;
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = true;
-                draft.isLoadPostError = false;
+                draft.isLoadPostError = null;
                 break;
             }
             case LOAD_POSTS_FAILURE : {
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = false;
-                draft.isLoadPostError = true;
+                draft.isLoadPostError = action.error;
                 break;
             }
             case ADD_POST_REQUEST: {
                 draft.isAddPostLoading = true;
                 draft.isAddPostDone = false;
-                draft.isAddPostError = false;
+                draft.isAddPostError = null;
                 break;
             }
             case ADD_POST_SUCCESS: {
-                const newPost = dummyPost(action.data);
+                const { content, postId , User, Images, Comments} = action.data;
+                const newPost = {
+                    id: postId.toString(),
+                    User: {
+                        id: User.id,
+                        nickname: User.nickname,
+                    },
+                    content,
+                    Images,
+                    Comments,
+                };
                 draft.mainPosts.unshift(newPost);
                 draft.isAddPostLoading = false;
                 draft.isAddPostDone = true;
-                draft.isAddPostError = false;
+                draft.isAddPostError = null;
                 break;
             }
             case ADD_POST_FAILURE: {
                 draft.isAddPostLoading = false;
                 draft.isAddPostDone = false;
-                draft.isAddPostError = true;
+                draft.isAddPostError = action.error;
                 break;
             }
             case REMOVE_POST_REQUEST: {
                 draft.isRemovePostLoading = true;
                 draft.isRemovePostDone = false;
-                draft.isRemovePostError = false;
+                draft.isRemovePostError = null;
                 break;
             }
             case REMOVE_POST_SUCCESS: {
@@ -215,38 +244,77 @@ const reducer = (state = initialState, action) => (
                 draft.mainPosts = changeMainPosts;
                 draft.isRemovePostLoading = false;
                 draft.isRemovePostDone = true;
-                draft.isRemovePostError = false;
+                draft.isRemovePostError = null;
                 break;
             }
             case REMOVE_POST_FAILURE: {
                 draft.isRemovePostLoading = false;
                 draft.isRemovePostDone = false;
-                draft.isRemovePostError = true;
+                draft.isRemovePostError = action.error;
                 break;
             }
             case ADD_COMMENT_REQUEST: {
                 draft.isAddCommentLoading = true;
                 draft.isAddCommentDone = false;
-                draft.isAddCommentError = false;
+                draft.isAddCommentError = null;
                 break;
             }
             case ADD_COMMENT_SUCCESS: {
-                const { content , postId } = action.data;
-                const postIndex = draft.mainPosts.findIndex((v) => v.id === postId);
-                const newComment = dummyComment(content);
-
-                draft.mainPosts[postIndex].Comments.push(newComment);
+                const { content , PostId, User } = action.data;
+                const postIndex = draft.mainPosts.findIndex((v) => v.id.toString() === PostId.toString());
+                const newComment = {
+                    User,
+                    content,
+                };
+                draft.mainPosts[postIndex].Comments.unshift(newComment);
                 draft.isAddCommentLoading = false;
                 draft.isAddCommentDone = true;
-                draft.isAddCommentError = false;
+                draft.isAddCommentError = null;
                 break;
             }
             case ADD_COMMENT_FAILURE: {
                 draft.isAddCommentLoading = false;
                 draft.isAddCommentDone = false;
-                draft.isAddCommentError = true;
+                draft.isAddCommentError = action.error;
                 break;
             }
+            case LIKE_POST_REQUEST: {
+                draft.isLikeLoading = true;
+                draft.isLikeDone = false;
+                draft.isLikeError = null;
+                break;
+            }
+            case LIKE_POST_SUCCESS: {
+                draft.isLikeLoading = false;
+                draft.isLikeDone = true;
+                draft.isLikeError = null;
+                break;
+            }
+            case LIKE_POST_FAILURE: {
+                draft.isLikeLoading = false;
+                draft.isLikeDone = false;
+                draft.isLikeError = action.error;
+                break;
+            }
+            case UNLIKE_POST_REQUEST: {
+                draft.isUnlikeLoading = true;
+                draft.isUnlikeDone = false;
+                draft.isUnlikeError = null;
+                break;
+            }
+            case UNLIKE_POST_SUCCESS: {
+                draft.isUnlikeLoading = false;
+                draft.isUnlikeDone = true;
+                draft.isUnlikeError = null;
+                break;
+            }
+            case UNLIKE_POST_FAILURE: {
+                draft.isUnlikeLoading = false;
+                draft.isUnlikeDone = false;
+                draft.isUnlikeError = action.error;
+                break;
+            }
+
             default: {
                 break;
             }

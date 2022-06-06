@@ -10,6 +10,7 @@ import {
 } from "redux-saga/effects";
 
 import {
+    LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE,
 	LOG_IN_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE,
 	LOG_OUT_REQUEST, LOG_OUT_SUCCESS, LOG_OUT_FAILURE,
     SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
@@ -20,17 +21,33 @@ import {
 
 } from "../reducers/user";
 
-
 const API_login = (data) => {
 	return axios.post("/api/user/login", data);
 };
 const API_logout = () => {
 	return axios.post("/api/user/logout");
 };
+const API_loadUser = () => {
+    return axios.get("/api/user");
+}
 const API_signup = (data) => {
     return axios.post("/api/user", data);
 };
 
+function* loadUser() {
+    try {
+		const result = yield call(API_loadUser);
+        yield put({
+            type: LOAD_MY_INFO_SUCCESS,
+            data: result.data,
+        });
+	} catch (err) {
+		yield put({
+			type: LOAD_MY_INFO_FAILURE,
+			error: err.response.data,
+		});
+	}
+};
 
 function* login(action) {
 	try {
@@ -64,10 +81,9 @@ function* logout() {
 
 function* signup(action) {
     try {
-        const result = yield call(API_signup , {...action.data});
+        yield call(API_signup , {...action.data});
         yield put({
             type: SIGN_UP_SUCCESS,
-            data: action.data,
         });
     } catch(err) {
         yield put({
@@ -79,10 +95,9 @@ function* signup(action) {
 
 function* signout(action) {
     try {
-        yield delay(1000);
+        // yield call(API_logout );
         yield put({
             type: SIGN_OUT_SUCCESS,
-            data: action.data,
         });
     } catch(err) {
         yield put({
@@ -102,7 +117,7 @@ function* follow(action) {
     } catch(err) {
         yield put({
             type: FOLLOW_FAILURE,
-            data: err.response.data,
+            error: err.response.error,
         });
     }
 };
@@ -117,11 +132,14 @@ function* unfollow(action) {
     } catch(err) {
         yield put({
             type: UNFOLLOW_FAILURE,
-            data: err.response.data,
+            error: err.response.error,
         });
     }
 };
 
+function* watchLoadUserAction() {
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
+}
 function* watchLoginAction() {
 	yield takeLatest(LOG_IN_REQUEST, login);
 }
@@ -149,5 +167,6 @@ export default function* userSaga() {
         fork(watchSignoutAction),
         fork(watchFollowAction),
         fork(watchUnfollowAction),
+        fork(watchLoadUserAction),
     ]);
 }

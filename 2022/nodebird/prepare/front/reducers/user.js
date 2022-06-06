@@ -10,24 +10,27 @@ const emptyMe = {
 };
 
 const dynamicStates = {
+    isLoadUserLoading: false,
+    isLoadUserDone: false,
+    isLoadUserError: false,
     isLoginLoading: false,
     isLoginDone: false,
-    isLoginError: false,
+    isLoginError: null,
     isLogoutLoading: false,
     isLogoutDone: false,
-    isLogoutError: false,
+    isLogoutError: null,
     isSignupLoading: false,
     isSignupDone: false,
-    isSignupError: false,
+    isSignupError: null,
     isSignoutLoading: false,
     isSignoutDone: false,
-    isSignoutError: false,
+    isSignoutError: null,
     isFollowLoading: false,
     isFollowDone: false,
-    isFollowError: false,
+    isFollowError: null,
     isUnfollowLoading: false,
     isUnfollowDone: false,
-    isUnfollowError: false,
+    isUnfollowError: null,
 };
 
 const initialState = {
@@ -56,6 +59,10 @@ const dummyUser = (data) => ({
         {nickname: '하이머딩거' },
     ],
 });
+
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
+export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
+export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -88,6 +95,10 @@ export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 export const ADD_POST_ME = "ADD_POST_ME";
 export const REMOVE_POST_ME = "REMOVE_POST_ME";
 
+
+export const loadUserAction = () => ({
+    type: LOAD_MY_INFO_REQUEST,
+})
 export const loginAction = (email, password) => ({
 	type: LOG_IN_REQUEST,
 	data: {email, password},
@@ -120,36 +131,56 @@ export const unfollowAction = (userId) => ({
 const reducer = (state = initialState, action) => (
     produce(state, (draft) => {
         switch (action.type) {
+            case LOAD_MY_INFO_REQUEST: {
+                draft.isLoadUserLoading = true;
+                draft.isLoadUserDone = false;
+                draft.isLoadUserError = null;
+                break;
+            }
+            case LOAD_MY_INFO_SUCCESS: {
+                const isLogin = !!action.data;
+                if(isLogin) {
+                    draft.me = action.data
+                }
+                draft.isLogin = isLogin;
+                draft.isLoadUserLoading = false;
+                draft.isLoadUserDone = true;
+                draft.isLoadUserError = null;
+                break;
+            }
+            case LOAD_MY_INFO_FAILURE: {
+                draft.isLogin = false;
+                draft.isLoadUserLoading = false;
+                draft.isLoadUserDone = false;
+                draft.isLoadUserError = action.error;
+                break;
+            }
             case LOG_IN_REQUEST: {
                 // const { email, password, nickname } = action.data;
                 draft.isLoginLoading = true;
                 draft.isLoginDone = false;
-                draft.isLoginError = false;
+                draft.isLoginError = null;
                 break;
             }
             case LOG_IN_SUCCESS: {
-                const { email, nickname } = action.data;
-                draft.me = {
-                    ...emptyMe,
-                    email, nickname,
-                };
+                draft.me = action.data;
                 draft.isLogin = true;
                 draft.isLoginLoading = false;
                 draft.isLoginDone = true;
-                draft.isLoginError = false;
+                draft.isLoginError = null;
                 break;
             }
             case LOG_IN_FAILURE: {
                 draft.me = {...emptyMe,};
                 draft.isLoginLoading = false;
                 draft.isLoginDone = false;
-                draft.isLoginError = true;
+                draft.isLoginError = action.error;
                 break;
             }
             case LOG_OUT_REQUEST: {
                 draft.isLogoutLoading = true;
                 draft.isLogoutDone = false;
-                draft.isLogoutError = false;
+                draft.isLogoutError = null;
                 break;
             }
             case LOG_OUT_SUCCESS: {
@@ -157,19 +188,19 @@ const reducer = (state = initialState, action) => (
                 draft.isLogin = false;
                 draft.isLogoutLoading = false;
                 draft.isLogoutDone = true;
-                draft.isLogoutError = false;
+                draft.isLogoutError = null;
                 break;
             }
             case LOG_OUT_FAILURE: {
                 draft.isLogoutLoading = false;
                 draft.isLogoutDone = false;
-                draft.isLogoutError = true;
+                draft.isLogoutError = action.error;
                 break;
             }
             case SIGN_UP_REQUEST: {
                 draft.isSignupLoading = true;
                 draft.isSignupDone = false;
-                draft.isSignupError = false;
+                draft.isSignupError = null;
                 break;
             }
             case SIGN_UP_SUCCESS: {
@@ -177,19 +208,19 @@ const reducer = (state = initialState, action) => (
                 draft.isLogin = false;
                 draft.isSignupLoading = false;
                 draft.isSignupDone = true;
-                draft.isSignupError = false;
+                draft.isSignupError = null;
                 break;
             }
             case SIGN_UP_FAILURE: {
                 draft.isSignupLoading = false;
                 draft.isSignupDone = false;
-                draft.isSignupError = true;
+                draft.isSignupError = action.error;
                 break;
             }
             case SIGN_OUT_REQUEST: {
                 draft.isSignoutLoading = true;
                 draft.isSignoutDone = false;
-                draft.isSignoutError = false;
+                draft.isSignoutError = null;
                 break;
             }
             case SIGN_OUT_SUCCESS: {
@@ -197,13 +228,13 @@ const reducer = (state = initialState, action) => (
                 draft.isLogin = false;
                 draft.isSignoutLoading = false;
                 draft.isSignoutDone = true;
-                draft.isSignoutError = false;
+                draft.isSignoutError = null;
                 break;
             }
             case SIGN_OUT_FAILURE: {
                 draft.isSignoutLoading = false;
                 draft.isSignoutDone = false;
-                draft.isSignoutError = true;
+                draft.isSignoutError = action.error;
                 break;
             }
             case CHANGE_NICKNAME_REQUEST: {
@@ -211,8 +242,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case ADD_POST_ME : {
-                const { postId } = action.data;
-                draft.me.Posts.unshift({id: postId});
+                const { PostId } = action.data;
+                draft.me.Posts.unshift({id: PostId});
                 break;
             }
             case REMOVE_POST_ME: {
@@ -224,7 +255,7 @@ const reducer = (state = initialState, action) => (
             case FOLLOW_REQUEST: {
                 draft.isFollowLoading = true;
                 draft.isFollowDone = false;
-                draft.isFollowError = false;
+                draft.isFollowError = null;
                 break;
             }
             case FOLLOW_SUCCESS: {
@@ -232,19 +263,19 @@ const reducer = (state = initialState, action) => (
                 draft.me.Followings.push({id: userId});
                 draft.isFollowLoading = false;
                 draft.isFollowDone = true;
-                draft.isFollowError = false;
+                draft.isFollowError = null;
                 break;
             }
             case FOLLOW_FAILURE: {
                 draft.isFollowLoading = false;
                 draft.isFollowDone = false;
-                draft.isFollowError = true;
+                draft.isFollowError = action.error;
                 break;
             }
             case UNFOLLOW_REQUEST: {
                 draft.isUnfollowLoading = true;
                 draft.isUnfollowDone = false;
-                draft.isUnfollowError = false;
+                draft.isUnfollowError = null;
                 break;
             }
             case UNFOLLOW_SUCCESS: {
@@ -252,13 +283,13 @@ const reducer = (state = initialState, action) => (
                 draft.me.Followings = draft.me.Followings.filter((v) => v.id !== userId);
                 draft.isUnfollowLoading = false;
                 draft.isUnfollowDone = true;
-                draft.isUnfollowError = false;
+                draft.isUnfollowError = null;
                 break;
             }
             case UNFOLLOW_FAILURE: {
                 draft.isUnfollowLoading = false;
                 draft.isUnfollowDone = false;
-                draft.isUnfollowError = true;
+                draft.isUnfollowError = action.error;
                 break;
             }
             default: {

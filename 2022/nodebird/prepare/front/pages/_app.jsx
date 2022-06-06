@@ -3,14 +3,18 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 import wrapper from "/store/configureStore";
 import "antd/dist/antd.css";
+import { useDispatch } from "react-redux";
+import { loadUserAction } from '../reducers/user';
 
 const App = (props) => {
+    const dispatch = useDispatch();
 	const { Component } = props;
     const [showChild, setShowChild] = useState(false);
 
     // https://stackoverflow.com/questions/71706064/react-18-hydration-failed-because-the-initial-ui-does-not-match-what-was-render
     useEffect(() => {
         setShowChild(true);
+        dispatch(loadUserAction());
     }, []);
 
     if (!showChild) {
