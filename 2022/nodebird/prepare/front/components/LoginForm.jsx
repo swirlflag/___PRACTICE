@@ -28,7 +28,7 @@ const LoginForm = (props) => {
     },[isLoginError]);
 
 	const [email, onChangeEmail] = useInput("swirlflag@gmail.com");
-    const [password, onChangePassword] = useInput("a1t2g3ma1051");
+    const [password, onChangePassword] = useInput("1");
 
 	const onSubmitForm = useCallback(() => {
         dispatch(loginAction(email,password));

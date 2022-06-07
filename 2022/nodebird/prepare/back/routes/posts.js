@@ -13,23 +13,33 @@ router.get("/", async (req, res, next) => {
 			limit: 10,
 			order: [
                 ["createdAt", "DESC"],
-                [db.Comment, 'createdAt', "DESC"],
+                [db.Comment ,"createdAt", "DESC"],
             ],
 			include: [
+                // 게시글 작성자
 				{
 					model: db.User,
 					attributes: ["id", "nickname"],
 				},
+                // 게시글 이미지
 				{
 					model: db.Image,
 				},
+                // 게시글 댓글
 				{
 					model: db.Comment,
+                    // 댓글 작성자
 					include: {
 						model: db.User,
 						attributes: ["id", "nickname"],
 					},
 				},
+                // 좋아요 누른 유저
+                {
+                    model: db.User,
+                    as: "Likers",
+                    attributes: ["id"],
+                },
 			],
 		});
 		// console.log(posts)

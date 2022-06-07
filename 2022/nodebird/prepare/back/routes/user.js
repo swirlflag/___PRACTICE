@@ -33,13 +33,13 @@ router.get("/" , async (req, res, next) => {
 					},
 				],
 			});
-            res.status(200).json(responseUser);
+            return res.status(200).json(responseUser);
         }else {
-            res.status(200).json(null);
+            return res.status(200).json(null);
         }
     }catch(err) {
         console.error(err);
-        next(err);
+        return next(err);
     }
 });
 
@@ -71,10 +71,10 @@ router.post("/", isNotLoggedIn ,async (req, res, next) => {
 		});
 
 		// 생성 완료 응답
-		res.status(201).send("server ok: 회원 가입 완료");
+		return res.status(201).send("server ok: 회원 가입 완료");
 	} catch (err) {
 		console.log(err);
-		next(err); // status 500
+		return next(err); // status 500
 	}
 });
 
@@ -133,15 +133,34 @@ router.post("/login", isNotLoggedIn, async (req, res, next) => {
 // 로그아웃
 // POST: /api/user/logout
 router.post("/logout", isLoggedIn, async (req, res, next) => {
-
-	req.logout((err) => {
+	return req.logout((err) => {
 		req.session.destroy();
 		if (err) {
-			res.redirect("/");
+			return res.redirect("/");
 		} else {
-			res.status(200).send("server ok: 로그아웃 완료");
+			return res.status(200).send("server ok: 로그아웃 완료");
 		}
 	});
 });
+
+// 닉네임 변경
+// PATCH /api/user/nickname
+router.patch("/nickname" ,isLoggedIn, async (req, res, next) => {
+    const userId = req.user.id;
+    try {
+        await db.User.update(
+            { nickname: req.body.nickname, },
+            { where : {id: userId}, }
+        );
+        const responseUser = await db.User.findOne({
+            where: {id: userId},
+            attributes: ["nickname"],
+        });
+        return res.status(201).json(responseUser);
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+})
 
 module.exports = router;

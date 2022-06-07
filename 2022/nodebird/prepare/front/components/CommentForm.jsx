@@ -20,7 +20,7 @@ const CommentForm = (props) => {
         if(!commentText) {
             return;
         }
-		dispatch(addCommentAction(commentText, post.id, id));
+		dispatch(addCommentAction(commentText, post.id));
 	}, [commentText]);
 
     useEffect(() => {

@@ -31,6 +31,9 @@ const dynamicStates = {
     isUnfollowLoading: false,
     isUnfollowDone: false,
     isUnfollowError: null,
+    isChangeNicknameLoading: false,
+    isChangeNicknameDone: false,
+    isChangeNicknameError: null,
 };
 
 const initialState = {
@@ -80,10 +83,6 @@ export const SIGN_OUT_REQUEST = "SIGN_OUT_REQUEST";
 export const SIGN_OUT_SUCCESS = "SIGN_OUT_SUCCESS";
 export const SIGN_OUT_FAILURE = "SIGN_OUT_FAILURE";
 
-export const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
-export const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
-export const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
-
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
 export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
@@ -95,6 +94,9 @@ export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 export const ADD_POST_ME = "ADD_POST_ME";
 export const REMOVE_POST_ME = "REMOVE_POST_ME";
 
+export const NICKNAME_CHANGE_REQUEST = "NICKNAME_CHANGE_REQUEST";
+export const NICKNAME_CHANGE_SUCCESS = "NICKNAME_CHANGE_SUCCESS";
+export const NICKNAME_CHANGE_FAILURE = "NICKNAME_CHANGE_FAILURE";
 
 export const loadUserAction = () => ({
     type: LOAD_MY_INFO_REQUEST,
@@ -106,11 +108,6 @@ export const loginAction = (email, password) => ({
 
 export const logoutAction = () => ({
 	type: LOG_OUT_REQUEST,
-});
-
-export const changeNicknameAction = (nickname) => ({
-	type: CHANGE_NICKNAME_REQUEST,
-	data: nickname,
 });
 
 export const signupAction = (email,password,nickname) => ({
@@ -125,7 +122,12 @@ export const followAction = (userId) => ({
 
 export const unfollowAction = (userId) => ({
     type: UNFOLLOW_REQUEST,
-    data: { userId }
+    data: { userId },
+});
+
+export const changeNicknameAction = (nickname) => ({
+    type: NICKNAME_CHANGE_REQUEST,
+    data: { nickname },
 });
 
 const reducer = (state = initialState, action) => (
@@ -237,13 +239,9 @@ const reducer = (state = initialState, action) => (
                 draft.isSignoutError = action.error;
                 break;
             }
-            case CHANGE_NICKNAME_REQUEST: {
-                draft.me.nickname = action.data;
-                break;
-            }
             case ADD_POST_ME : {
-                const { PostId } = action.data;
-                draft.me.Posts.unshift({id: PostId});
+                const { id } = action.data;
+                draft.me.Posts.unshift({id});
                 break;
             }
             case REMOVE_POST_ME: {
@@ -290,6 +288,26 @@ const reducer = (state = initialState, action) => (
                 draft.isUnfollowLoading = false;
                 draft.isUnfollowDone = false;
                 draft.isUnfollowError = action.error;
+                break;
+            }
+            case NICKNAME_CHANGE_REQUEST: {
+                draft.isChangeNicknameLoading = true;
+                draft.isChangeNicknameDone = false;
+                draft.isChangeNicknameError = null;
+                break;
+            }
+            case NICKNAME_CHANGE_SUCCESS: {
+                const { nickname } = action.data;
+                draft.me.nickname = nickname;
+                draft.isChangeNicknameLoading = false;
+                draft.isChangeNicknameDone = true;
+                draft.isChangeNicknameError = null;
+                break;
+            }
+            case NICKNAME_CHANGE_FAILURE: {
+                draft.isChangeNicknameLoading = false;
+                draft.isChangeNicknameDone = false;
+                draft.isChangeNicknameError = null;
                 break;
             }
             default: {

@@ -34,6 +34,8 @@
 		],
 		"no-param-reassign": "off",
         "import/prefer-default-export" : "off",
-        "default-param-last": "off"
+        "default-param-last": "off",
+        "arrow-body-style": "off",
+        "camelcase": "off"
 	}
 }

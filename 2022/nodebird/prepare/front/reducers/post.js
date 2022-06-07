@@ -2,52 +2,51 @@ import shortid from 'shortid';
 import produce from 'immer';
 import { faker } from '@faker-js/faker';
 
-const initialState = {
-	mainPosts: [
-		// {
-		// 	id: 1,
-		// 	User: {
-		// 		id: 10,
-		// 		nickname: "제련소",
-		// 	},
-		// 	content: "첫번째 게시글 입니다.. #첫번째 #해시태그_되나?",
-		// 	Images: [
-		// 		{
-		// 			src: "https://i.picsum.photos/id/702/800/800.jpg?hmac=I3zFzdBlDPMNZCcLdhkhcOmpV1rGpMXY557ilz9JA9Y",
-		// 		},
-		// 		{
-		// 			src: "https://i.picsum.photos/id/960/800/800.jpg?hmac=Wk7vp2DErAMJMv3rV1_OivBuvOWrAOLY0KqRYh_W77o",
-		// 		},
-		// 		{
-		// 			src: "https://i.picsum.photos/id/876/800/800.jpg?hmac=On__m7iyhPlTIQpzjmHwRHqB1HvqSQaA3SvHzPIClMM",
-		// 		},
-		// 	],
-		// 	Comments: [
-		// 		{
-		// 			User: {
-		// 				nickname: "ㅇㅇ",
-		// 			},
-		// 			content: "안녕하세요",
-		// 		},
-		// 		{
-		// 			User: {
-		// 				nickname: "ㅇㅇ2",
-		// 			},
-		// 			content: "안녕하세요2",
-		// 		},
-		// 		{
-		// 			User: {
-		// 				nickname: "ㅇㅇ3~",
-		// 			},
-		// 			content: "안녕하세요3~ㅎㅎ",
-		// 		},
-		// 	],
-		// 	imagePaths: [],
-		// },
-	],
+const mainPostsExample = [
+    {
+        id: 1,
+        User: {
+            id: 10,
+            nickname: "제련소",
+        },
+        content: "첫번째 게시글 입니다.. #첫번째 #해시태그_되나?",
+        Images: [
+            {
+                src: "https://i.picsum.photos/id/702/800/800.jpg?hmac=I3zFzdBlDPMNZCcLdhkhcOmpV1rGpMXY557ilz9JA9Y",
+            },
+            {
+                src: "https://i.picsum.photos/id/960/800/800.jpg?hmac=Wk7vp2DErAMJMv3rV1_OivBuvOWrAOLY0KqRYh_W77o",
+            },
+            {
+                src: "https://i.picsum.photos/id/876/800/800.jpg?hmac=On__m7iyhPlTIQpzjmHwRHqB1HvqSQaA3SvHzPIClMM",
+            },
+        ],
+        Comments: [
+            {
+                User: {
+                    nickname: "ㅇㅇ",
+                },
+                content: "안녕하세요",
+            },
+            {
+                User: {
+                    nickname: "ㅇㅇ2",
+                },
+                content: "안녕하세요2",
+            },
+            {
+                User: {
+                    nickname: "ㅇㅇ3~",
+                },
+                content: "안녕하세요3~ㅎㅎ",
+            },
+        ],
+        imagePaths: [],
+    },
+]
 
+const dynamicState = {
     isNoMorePost: false,
-
     isLoadPostLoading: false,
     isLoadPostDone: false,
     isLoadPostError: null,
@@ -66,6 +65,11 @@ const initialState = {
     isUnlikeLoading: false,
     isUnlikeDone: false,
     isUnlikeError: null,
+};
+
+const initialState = {
+    ...dynamicState,
+	mainPosts: [],
 };
 
 export const generateDummyPost = (number) => (
@@ -188,7 +192,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LOAD_POSTS_SUCCESS : {
-                console.log(action.data)
+                // [...{ content, id, User, Images, Comments , Likers }]
                 draft.mainPosts.push(...action.data);
                 draft.isNoMorePost = draft.mainPosts.length >= 30;
                 draft.isLoadPostLoading = false;
@@ -209,17 +213,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case ADD_POST_SUCCESS: {
-                const { content, postId , User, Images, Comments} = action.data;
-                const newPost = {
-                    id: postId.toString(),
-                    User: {
-                        id: User.id,
-                        nickname: User.nickname,
-                    },
-                    content,
-                    Images,
-                    Comments,
-                };
+                // { content, id, User, Images, Comments , Likers }
+                const newPost = { ...action.data};
                 draft.mainPosts.unshift(newPost);
                 draft.isAddPostLoading = false;
                 draft.isAddPostDone = true;
@@ -239,7 +234,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case REMOVE_POST_SUCCESS: {
-                const { postId } = action.data;
+                const { id: postId } = action.data;
                 const changeMainPosts = draft.mainPosts.filter((v) => v.id !== postId);
                 draft.mainPosts = changeMainPosts;
                 draft.isRemovePostLoading = false;
@@ -260,7 +255,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case ADD_COMMENT_SUCCESS: {
-                const { content , PostId, User } = action.data;
+                const { content , PostId, User, } = action.data;
                 const postIndex = draft.mainPosts.findIndex((v) => v.id.toString() === PostId.toString());
                 const newComment = {
                     User,
@@ -285,6 +280,9 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LIKE_POST_SUCCESS: {
+                const { id : PostId, UserId } = action.data;
+                const post = draft.mainPosts.find((v) => v.id === PostId );
+                post.Likers.push({id: UserId});
                 draft.isLikeLoading = false;
                 draft.isLikeDone = true;
                 draft.isLikeError = null;
@@ -303,6 +301,9 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case UNLIKE_POST_SUCCESS: {
+                const { id: PostId, UserId } = action.data;
+                const post = draft.mainPosts.find((v) => v.id === PostId);
+                post.Likers = post.Likers.filter((v) => v.id !== UserId);
                 draft.isUnlikeLoading = false;
                 draft.isUnlikeDone = true;
                 draft.isUnlikeError = null;

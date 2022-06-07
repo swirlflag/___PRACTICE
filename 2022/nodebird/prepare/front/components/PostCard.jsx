@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Card, Popover, Button, Avatar, List, Comment } from "antd";
@@ -21,18 +21,21 @@ import FollowButton from './FollowButton';
 const PostCard = (props) => {
     const dispatch = useDispatch();
     const { isLogin } = useSelector((state) => state.user);
-    const { isRemovePostLoading } = useSelector((state) => state.post);
+    const { isRemovePostLoading , isLikeError , isUnlikeError} = useSelector((state) => state.post);
 	const user = useSelector((state) => state.user);
 	const userId = useMemo(() => user?.me.id, [user]);
 	const { post } = props;
+    const liked = post.Likers.find((v) => v.id === userId);
 
-	const [liked, setLiked] = useState(false);
 	const [commentFormOpened, setCommentFormOpened] = useState(false);
 
-
     const onLike = useCallback(() => {
+        if(!isLogin) {
+            alert('front error: 로그인이 필요합니다.');
+            return;
+        }
         dispatch(likePostAction(post.id));
-    },[]);
+    },[isLogin]);
 
     const onUnlike = useCallback(() => {
         dispatch(unlikePostAction(post.id));
@@ -122,7 +125,8 @@ PostCard.propTypes = {
 		createdAt: PropTypes.string,
 		Comments: PropTypes.arrayOf(PropTypes.object),
 		imagePaths: PropTypes.arrayOf(PropTypes.object),
-        Images: PropTypes.array
+        Images: PropTypes.arrayOf(PropTypes.object),
+        Likers: PropTypes.arrayOf(PropTypes.object),
 	}).isRequired,
 };
 

@@ -19,10 +19,12 @@ import {
     FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
     UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
 
+    NICKNAME_CHANGE_REQUEST, NICKNAME_CHANGE_SUCCESS, NICKNAME_CHANGE_FAILURE,
+
 } from "../reducers/user";
 
-const API_login = (data) => {
-	return axios.post("/api/user/login", data);
+const API_login = (email,password) => {
+	return axios.post("/api/user/login", {email, password});
 };
 const API_logout = () => {
 	return axios.post("/api/user/logout");
@@ -30,16 +32,19 @@ const API_logout = () => {
 const API_loadUser = () => {
     return axios.get("/api/user");
 }
-const API_signup = (data) => {
-    return axios.post("/api/user", data);
+const API_signup = (email,password, nickname) => {
+    return axios.post("/api/user", { email, password, nickname});
+};
+const API_changeNickname = (nickname) => {
+    return axios.patch("/api/user/nickname" , { nickname })
 };
 
 function* loadUser() {
     try {
-		const result = yield call(API_loadUser);
+		const { data: resData } = yield call(API_loadUser);
         yield put({
             type: LOAD_MY_INFO_SUCCESS,
-            data: result.data,
+            data: resData,
         });
 	} catch (err) {
 		yield put({
@@ -50,11 +55,12 @@ function* loadUser() {
 };
 
 function* login(action) {
+    const { email, password } = action.data;
 	try {
-		const result = yield call(API_login, action.data);
+		const { data: resData } = yield call(API_login, email, password);
 		yield put({
 			type: LOG_IN_SUCCESS,
-			data: result.data,
+			data: resData,
 		});
 	} catch (err) {
 		yield put({
@@ -66,8 +72,7 @@ function* login(action) {
 
 function* logout() {
 	try {
-		const result = yield call(API_logout);
-        console.log(result);
+		yield call(API_logout);
 		yield put({
 			type: LOG_OUT_SUCCESS,
 		});
@@ -80,8 +85,9 @@ function* logout() {
 }
 
 function* signup(action) {
+    const { email, password, nickname } = action.data;
     try {
-        yield call(API_signup , {...action.data});
+        yield call(API_signup , email, password, nickname);
         yield put({
             type: SIGN_UP_SUCCESS,
         });
@@ -117,7 +123,7 @@ function* follow(action) {
     } catch(err) {
         yield put({
             type: FOLLOW_FAILURE,
-            error: err.response.error,
+            error: err.response.data,
         });
     }
 };
@@ -132,7 +138,23 @@ function* unfollow(action) {
     } catch(err) {
         yield put({
             type: UNFOLLOW_FAILURE,
-            error: err.response.error,
+            error: err.response.data,
+        });
+    }
+};
+function* changeNickname(action) {
+    const { nickname } = action.data;
+    try {
+        const { data: resData } = yield call(API_changeNickname, nickname);
+
+        yield put({
+            type: NICKNAME_CHANGE_SUCCESS,
+            data: resData,
+        });
+    }catch(err) {
+        yield put({
+            type: NICKNAME_CHANGE_FAILURE,
+            error: err.response.data,
         });
     }
 };
@@ -158,6 +180,9 @@ function* watchFollowAction() {
 function* watchUnfollowAction() {
     yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 };
+function* watchChangeNickname() {
+    yield takeLatest(NICKNAME_CHANGE_REQUEST,changeNickname);
+};
 
 export default function* userSaga() {
 	yield all([
@@ -168,5 +193,6 @@ export default function* userSaga() {
         fork(watchFollowAction),
         fork(watchUnfollowAction),
         fork(watchLoadUserAction),
+        fork(watchChangeNickname),
     ]);
 }

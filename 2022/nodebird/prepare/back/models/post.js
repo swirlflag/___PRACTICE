@@ -20,11 +20,11 @@ module.exports = class Post extends Model {
 		);
 	}
 	static associate(db) {
-		db.Post.belongsTo(db.User);
-		db.Post.belongsToMany(db.Hashtag , { through: "PostHashtag" });
-		db.Post.hasMany(db.Comment);
-		db.Post.hasMany(db.Image);
-        db.Post.belongsToMany(db.User , { through: "Like", as: "Likers" });
-        db.Post.belongsTo(db.Post, { ad: "Retweet" })
+		db.Post.belongsTo(db.User); //post.addUser
+		db.Post.belongsToMany(db.Hashtag , { through: "PostHashtag" }); //post.addHashtags
+		db.Post.hasMany(db.Comment); //post.addComments
+		db.Post.hasMany(db.Image);  //post.addImages
+        db.Post.belongsToMany(db.User , { through: "Like", as: "Likers", foreginKey: "LikedId"}); //post.addLikers post.removeLikers
+        db.Post.belongsTo(db.Post, { ad: "Retweet" }) //post.addRetweet
 	}
 };
