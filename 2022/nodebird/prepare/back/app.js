@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
@@ -34,6 +35,8 @@ app.use(cors({
     credentials: true,
 }));
 
+// / 로만 접근해도 /uplaods폴더로 접근하는것처럼 ..
+app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser(process.env.COOKIE_SECRET));

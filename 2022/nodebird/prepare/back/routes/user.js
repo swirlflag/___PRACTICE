@@ -166,8 +166,8 @@ router.patch("/nickname" ,isLoggedIn, async (req, res, next) => {
 // 팔로우 기능
 // PATCH /api/user/:id/follow
 router.patch("/:followId/follow" , isLoggedIn, async (req, res, next) => {
-    const followId = req.params.followId;
     const userId = req.user.id;
+    const followId = parseInt(req.params.followId, 10);
     try {
         const followTarget = await db.User.findOne({
             where : {id: followId},
@@ -178,9 +178,7 @@ router.patch("/:followId/follow" , isLoggedIn, async (req, res, next) => {
 
         await followTarget.addFollowers(userId);
 
-        return res.status(201).send({UserId: followId});
-
-        res.send('servet yet: 팔로우 기능 제작중');
+        return res.status(201).json({followId});
     }catch(err) {
         console.error(err);
         next(err);
@@ -189,25 +187,86 @@ router.patch("/:followId/follow" , isLoggedIn, async (req, res, next) => {
 
 // 언팔로우 기능
 // DELETE /api/user/:id/follow
-router.delete("/:unfollowId/follow" , isLoggedIn, async (req, res, next) => {
-    const unfollowId = req.params.unfollowId;
+router.delete("/:followId/follow" , isLoggedIn, async (req, res, next) => {
     const userId = req.user.id;
+    const followId = parseInt(req.params.followId,10);
 
     try{
         const followTarget = await db.User.findOne({
-            where : {id: unfollowId},
+            where : {id: followId},
         });
         if(!followTarget) {
             return res.status(403).send("server error: 언팔로우 하려는 유저가 존재하지 않습니다");
         }
         await followTarget.removeFollowers(userId);
-        return res.status(201).send({UserId: unfollowId});
-        res.send('servet yet: 언팔로우 기능 제작중');
+        return res.status(201).json({followId});
     }catch(err) {
         console.error(err);
         next(err);
     }
 });
+
+
+// 팔로우 차단 기능
+// DELETE /api/user/follow/:followId
+router.delete("/follower/:followId" , isLoggedIn, async (req, res, next) => {
+    const userId = req.user.id;
+    const followId = parseInt(req.params.followId,10);
+
+    try{
+        const follower = await db.User.findOne({
+            where : {id: followId},
+        });
+
+        await follower.removeFollowings(userId);
+        return res.status(201).json({followId});
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+// 내가 팔로잉중인 사람 불러오기
+// GET /api/user/followings
+router.get("/followings" , isLoggedIn, async (req, res, next) => {
+    const userId = req.user.id;
+
+    try{
+        const user = await db.User.findOne({
+            where : {id: userId},
+        });
+
+        const list = await user.getFollowings({
+            attributes: ["id","nickname"],
+        });
+        return res.status(201).json({list});
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+// 나를 팔로우한 사람 불러오기
+// GET /api/user/followers
+router.get("/followers" , isLoggedIn, async (req, res, next) => {
+    const userId = req.user.id;
+
+    try{
+        const user = await db.User.findOne({
+            where : {id: userId},
+        });
+
+        const list = await user.getFollowers({
+            attributes: ["id", "nickname"],
+        });
+        return res.status(201).json({list});
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+
 
 
 module.exports = router;

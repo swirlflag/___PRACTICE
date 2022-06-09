@@ -34,6 +34,15 @@ const dynamicStates = {
     isChangeNicknameLoading: false,
     isChangeNicknameDone: false,
     isChangeNicknameError: null,
+    isLoadFollowersLoading: false,
+    isLoadFollowersDone: false,
+    isLoadFollowersError: null,
+    isLoadFollowingsLoading: false,
+    isLoadFollowingsDone: false,
+    isLoadFollowingsError: null,
+    isRemoveFollowerLoading: false,
+    isRemoveFollowerDone: false,
+    isRemoveFollowerError: null,
 };
 
 const initialState = {
@@ -83,6 +92,13 @@ export const SIGN_OUT_REQUEST = "SIGN_OUT_REQUEST";
 export const SIGN_OUT_SUCCESS = "SIGN_OUT_SUCCESS";
 export const SIGN_OUT_FAILURE = "SIGN_OUT_FAILURE";
 
+export const NICKNAME_CHANGE_REQUEST = "NICKNAME_CHANGE_REQUEST";
+export const NICKNAME_CHANGE_SUCCESS = "NICKNAME_CHANGE_SUCCESS";
+export const NICKNAME_CHANGE_FAILURE = "NICKNAME_CHANGE_FAILURE";
+
+export const ADD_POST_ME = "ADD_POST_ME";
+export const REMOVE_POST_ME = "REMOVE_POST_ME";
+
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
 export const FOLLOW_FAILURE = "FOLLOW_FAILURE";
@@ -91,43 +107,53 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 
-export const ADD_POST_ME = "ADD_POST_ME";
-export const REMOVE_POST_ME = "REMOVE_POST_ME";
+export const LOAD_FOLLOWERS_REQUEST = "LOAD_FOLLOWERS_REQUEST";
+export const LOAD_FOLLOWERS_SUCCESS = "LOAD_FOLLOWERS_SUCCESS";
+export const LOAD_FOLLOWERS_FAILURE = "LOAD_FOLLOWERS_FAILURE";
 
-export const NICKNAME_CHANGE_REQUEST = "NICKNAME_CHANGE_REQUEST";
-export const NICKNAME_CHANGE_SUCCESS = "NICKNAME_CHANGE_SUCCESS";
-export const NICKNAME_CHANGE_FAILURE = "NICKNAME_CHANGE_FAILURE";
+export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST";
+export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS";
+export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE";
+
+export const REMOVE_FOLLOWER_REQUEST = "REMOVE_FOLLOWER_REQUEST";
+export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
+export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
 
 export const loadUserAction = () => ({
     type: LOAD_MY_INFO_REQUEST,
-})
+});
 export const loginAction = (email, password) => ({
 	type: LOG_IN_REQUEST,
 	data: {email, password},
 });
-
 export const logoutAction = () => ({
 	type: LOG_OUT_REQUEST,
 });
-
 export const signupAction = (email,password,nickname) => ({
     type: SIGN_UP_REQUEST,
     data: {email,password,nickname},
 });
-
 export const followAction = (followId) => ({
     type: FOLLOW_REQUEST,
     data: { followId },
 });
-
-export const unfollowAction = (unfollowId) => ({
+export const unfollowAction = (followId) => ({
     type: UNFOLLOW_REQUEST,
-    data: { unfollowId },
+    data: { followId },
 });
-
+export const removeFollowerAction = (followId) => ({
+    type: REMOVE_FOLLOWER_REQUEST,
+    data: { followId },
+});
 export const changeNicknameAction = (nickname) => ({
     type: NICKNAME_CHANGE_REQUEST,
     data: { nickname },
+});
+export const loadFollowersAction = () => ({
+    type: LOAD_FOLLOWERS_REQUEST,
+});
+export const loadFollowingsAction = () => ({
+    type: LOAD_FOLLOWINGS_REQUEST,
 });
 
 const reducer = (state = initialState, action) => (
@@ -257,8 +283,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case FOLLOW_SUCCESS: {
-                const { UserId } = action.data;
-                draft.me.Followings.push({id: UserId});
+                const { followId } = action.data;
+                draft.me.Followings.push({id: followId});
                 draft.isFollowLoading = false;
                 draft.isFollowDone = true;
                 draft.isFollowError = null;
@@ -277,8 +303,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case UNFOLLOW_SUCCESS: {
-                const { UserId } = action.data;
-                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== UserId);
+                const { followId } = action.data;
+                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== followId);
                 draft.isUnfollowLoading = false;
                 draft.isUnfollowDone = true;
                 draft.isUnfollowError = null;
@@ -308,6 +334,68 @@ const reducer = (state = initialState, action) => (
                 draft.isChangeNicknameLoading = false;
                 draft.isChangeNicknameDone = false;
                 draft.isChangeNicknameError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWINGS_REQUEST: {
+                draft.isLoadFollowingsLoading = false;
+                draft.isLoadFollowingsDone = false;
+                draft.isLoadFollowingsError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWINGS_SUCCESS: {
+                const { list } = action.data;
+                const followings = list.map(({id,nickname}) => ({id,nickname}));
+                draft.me.Followings = followings;
+                draft.isLoadFollowingsLoading = false;
+                draft.isLoadFollowingsDone = false;
+                draft.isLoadFollowingsError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWINGS_FAILURE: {
+                draft.isLoadFollowingsLoading = false;
+                draft.isLoadFollowingsDone = false;
+                draft.isLoadFollowingsError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWERS_REQUEST: {
+                draft.isLoadFollowersLoading = false;
+                draft.isLoadFollowersDone = false;
+                draft.isLoadFollowersError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWERS_SUCCESS: {
+                const { list } = action.data;
+                const followers = list.map(({id,nickname}) => ({id,nickname}));
+                draft.me.Followers = followers;
+                draft.isLoadFollowersLoading = false;
+                draft.isLoadFollowersDone = false;
+                draft.isLoadFollowersError = action.error;
+                break;
+            }
+            case LOAD_FOLLOWERS_FAILURE: {
+                draft.isLoadFollowersLoading = false;
+                draft.isLoadFollowersDone = false;
+                draft.isLoadFollowersError = action.error;
+                break;
+            }
+            case REMOVE_FOLLOWER_REQUEST: {
+                draft.isRemoveFollowerLoading = false;
+                draft.isRemoveFollowerDone = false;
+                draft.isRemoveFollowerError = action.error;
+                break;
+            }
+            case REMOVE_FOLLOWER_SUCCESS: {
+                const { followId } = action.data;
+                draft.me.Followers = draft.me.Followers.filter((v) => v.id !== followId);
+                draft.isRemoveFollowerLoading = false;
+                draft.isRemoveFollowerDone = false;
+                draft.isRemoveFollowerError = action.error;
+                break;
+            }
+            case REMOVE_FOLLOWER_FAILURE: {
+                draft.isRemoveFollowerLoading = false;
+                draft.isRemoveFollowerDone = false;
+                draft.isRemoveFollowerError = action.error;
                 break;
             }
             default: {

@@ -25,7 +25,9 @@ const PostCard = (props) => {
 	const user = useSelector((state) => state.user);
 	const userId = useMemo(() => user?.me.id, [user]);
 	const { post } = props;
-    const liked = post.Likers.find((v) => v.id === userId);
+    const liked = post.Likers.find((v) => {
+        return v.id === userId
+    });
 
 	const [commentFormOpened, setCommentFormOpened] = useState(false);
 

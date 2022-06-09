@@ -65,11 +65,15 @@ const dynamicState = {
     isUnlikeLoading: false,
     isUnlikeDone: false,
     isUnlikeError: null,
+    isUplaodImageLoading: false,
+    isUplaodImageDone: false,
+    isUplaodImageError: null,
 };
 
 const initialState = {
     ...dynamicState,
 	mainPosts: [],
+    imagePaths: [],
 };
 
 export const generateDummyPost = (number) => (
@@ -150,6 +154,10 @@ export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
 export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 
+export const UPLOAD_IMAGE_REQUEST = "UPLOAD_IMAGE_REQUEST";
+export const UPLOAD_IMAGE_SUCCESS = "UPLOAD_IMAGE_SUCCESS";
+export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
+
 export const addPostAction = (content) => ({
 	type: ADD_POST_REQUEST,
     data : { content },
@@ -158,6 +166,11 @@ export const addPostAction = (content) => ({
 export const removePostAction = (postId) => ({
     type: REMOVE_POST_REQUEST,
     data : { postId },
+});
+
+export const uploadImage = (formData) => ({
+    type: UPLOAD_IMAGE_REQUEST,
+    data: { formData }
 });
 
 export const loadPostsAction = (number = 5) => ({
@@ -280,9 +293,9 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LIKE_POST_SUCCESS: {
-                const { id : PostId, UserId } = action.data;
-                const post = draft.mainPosts.find((v) => v.id === PostId );
-                post.Likers.push({id: UserId});
+                const { postId, likerId } = action.data;
+                const post = draft.mainPosts.find((v) => v.id === postId);
+                post.Likers.push({id: likerId});
                 draft.isLikeLoading = false;
                 draft.isLikeDone = true;
                 draft.isLikeError = null;
@@ -301,9 +314,9 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case UNLIKE_POST_SUCCESS: {
-                const { id: PostId, UserId } = action.data;
-                const post = draft.mainPosts.find((v) => v.id === PostId);
-                post.Likers = post.Likers.filter((v) => v.id !== UserId);
+                const { postId, likerId } = action.data;
+                const post = draft.mainPosts.find((v) => v.id === postId);
+                post.Likers = post.Likers.filter((v) => v.id !== likerId);
                 draft.isUnlikeLoading = false;
                 draft.isUnlikeDone = true;
                 draft.isUnlikeError = null;
@@ -313,6 +326,27 @@ const reducer = (state = initialState, action) => (
                 draft.isUnlikeLoading = false;
                 draft.isUnlikeDone = false;
                 draft.isUnlikeError = action.error;
+                break;
+            }
+            case UPLOAD_IMAGE_REQUEST: {
+                draft.isUploadImageLoading = true;
+                draft.isUploadImageDone = false;
+                draft.isUploadImageError = null;
+                break;
+            }
+            case UPLOAD_IMAGE_SUCCESS: {
+                const { files } = action.data;
+                console.log(files);
+                draft.imagePaths = files;
+                draft.isUploadImageLoading = false;
+                draft.isUploadImageDone = true;
+                draft.isUploadImageError = null;
+                break;
+            }
+            case UPLOAD_IMAGE_FAILURE: {
+                draft.isUploadImageLoading = false;
+                draft.isUploadImageDone = false;
+                draft.isUploadImageError = action.error;
                 break;
             }
 

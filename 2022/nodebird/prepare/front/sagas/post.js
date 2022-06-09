@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { all, fork,put, delay,takeLatest,throttle, call } from "redux-saga/effects";
+import { all, fork,put, delay,takeLatest,throttle, call, take } from "redux-saga/effects";
 import shortid from 'shortid';
 import {
     LOAD_POSTS_REQUEST,LOAD_POSTS_SUCCESS,LOAD_POSTS_FAILURE,
@@ -8,6 +8,8 @@ import {
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+
+    UPLOAD_IMAGE_REQUEST, UPLOAD_IMAGE_SUCCESS, UPLOAD_IMAGE_FAILURE,
 
     generateDummyPost,
 } from '../reducers/post';
@@ -28,7 +30,7 @@ const API_removePost = (postId) => {
     return axios.delete(`/api/post/${postId}`);
 };
 const API_addComment = (content, postId) => {
-	return axios.post(`/api/post/${postId}/comment`, { content, });
+	return axios.post(`/api/post/${postId}/comment`, { content });
 };
 const API_likePost = (postId) => {
     return axios.patch(`/api/post/${postId}/like`);
@@ -36,7 +38,9 @@ const API_likePost = (postId) => {
 const API_unlikePost = (postId) => {
     return axios.delete(`/api/post/${postId}/like`);
 };
-
+const API_uploadImage = (formData) => {
+    return axios.post(`/api/post/image`, formData);
+};
 
 function* loadPosts(action) {
     const { number } = action.data;
@@ -137,8 +141,6 @@ function* unlikePost(action) {
     const { postId } = action.data;
     try {
         const { data: resData } = yield call(API_unlikePost, postId);
-
-        console.log(resData)
         yield put({
             type: UNLIKE_POST_SUCCESS,
             data: resData,
@@ -147,6 +149,22 @@ function* unlikePost(action) {
         console.error(err);
         yield put({
             type: UNLIKE_POST_FAILURE,
+            error: err.response.data,
+        });
+    }
+};
+function* uploadImage(action) {
+    const { formData } = action.data;
+    try {
+        const { data: resData } = yield call(API_uploadImage, formData);
+        yield put({
+            type: UPLOAD_IMAGE_SUCCESS,
+            data: resData,
+        });
+    }catch(err) {
+        console.error(err);
+        yield put({
+            type: UPLOAD_IMAGE_FAILURE,
             error: err.response.data,
         });
     }
@@ -172,6 +190,9 @@ function* watchLikePost() {
 function* watchUnlikePost() {
     yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 };
+function* watchUploadImage() {
+    yield takeLatest(UPLOAD_IMAGE_REQUEST, uploadImage);
+};
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
@@ -180,5 +201,6 @@ export default function* postSaga() {
         fork(watchLoadPosts),
         fork(watchLikePost),
         fork(watchUnlikePost),
+        fork(watchUploadImage),
     ])
 };

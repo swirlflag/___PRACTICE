@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import Head from 'next/head';
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useDidUpdateEffect } from '../hooks';
+
+import { loadFollowersAction, loadFollowingsAction } from '../reducers/user';
 
 import AppLayout from '../components/AppLayout';
 import NicknameEditForm from '../components/NicknameEditForm';
@@ -11,8 +13,16 @@ import FollowList from '../components/FollowList';
 
 const Profile = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const { me, isLogin } =  useSelector((state) => state.user);
+
+    useEffect(() => {
+        if(isLogin) {
+            dispatch(loadFollowingsAction());
+            dispatch(loadFollowersAction());
+        }
+    },[isLogin]);
 
     useDidUpdateEffect(() => {
         if(!isLogin) {
@@ -31,8 +41,8 @@ const Profile = () => {
                 (
                 <>
                     <NicknameEditForm/>
-                    <FollowList header="팔로잉 목록" data={me.Followers}/>
-                    <FollowList header="팔로워 목록" data={me.Followings}/>
+                    <FollowList header="팔로잉 목록" data={me.Followings}/>
+                    <FollowList header="팔로워 목록" data={me.Followers}/>
                 </>
                 ):
                 (

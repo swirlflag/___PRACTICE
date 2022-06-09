@@ -1,4 +1,7 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const router = express.Router();
 const db = require("../models/index.js");
@@ -50,6 +53,47 @@ router.post("/", isLoggedIn, async (req, res,next) => {
         console.error(err);
 		return next(err); // status 500
     }
+});
+
+
+
+try {
+    fs.accessSync("uploads");
+}catch(err) {
+    console.log("uploads 폴더 생성");
+    fs.mkdirSync("uploads");
+}
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done){
+            done(null, "uploads");
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname); //확장자 추출 (.png, .jpg)
+            const name = path.basename(file.originalname,ext); // // 파일 이름
+            const date = new Date().getTime();
+            const fullname = name + date + ext;
+            done(null, fullname);
+        },
+    }),
+    limits: {
+        fileSize: 20 * 1024 * 1024, //20mb
+    },
+});
+
+// 이미지 업로드
+// /api/post/image
+router.post("/image" , isLoggedIn, upload.array("image"), async (req, res, next) => {
+
+    const files = req.files.map((v) => v.filename);
+    res.status(201).json({files});
+    // try {
+
+    // }catch(err) {
+    //     console.error(err);
+    //     next(err);
+    // }
 });
 
 // 게시글 삭제
@@ -126,18 +170,20 @@ router.post("/:postId/comment" ,isLoggedIn, async (req, res, next) => {
 // 게시글 좋아요
 // POST /api/post/:postId/like
 router.patch("/:postId/like" , isLoggedIn, async (req, res, next) => {
+    const likerId = req.user.id
+    const postId = parseInt(req.params.postId, 10);
     try {
         const post = await db.Post.findOne({
-            where: {id: req.params.postId, },
+            where: {id: postId, },
         });
 
         if(!post) {
             return res.status(403).send('server error: 좋아요 하려는 게시글이 존재하지 않습니다')
         }
 
-        await post.addLikers(req.user.id);
+        await post.addLikers(likerId);
 
-        return res.status(201).json(post);
+        return res.status(201).json({ postId, likerId });
 
     }catch(err) {
         console.error(err);
@@ -148,9 +194,11 @@ router.patch("/:postId/like" , isLoggedIn, async (req, res, next) => {
 // 게시글 좋아요 취소
 // POST /api/post/:postId/unlike
 router.delete("/:postId/like" , isLoggedIn, async (req, res, next) => {
+    const likerId = req.user.id;
+    const postId = parseInt(req.params.postId, 10);
     try {
         const post = await db.Post.findOne({
-            where: {id: req.params.postId, },
+            where: {id: postId, },
         });
 
         if(!post) {
@@ -159,13 +207,14 @@ router.delete("/:postId/like" , isLoggedIn, async (req, res, next) => {
 
         await post.removeLikers(req.user.id);
 
-        return res.status(201).json(post);
+        return res.status(201).json({ postId, likerId });
 
     }catch(err) {
         console.error(err);
         return next(err);
     }
 });
+
 
 
 module.exports = router;
