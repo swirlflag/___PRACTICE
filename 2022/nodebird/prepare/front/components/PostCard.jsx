@@ -83,7 +83,7 @@ const PostCard = (props) => {
 						<EllipsisOutlined />
 					</Popover>,
 				]}
-                extra={isLogin && <FollowButton post={post}/>}
+                extra={(isLogin && post.User.id !== userId) && <FollowButton post={post}/>}
 			>
 				{/* <Image></Image> */}
 				{/* <Content></Content> */}

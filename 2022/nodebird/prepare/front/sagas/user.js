@@ -38,6 +38,12 @@ const API_signup = (email,password, nickname) => {
 const API_changeNickname = (nickname) => {
     return axios.patch("/api/user/nickname" , { nickname })
 };
+const API_follow = (followId) => {
+    return axios.patch(`/api/user/${followId}/follow`);
+}
+const API_unfollow = (unfollowId) => {
+    return axios.delete(`/api/user/${unfollowId}/follow`);
+}
 
 function* loadUser() {
     try {
@@ -114,11 +120,12 @@ function* signout(action) {
 };
 
 function* follow(action) {
+    const { followId } = action.data;
     try {
-        yield delay(1000);
+        const { data: resData } = yield call(API_follow, followId);
         yield put({
             type: FOLLOW_SUCCESS,
-            data: action.data,
+            data: resData,
         });
     } catch(err) {
         yield put({
@@ -129,11 +136,12 @@ function* follow(action) {
 };
 
 function* unfollow(action) {
+    const { unfollowId } = action.data;
     try {
-        yield delay(1000);
+        const { data: resData } = yield call(API_unfollow, unfollowId);
         yield put({
             type: UNFOLLOW_SUCCESS,
-            data: action.data,
+            data: resData,
         });
     } catch(err) {
         yield put({

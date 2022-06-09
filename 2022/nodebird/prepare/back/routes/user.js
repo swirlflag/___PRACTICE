@@ -161,6 +161,53 @@ router.patch("/nickname" ,isLoggedIn, async (req, res, next) => {
         console.error(err);
         next(err);
     }
-})
+});
+
+// 팔로우 기능
+// PATCH /api/user/:id/follow
+router.patch("/:followId/follow" , isLoggedIn, async (req, res, next) => {
+    const followId = req.params.followId;
+    const userId = req.user.id;
+    try {
+        const followTarget = await db.User.findOne({
+            where : {id: followId},
+        });
+        if(!followTarget) {
+            return res.status(403).send("server error: 팔로우 하려는 유저가 존재하지 않습니다");
+        }
+
+        await followTarget.addFollowers(userId);
+
+        return res.status(201).send({UserId: followId});
+
+        res.send('servet yet: 팔로우 기능 제작중');
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
+// 언팔로우 기능
+// DELETE /api/user/:id/follow
+router.delete("/:unfollowId/follow" , isLoggedIn, async (req, res, next) => {
+    const unfollowId = req.params.unfollowId;
+    const userId = req.user.id;
+
+    try{
+        const followTarget = await db.User.findOne({
+            where : {id: unfollowId},
+        });
+        if(!followTarget) {
+            return res.status(403).send("server error: 언팔로우 하려는 유저가 존재하지 않습니다");
+        }
+        await followTarget.removeFollowers(userId);
+        return res.status(201).send({UserId: unfollowId});
+        res.send('servet yet: 언팔로우 기능 제작중');
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
+
 
 module.exports = router;

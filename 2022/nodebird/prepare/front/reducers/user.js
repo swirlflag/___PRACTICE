@@ -115,14 +115,14 @@ export const signupAction = (email,password,nickname) => ({
     data: {email,password,nickname},
 });
 
-export const followAction = (userId) => ({
+export const followAction = (followId) => ({
     type: FOLLOW_REQUEST,
-    data: { userId },
+    data: { followId },
 });
 
-export const unfollowAction = (userId) => ({
+export const unfollowAction = (unfollowId) => ({
     type: UNFOLLOW_REQUEST,
-    data: { userId },
+    data: { unfollowId },
 });
 
 export const changeNicknameAction = (nickname) => ({
@@ -257,8 +257,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case FOLLOW_SUCCESS: {
-                const { userId } = action.data;
-                draft.me.Followings.push({id: userId});
+                const { UserId } = action.data;
+                draft.me.Followings.push({id: UserId});
                 draft.isFollowLoading = false;
                 draft.isFollowDone = true;
                 draft.isFollowError = null;
@@ -277,8 +277,8 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case UNFOLLOW_SUCCESS: {
-                const { userId } = action.data;
-                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== userId);
+                const { UserId } = action.data;
+                draft.me.Followings = draft.me.Followings.filter((v) => v.id !== UserId);
                 draft.isUnfollowLoading = false;
                 draft.isUnfollowDone = true;
                 draft.isUnfollowError = null;
@@ -307,7 +307,7 @@ const reducer = (state = initialState, action) => (
             case NICKNAME_CHANGE_FAILURE: {
                 draft.isChangeNicknameLoading = false;
                 draft.isChangeNicknameDone = false;
-                draft.isChangeNicknameError = null;
+                draft.isChangeNicknameError = action.error;
                 break;
             }
             default: {
