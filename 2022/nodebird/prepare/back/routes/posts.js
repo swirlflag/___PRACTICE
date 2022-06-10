@@ -1,15 +1,22 @@
 const express = require("express");
 const { nextTick } = require("process");
+const { Op } = require("sequelize");
 
 const router = express.Router();
 const db = require("../models/index.js");
 
 // 게시글들 불러오기
-// /api/posts/:id
+// /api/posts
 router.get("/", async (req, res, next) => {
+    const lastId = req.query.lastId;
 	try {
+        const where = {};
+        if(lastId !== 'undefined') {
+            // lastid보다 작은.. 개념? Op = operator 
+            where.id = { [Op.lt]: parseInt(lastId) };
+        }
 		const posts = await db.Post.findAll({
-			// where: {id: lastId},
+			where,
 			limit: 10,
 			order: [
                 ["createdAt", "DESC"],
@@ -40,11 +47,25 @@ router.get("/", async (req, res, next) => {
                     as: "Likers",
                     attributes: ["id"],
                 },
+
+                // 리트윗
+                {
+                    model: db.Post,
+                    as: "Retweet",
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "nickname"],
+                        },
+                        {
+                            model: db.Image
+                        }
+                    ]
+                },
 			],
 		});
-		// console.log(posts)
 		res.status(200).json(posts);
-		// res.send('server yet: 게시글들 불러오기 기능 제작중');
+
 	} catch (err) {
 		console.error(err);
 		next(err);

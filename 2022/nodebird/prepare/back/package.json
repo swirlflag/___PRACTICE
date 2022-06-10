@@ -5,7 +5,11 @@
     "main": "node.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon app.js"
+        "dev": "nodemon app.js",
+        "dbcreate": "sequelize db:create",
+        "mysqlstart": "mysql.server start",
+        "mysqlstop": "mysql.server stop",
+        "mysqlrestart": "mysql.server restart"
     },
     "author": "",
     "license": "ISC",

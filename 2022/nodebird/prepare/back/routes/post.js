@@ -7,20 +7,81 @@ const router = express.Router();
 const db = require("../models/index.js");
 
 const { isLoggedIn } = require("./middlewares.js");
+const { Post } = require("../models/index.js");
+
+try {
+    fs.accessSync("uploads");
+}catch(err) {
+    console.log("uploads 폴더 생성");
+    fs.mkdirSync("uploads");
+}
+
+const upload = multer({
+    storage: multer.diskStorage({
+        destination(req, file, done){
+            done(null, "uploads");
+        },
+        filename(req, file, done) {
+            const ext = path.extname(file.originalname); //확장자 추출 (.png, .jpg)
+            const name = path.basename(file.originalname,ext); // // 파일 이름
+            const date = new Date().getTime();
+            const fullname = name + "_" + date + ext;
+            done(null, fullname);
+        },
+    }),
+    limits: {
+        fileSize: 20 * 1024 * 1024, //20mb
+    },
+});
 
 
 // 게시글 생성
 // POST /api/post
-router.post("/", isLoggedIn, async (req, res,next) => {
+router.post("/", isLoggedIn, upload.none(), async (req, res,next) => {
+    const hashtagRegexp = /(#[^\s#]+)/g;
+    const content = req.body.content;
+    const image = req.body.image;
+    const userId = req.user.id;
+
     try {
         const post = await db.Post.create({
-			content : req.body.content,
-            UserId: req.user.id,
+			content : content,
+            UserId: userId,
 		});
+
+        if(image) {
+            let images = [];
+            if(Array.isArray(image)) {
+                images = await Promise.all(image.map((image) => (db.Image.create({src : image}))));
+            }else {
+                images = await db.Image.create({src: image});
+            }
+            await post.addImages(images);
+        }
+
+        const hashtags = content.match(hashtagRegexp);
+        if(hashtags) {
+            // 해시태그 테이블에 추가, 정리
+            const hashtagData = new Set();
+            hashtags.forEach(async (tag) => {
+                tag = tag.slice(1).toLowerCase();
+                const result = await db.Hashtag.findOrCreate({
+                    where : {name: tag},
+                });
+                hashtagData.add(result[0]); //["tag", true: 상태]
+            });
+
+            // 현재 생성중인 포스트에 해시태그 추가
+            await post.addHashtags([...hashtagData]);
+        }
 
         const responsePost = await db.Post.findOne({
             where: {id: post.id},
             include: [
+                // 게시글 이미지
+                {
+                    model: db.Image,
+                },
                 // 게시글 유저 (작성자)
                 {
                     model: db.User,
@@ -56,38 +117,12 @@ router.post("/", isLoggedIn, async (req, res,next) => {
 });
 
 
-
-try {
-    fs.accessSync("uploads");
-}catch(err) {
-    console.log("uploads 폴더 생성");
-    fs.mkdirSync("uploads");
-}
-
-const upload = multer({
-    storage: multer.diskStorage({
-        destination(req, file, done){
-            done(null, "uploads");
-        },
-        filename(req, file, done) {
-            const ext = path.extname(file.originalname); //확장자 추출 (.png, .jpg)
-            const name = path.basename(file.originalname,ext); // // 파일 이름
-            const date = new Date().getTime();
-            const fullname = name + date + ext;
-            done(null, fullname);
-        },
-    }),
-    limits: {
-        fileSize: 20 * 1024 * 1024, //20mb
-    },
-});
-
 // 이미지 업로드
 // /api/post/image
 router.post("/image" , isLoggedIn, upload.array("image"), async (req, res, next) => {
 
     const files = req.files.map((v) => v.filename);
-    res.status(201).json({files});
+    return res.status(201).json({files});
     // try {
 
     // }catch(err) {
@@ -215,6 +250,99 @@ router.delete("/:postId/like" , isLoggedIn, async (req, res, next) => {
     }
 });
 
+// 리트윗
+// POST /api/post/:postId/retweet
+router.post("/:postId/retweet", isLoggedIn , async (req, res, next) => {
+    const postId = req.params.postId;
+    const userId = req.user.id;
+    try {
+        const post = await db.Post.findOne({
+            where: { id: postId },
+            include: [
+                {
+                    model: db.Post,
+                    as: "Retweet",
+                },
+            ]
+        });
+        if(!post) {
+            return res.status(403).send('server error: 리트윗 하려는 게시글이 존재하지 않습니다');
+        }
+
+        if(userId === post.UserId || (post.Retweet && post.Retweet.UserId === userId)) {
+            return res.status(403).send("server error: 자신의 글은 리트윗 할 수 없습니다");
+        }
+
+        const retweetTargetId = post.RetweetId || post.id;
+        const exPost = await db.Post.findOne({
+            where: {
+                UserId: userId,
+                RetweetId: retweetTargetId,
+            }
+        });
+
+        if(exPost) {
+            return res.status(403).send("server error: 이미 리트윗 했습니다");
+        }
+
+        const retweetPost = await db.Post.create({
+            UserId: userId,
+            RetweetId: retweetTargetId,
+            content: "retweet"
+        });
+
+        const retweetWithPrevPost = await Post.findOne({
+            where: { id: retweetPost.id },
+            include: [
+                // 게시글 작성자
+				{
+					model: db.User,
+					attributes: ["id", "nickname"],
+				},
+                // 게시글 이미지
+				{
+					model: db.Image,
+				},
+                // 게시글 댓글
+				{
+					model: db.Comment,
+                    // 댓글 작성자
+					include: {
+						model: db.User,
+						attributes: ["id", "nickname"],
+					},
+				},
+                // 좋아요 누른 유저
+                {
+                    model: db.User,
+                    as: "Likers",
+                    attributes: ["id"],
+                },
+
+                // 리트윗
+                {
+                    model: db.Post,
+                    as: "Retweet",
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "nickname"],
+                        },
+                        {
+                            model: db.Image
+                        }
+                    ]
+                },
+            ]
+        });
+
+        return res.status(201).send(retweetWithPrevPost);
+
+    }catch(err) {
+        console.error(err);
+        next(err);
+    }
+});
 
 
 module.exports = router;

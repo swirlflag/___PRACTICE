@@ -68,6 +68,9 @@ const dynamicState = {
     isUplaodImageLoading: false,
     isUplaodImageDone: false,
     isUplaodImageError: null,
+    isRetweetLoading: false,
+    isRetweetDone: false,
+    isRetweetError: null,
 };
 
 const initialState = {
@@ -108,28 +111,6 @@ export const generateDummyPost = (number) => (
     })
 );
 
-const dummyPost = ({postId, content}) => {
-    return {
-        id: postId,
-        User: {
-            id: 10,
-            nickname: "제련소 클론 봇",
-        },
-        content,
-        Images: [],
-        Comments: [],
-        imagePaths: [],
-    }
-};
-const dummyComment = (content) => {
-    return {
-        User: {
-            nickname: "ㅇㅇ",
-        },
-        content,
-    }
-};
-
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
 export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
@@ -158,9 +139,15 @@ export const UPLOAD_IMAGE_REQUEST = "UPLOAD_IMAGE_REQUEST";
 export const UPLOAD_IMAGE_SUCCESS = "UPLOAD_IMAGE_SUCCESS";
 export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
 
-export const addPostAction = (content) => ({
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
+
+export const REMOVE_IMAGE = "REMOVE_IMAGE";
+
+export const addPostAction = (formData) => ({
 	type: ADD_POST_REQUEST,
-    data : { content },
+    data : { formData },
 });
 
 export const removePostAction = (postId) => ({
@@ -173,9 +160,14 @@ export const uploadImage = (formData) => ({
     data: { formData }
 });
 
-export const loadPostsAction = (number = 5) => ({
+export const removeImage = (index) => ({
+    type: REMOVE_IMAGE,
+    data: { index }
+});
+
+export const loadPostsAction = (lastId) => ({
     type: LOAD_POSTS_REQUEST,
-    data: { number },
+    data: { lastId },
 })
 
 export const addCommentAction = (content, postId, userId) => ({
@@ -183,6 +175,11 @@ export const addCommentAction = (content, postId, userId) => ({
     data : {
         content, postId, userId,
     },
+});
+
+export const retweetAction = (postId) => ({
+    type: RETWEET_REQUEST,
+    data: { postId },
 });
 
 export const likePostAction = (postId) => ({
@@ -207,7 +204,7 @@ const reducer = (state = initialState, action) => (
             case LOAD_POSTS_SUCCESS : {
                 // [...{ content, id, User, Images, Comments , Likers }]
                 draft.mainPosts.push(...action.data);
-                draft.isNoMorePost = draft.mainPosts.length >= 30;
+                draft.isNoMorePost = action.data.length < 10;
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = true;
                 draft.isLoadPostError = null;
@@ -229,6 +226,7 @@ const reducer = (state = initialState, action) => (
                 // { content, id, User, Images, Comments , Likers }
                 const newPost = { ...action.data};
                 draft.mainPosts.unshift(newPost);
+                draft.imagePaths = [];
                 draft.isAddPostLoading = false;
                 draft.isAddPostDone = true;
                 draft.isAddPostError = null;
@@ -336,7 +334,6 @@ const reducer = (state = initialState, action) => (
             }
             case UPLOAD_IMAGE_SUCCESS: {
                 const { files } = action.data;
-                console.log(files);
                 draft.imagePaths = files;
                 draft.isUploadImageLoading = false;
                 draft.isUploadImageDone = true;
@@ -347,6 +344,30 @@ const reducer = (state = initialState, action) => (
                 draft.isUploadImageLoading = false;
                 draft.isUploadImageDone = false;
                 draft.isUploadImageError = action.error;
+                break;
+            }
+            case RETWEET_REQUEST: {
+                draft.isRetweetLoading = true;
+                draft.isRetweetDone = false;
+                draft.isRetweetError = null;
+                break;
+            }
+            case RETWEET_SUCCESS: {
+                draft.mainPosts.unshift(action.data);
+                draft.isRetweetLoading = false;
+                draft.isRetweetDone = true;
+                draft.isRetweetError = null;
+                break;
+            }
+            case RETWEET_FAILURE: {
+                draft.isRetweetLoading = false;
+                draft.isRetweetDone = false;
+                draft.isRetweetError = action.error;
+                break;
+            }
+            case REMOVE_IMAGE: {
+                const { index } = action.data;
+                draft.imagePaths.splice(index,1);
                 break;
             }
 

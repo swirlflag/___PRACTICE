@@ -15,16 +15,22 @@ const world = {
 const Home = () => {
     const dispatch = useDispatch();
 	const { isLogin } = useSelector((state) => (state.user));
-    const { mainPosts, isLoadPostLoading, isNoMorePost } = useSelector((state) => (state.post));
+    const { mainPosts, isLoadPostLoading, isNoMorePost, isRetweetError } = useSelector((state) => (state.post));
 
     useEffect(() => {
-        dispatch(loadPostsAction(10));
+        dispatch(loadPostsAction());
     },[]);
 
     useEffect(() => {
         world.isLoadPostLoading = isLoadPostLoading;
         world.isNoMorePost = isNoMorePost;
     }, [isLoadPostLoading,isNoMorePost]);
+
+    useEffect(() => {
+        if(isRetweetError) {
+            alert(isRetweetError)
+        }
+    }, [isRetweetError]);
 
     useEffect(() => {
         const scrollEndDistance = 400;
@@ -35,16 +41,16 @@ const Home = () => {
             const { scrollY } = window;
             const { scrollHeight , clientHeight } = document.scrollingElement;
             const isScrollNeedMorePost = scrollY >= scrollHeight - clientHeight - scrollEndDistance;
-
+            const lastId = mainPosts[mainPosts.length - 1].id;
             if(isScrollNeedMorePost) {
-                dispatch(loadPostsAction(10));
+                dispatch(loadPostsAction(lastId));
             }
         };
         window.addEventListener('scroll', onScroll);
         return () => {
             window.removeEventListener('scroll', onScroll);
         }
-    },[]);
+    },[mainPosts]);
 
 	return (
 		<AppLayout>

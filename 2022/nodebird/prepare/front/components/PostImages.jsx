@@ -20,6 +20,9 @@ const ImagesWrap = styled.div`
 		align-items: center;
 	}
 `;
+const withHost = (src) => {
+    return `http://localhost:3065/${src}`;
+};
 
 const PostImages = (props) => {
 	const { images } = props;
@@ -38,14 +41,14 @@ const PostImages = (props) => {
 			<ImagesWrap>
 				<img
 					role="presentation"
-					src={images[0].src}
-					alt={images[0].src}
+					src={withHost(images[0].src)}
+					alt={withHost(images[0].src)}
 				/>
 				{images.length === 2 && (
 					<img
 						role="presentation"
-						src={images[1].src}
-						alt={images[1].src}
+						src={withHost(images[1].src)}
+						alt={withHost(images[1].src)}
 					/>
 				)}
 				{images.length > 2 && (

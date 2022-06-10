@@ -12,6 +12,10 @@ import {
     Indicator,
 } from './styles.js';
 
+const withHost = (src) => {
+    return `http://localhost:3065/${src}`;
+};
+
 const ImagesZoom = (props) => {
 	const { images, onClose } = props;
 
@@ -36,7 +40,7 @@ const ImagesZoom = (props) => {
 						{images.map((image, idx) => {
 							return (
 								<ImageWrapper key={image.src + idx}>
-									<img src={image.src} alt={image.src} />
+									<img src={withHost(image.src)} alt={withHost(image.src)} />
 								</ImageWrapper>
 							);
 						})}

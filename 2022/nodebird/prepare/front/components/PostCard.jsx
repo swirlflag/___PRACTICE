@@ -10,7 +10,7 @@ import {
 	HeartTwoTone,
 } from "@ant-design/icons";
 
-import { removePostAction } from '../reducers/post';
+import { removePostAction , retweetAction } from '../reducers/post';
 import { likePostAction, unlikePostAction } from "../reducers/post.js";
 
 import PostImages from "./PostImages";
@@ -18,10 +18,28 @@ import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import FollowButton from './FollowButton';
 
+const RetweetCard = (props) => {
+    const {
+        post,
+    } = props;
+
+    return (
+        <Card
+            cover={post.Images[0] && <PostImages images={post.Images}/>}
+        >
+            <Card.Meta
+                avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+                title={post.User.nickname}
+                description={<PostCardContent postData={post.content} />}
+            />
+        </Card>
+    )
+}
+
 const PostCard = (props) => {
     const dispatch = useDispatch();
     const { isLogin } = useSelector((state) => state.user);
-    const { isRemovePostLoading , isLikeError , isUnlikeError} = useSelector((state) => state.post);
+    const { isRemovePostLoading , isLikeError , isUnlikeError , isRetweetError} = useSelector((state) => state.post);
 	const user = useSelector((state) => state.user);
 	const userId = useMemo(() => user?.me.id, [user]);
 	const { post } = props;
@@ -33,23 +51,39 @@ const PostCard = (props) => {
 
     const onLike = useCallback(() => {
         if(!isLogin) {
-            alert('front error: 로그인이 필요합니다.');
+            alert("로그인이 필요합니다");
             return;
         }
         dispatch(likePostAction(post.id));
     },[isLogin]);
 
     const onUnlike = useCallback(() => {
+        if(!isLogin) {
+            alert("로그인이 필요합니다");
+            return;
+        }
         dispatch(unlikePostAction(post.id));
-    },[]);
+    },[isLogin]);
 
 	const onToggleComment = useCallback(() => {
 		setCommentFormOpened((prev) => !prev);
-	}, []);
+	}, [isLogin]);
 
     const onRemovePost = useCallback(() => {
+        if(!isLogin) {
+            alert("로그인이 필요합니다");
+            return;
+        }
         dispatch(removePostAction(post.id));
-    }, []);
+    }, [isLogin]);
+
+    const onRetweet = useCallback((postId) => () => {
+        if(!isLogin) {
+            alert("로그인이 필요합니다");
+            return;
+        }
+        dispatch(retweetAction(postId));
+    }, [isLogin]);
 
 	return (
 		<>
@@ -57,7 +91,7 @@ const PostCard = (props) => {
                 style={{marginTop: 20}}
 				cover={post.Images[0] && <PostImages images={post.Images} />}
 				actions={[
-					<RetweetOutlined key="retweet" />,
+					<RetweetOutlined key="retweet" onClick={onRetweet(post.id)}/>,
 					liked ? (
 						<HeartTwoTone
 							twoToneColor="red"
@@ -86,16 +120,24 @@ const PostCard = (props) => {
 					</Popover>,
 				]}
                 extra={(isLogin && post.User.id !== userId) && <FollowButton post={post}/>}
+                title={post.RetweetId && `${post.User.nickname}님이 리트윗 하셨습니다.`}
 			>
 				{/* <Image></Image> */}
 				{/* <Content></Content> */}
 				{/* <Buttons></Buttons> */}
-				<Card.Meta
-					avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-					title={post.User.nickname}
-					description={<PostCardContent postData={post.content} />}
-				/>
+                POST ID: {post.id}
+                {
+                    post.RetweetId ?
+                    <RetweetCard post={post.Retweet}/>
+                    :
+                    <Card.Meta
+                        avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+                        title={post.User.nickname}
+                        description={<PostCardContent postData={post.content} />}
+                    />
+                }
 			</Card>
+
 			{commentFormOpened && (
 				<div>
 					{isLogin ? <CommentForm post={post} /> : <div>로그인 하시면 댓글을 다실수 있습니다</div>}

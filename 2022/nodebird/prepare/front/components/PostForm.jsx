@@ -3,14 +3,14 @@ import { useInput } from '../hooks';
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useDidUpdateEffect } from "../hooks";
-import { addPostAction, uploadImage } from "../reducers/post";
+import { addPostAction, uploadImage, removeImage } from "../reducers/post";
 import { CommentForm } from './CommentForm';
 
 const PostForm = (props) => {
     const dispatch = useDispatch();
 
 	const [text, onChangeText, setText] = useInput("");
-	const { imagePaths, isAddPostLoading, isAddPostDone, isUploadIamgeDone } = useSelector((state) => state.post);
+	const { imagePaths, isAddPostLoading, isAddPostDone, } = useSelector((state) => state.post);
     const $imageInput = useRef(null);
 
     const onClickImageUpload = useCallback((event) => {
@@ -18,8 +18,14 @@ const PostForm = (props) => {
     },[$imageInput.current]);
 
     const onSubmit = useCallback(() => {
-		dispatch(addPostAction(text));
-	}, [text]);
+        const formData = new FormData();
+        imagePaths.forEach((v) => {
+            formData.append("image" , v);
+        });
+        formData.append("content" , text);
+        console.log(formData);
+		dispatch(addPostAction(formData));
+	}, [text,imagePaths]);
 
     const onChangeImage = useCallback((e) => {
         const formData = new FormData();
@@ -28,9 +34,12 @@ const PostForm = (props) => {
             const encodeName = encodeURI(encodeURIComponent(file.name));
             formData.append("image" , file);
         });
-        console.log(formData);
 
         dispatch(uploadImage(formData));
+    },[]);
+
+    const onRemoveImage = useCallback((index) => () => {
+        dispatch(removeImage(index));
     },[]);
 
     useEffect(() => {
@@ -38,12 +47,6 @@ const PostForm = (props) => {
             setText("");
         }
     }, [isAddPostDone]);
-
-    useDidUpdateEffect(() => {
-        if(isUploadIamgeDone) {
-            setImagePaths([]);
-        }
-    },[isUploadIamgeDone]);
 
 	return (
 		<Form
@@ -72,11 +75,11 @@ const PostForm = (props) => {
 				</Button>
 			</div>
 			<div>
-				{imagePaths.map((value) => (
+				{imagePaths.map((value,index) => (
                     <div key={value} style={{ display: "inline-block" }}>
 						<img src={`http://localhost:3065/${value}`} style={{ width: "200px" }} alt="" />
                         <div>
-                            <Button>제거</Button>
+                            <Button onClick={onRemoveImage(index)}>제거</Button>
                         </div>
                     </div>
 				))}
