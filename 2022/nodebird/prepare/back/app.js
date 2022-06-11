@@ -57,10 +57,9 @@ app.use('/api/post', postRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/user', userRouter);
 
-app.get('/api/test' , (req, res, next) => {
-    // console.log(Math.floor(Math.random() * 10));
-    const n = Math.floor(Math.random() * 10);
-    return res.send({number: n});
+app.get('/api/test' , (req, res) => {
+    const n = Math.round(Math.random() * 10);
+    return res.status(200).send({number: n});
 });
 
 // error 미들웨어 : next에 변수가 오면 이곳으로이동 (이미 자동으로 있긴함)

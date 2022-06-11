@@ -7,22 +7,20 @@ import post from './post';
 
 const initialState = {
 };
-const rootReducer = combineReducers({
-    index: (state = initialState, action) => {
-        switch (action.type) {
-            case HYDRATE: {
-                return {
-                    ...state,
-                    ...action.payload,
-                };
-            }
-            default: {
-                return state;
-            }
+const rootReducer = (state, action) => {
+    switch (action.type) {
+        case HYDRATE: {
+            // console.log("HYDRATE")
+            return action.payload; // { user , post}
         }
-    },
-    user,
-    post,
-})
+        default: {
+            const combineReducer = combineReducers({
+                user,
+                post,
+            });
+            return combineReducer(state, action);
+        }
+    }
+};
 
 export default rootReducer;

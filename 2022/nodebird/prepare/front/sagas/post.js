@@ -52,6 +52,7 @@ function* loadPosts(action) {
             data: resData,
         });
     }catch(err) {
+        console.error(err);
         yield put({
             type: LOAD_POSTS_FAILURE,
             error: err.response.data,
@@ -63,8 +64,6 @@ function* addPost(action) {
     const { formData } = action.data;
 	try {
 		const { data : resData } = yield call(API_addPost, formData);
-        console.log(resData);
-
 		yield put({
 			type: ADD_POST_SUCCESS,
             data: resData,
@@ -74,7 +73,7 @@ function* addPost(action) {
             data: { id: resData.id },
 		});
 	} catch (err) {
-        console.log(err);
+        console.error(err);
 		yield put({
 			type: ADD_POST_FAILURE,
             error: err.response.data,

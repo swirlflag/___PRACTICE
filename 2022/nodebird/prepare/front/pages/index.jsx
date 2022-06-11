@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect } from 'react';
-// import Head from "next/head";
+import { END } from "redux-saga";
 import { useDispatch, useSelector } from "react-redux";
+import wrapper from "../store/configureStore";
+// import Head from "next/head";
 import { loadPostsAction } from '../reducers/post';
 import AppLayout from "../components/AppLayout";
 
 import PostForm  from "../components/PostForm";
 import PostCard from "../components/PostCard";
+import axios from 'axios';
 
 const world = {
     isLoadPostLoading : false,
@@ -16,10 +19,6 @@ const Home = () => {
     const dispatch = useDispatch();
 	const { isLogin } = useSelector((state) => (state.user));
     const { mainPosts, isLoadPostLoading, isNoMorePost, isRetweetError } = useSelector((state) => (state.post));
-
-    useEffect(() => {
-        dispatch(loadPostsAction());
-    },[]);
 
     useEffect(() => {
         world.isLoadPostLoading = isLoadPostLoading;
@@ -76,4 +75,17 @@ const Home = () => {
 	);
 };
 
+// SSR next 문법
+// export const getServerSideProps = async (context) => {
+//     return {
+//         props: {  }
+//     }
+// }
+export const getServerSideProps = wrapper.getServerSideProps((store) => async () => {
+    store.dispatch(loadPostsAction());
+    store.dispatch(END);
+    await store.sagaTask.toPromise();
+});
+
 export default Home;
+

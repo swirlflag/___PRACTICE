@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import wrapper from "../store/configureStore";
 import Link from "next/link";
 import { Form, Input, Button } from "antd";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { useInput, useDidUpdateEffect } from '/hooks';
 
 import { loginAction , loginSuccessAction} from "/reducers/user";
@@ -70,6 +71,14 @@ const LoginForm = (props) => {
 		</FormWrapper>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps((context) => async (c) => {
+console.log(1)
+    // console.log(Object.keys(c));
+    // context.dispatch(loadPostsAction());
+    // context.dispatch(END);
+    // await context.sagaTask.toPromise();
+});
 
 LoginForm.propTypes = {
 	// setIsLoggedIn: PropTypes.func.isRequired,

@@ -30,6 +30,10 @@ const SearchInput = styled(Input.Search)`
 const Mymenu = () => {
 	const onSearch = (e) => {};
 
+    const style = {
+        position: "sticky", top: 0, zIndex: 2
+    }
+
 	const items = [
 		{
 			label: (
@@ -64,7 +68,7 @@ const Mymenu = () => {
 		items,
 	};
 
-	return <Menu {...options} />;
+	return <Menu {...options} style={style}/>;
 };
 
 const AppLayout = (props) => {
@@ -80,7 +84,9 @@ const AppLayout = (props) => {
 			<Mymenu />
 			<Row gutter={[8]}>
 				<Col xs={24} md={6}>
-					{isLogin ? <UserProfile /> : <LoginForm />}
+                    <div style={{position: 'sticky', top: '46px',}}>
+                        {isLogin ? <UserProfile /> : <LoginForm />}
+                    </div>
 				</Col>
 				<Col xs={24} md={12}>
 					{children}
