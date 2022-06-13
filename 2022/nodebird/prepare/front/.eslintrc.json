@@ -36,6 +36,7 @@
         "import/prefer-default-export" : "off",
         "default-param-last": "off",
         "arrow-body-style": "off",
-        "camelcase": "off"
+        "camelcase": "off",
+        "ignoreDuringBuilds": true
 	}
 }

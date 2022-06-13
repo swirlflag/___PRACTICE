@@ -72,14 +72,6 @@ const LoginForm = (props) => {
 	);
 };
 
-export const getServerSideProps = wrapper.getServerSideProps((context) => async (c) => {
-console.log(1)
-    // console.log(Object.keys(c));
-    // context.dispatch(loadPostsAction());
-    // context.dispatch(END);
-    // await context.sagaTask.toPromise();
-});
-
 LoginForm.propTypes = {
 	// setIsLoggedIn: PropTypes.func.isRequired,
 };

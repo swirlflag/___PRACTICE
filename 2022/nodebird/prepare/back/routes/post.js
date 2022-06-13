@@ -34,7 +34,6 @@ const upload = multer({
     },
 });
 
-
 // 게시글 생성
 // POST /api/post
 router.post("/", isLoggedIn, upload.none(), async (req, res,next) => {
@@ -63,13 +62,13 @@ router.post("/", isLoggedIn, upload.none(), async (req, res,next) => {
         if(hashtags) {
             // 해시태그 테이블에 추가, 정리
             const hashtagData = new Set();
-            hashtags.forEach(async (tag) => {
-                tag = tag.slice(1).toLowerCase();
+            await Promise.all(hashtags.map(async (tag) => {
                 const result = await db.Hashtag.findOrCreate({
-                    where : {name: tag},
+                    where : {name: tag.slice(1)},
                 });
-                hashtagData.add(result[0]); //["tag", true: 상태]
-            });
+                hashtagData.add(result[0]);
+                return;
+            }));
 
             // 현재 생성중인 포스트에 해시태그 추가
             await post.addHashtags([...hashtagData]);
@@ -111,11 +110,10 @@ router.post("/", isLoggedIn, upload.none(), async (req, res,next) => {
 
         return res.status(201).json(responsePost);
     }catch(err) {
-        console.error(err);
+        console.error(err, err.response);
 		return next(err); // status 500
     }
 });
-
 
 // 이미지 업로드
 // /api/post/image
@@ -341,6 +339,70 @@ router.post("/:postId/retweet", isLoggedIn , async (req, res, next) => {
     }catch(err) {
         console.error(err);
         next(err);
+    }
+});
+
+// 타겟 포스트 가져오기
+// GET /api/post/:postId
+router.get("/:postId", async (req, res, next) => {
+    const postId = req.params.postId && parseInt(req.params.postId);
+    console.log(postId)
+    try {
+        const post = await db.Post.findOne({
+            where: {id: postId},
+        });
+
+        if(!post) {
+            return res.status(403).send("server error: 존재하지 않는 포스트 입니다.");
+        }
+
+        const fullPost = await db.Post.findOne({
+            where:  {id: postId},
+            include: [
+                {
+                    model: db.Post,
+                    as: "Retweet",
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "nickname"],
+                        },
+                        {
+                            model: db.Image,
+                        }
+                    ]
+                },
+                {
+                    model: db.Comment,
+                    include: [
+                        {
+                            model: db.User,
+                            attributes: ["id", "nickname"],
+                        }
+                    ]
+                },
+                {
+                    model: db.User,
+                    attributes: ["id", "nickname"],
+                },
+                {
+                    model: db.User,
+                    as: "Likers",
+                },
+                // {
+                //     model: db.User,
+                //     as: "Liked",
+                // },
+                {
+                    model: db.Image,
+                },
+            ]
+        });
+
+        return res.status(200).json(fullPost);
+    }catch(err) {
+        console.error(err);
+        return next(err);
     }
 });
 

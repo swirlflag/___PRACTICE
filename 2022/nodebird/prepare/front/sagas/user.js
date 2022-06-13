@@ -11,6 +11,7 @@ import {
 
 import {
     LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE,
+    LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
 	LOG_IN_REQUEST, LOG_IN_SUCCESS, LOG_IN_FAILURE,
 	LOG_OUT_REQUEST, LOG_OUT_SUCCESS, LOG_OUT_FAILURE,
     SIGN_UP_REQUEST, SIGN_UP_SUCCESS, SIGN_UP_FAILURE,
@@ -33,8 +34,11 @@ const API_login = (email,password) => {
 const API_logout = () => {
 	return axios.post("/api/user/logout");
 };
-const API_loadUser = () => {
+const API_loadMyInfo = () => {
     return axios.get("/api/user");
+}
+const API_loadUser = (userId) => {
+    return axios.get(`/api/user/${userId}`);
 }
 const API_signup = (email,password, nickname) => {
     return axios.post("/api/user", { email, password, nickname});
@@ -59,21 +63,36 @@ const API_loadFollowings = () => {
 };
 
 // flow
-function* loadUser() {
+function* loadMyInfo() {
     try {
-		const { data: resData } = yield call(API_loadUser);
+		const { data: resData } = yield call(API_loadMyInfo);
         yield put({
             type: LOAD_MY_INFO_SUCCESS,
             data: resData,
         });
 	} catch (err) {
+        console.error(err);
 		yield put({
 			type: LOAD_MY_INFO_FAILURE,
 			error: err.response.data,
 		});
 	}
 };
-
+function* loadUser(action) {
+    const { userId } = action.data;
+    try {
+		const { data: resData } = yield call(API_loadUser,userId);
+        yield put({
+            type: LOAD_USER_SUCCESS,
+            data: resData,
+        });
+	} catch (err) {
+		yield put({
+			type: LOAD_USER_FAILURE,
+			error: err.response.data,
+		});
+	}
+};
 function* login(action) {
     const { email, password } = action.data;
 	try {
@@ -89,7 +108,6 @@ function* login(action) {
 		});
 	}
 };
-
 function* logout() {
 	try {
 		yield call(API_logout);
@@ -103,7 +121,6 @@ function* logout() {
 		});
 	}
 };
-
 function* signup(action) {
     const { email, password, nickname } = action.data;
     try {
@@ -118,7 +135,6 @@ function* signup(action) {
         });
     }
 };
-
 function* signout(action) {
     try {
         // yield call(API_logout );
@@ -132,7 +148,6 @@ function* signout(action) {
         });
     }
 };
-
 function* follow(action) {
     const { followId } = action.data;
     try {
@@ -149,7 +164,6 @@ function* follow(action) {
         });
     }
 };
-
 function* unfollow(action) {
     const { followId } = action.data;
     try {
@@ -182,7 +196,6 @@ function* removeFollower(action) {
         });
     }
 };
-
 function* changeNickname(action) {
     const { nickname } = action.data;
     try {
@@ -199,11 +212,9 @@ function* changeNickname(action) {
         });
     }
 };
-
 function* loadFollowings() {
     try {
         const { data: resData } = yield call(API_loadFollowings);
-        console.log(resData);
         yield put({
             type: LOAD_FOLLOWINGS_SUCCESS,
             data: resData,
@@ -216,7 +227,6 @@ function* loadFollowings() {
         });
     }
 };
-
 function* loadFollowers() {
     try {
         const { data: resData } = yield call(API_loadFollowers);
@@ -233,13 +243,17 @@ function* loadFollowers() {
     }
 };
 
+
 // watch
+function* watchLoadMyInfoAction() {
+    yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+};
 function* watchLoadUserAction() {
-    yield takeLatest(LOAD_MY_INFO_REQUEST, loadUser);
-}
+    yield takeLatest(LOAD_USER_REQUEST, loadUser);
+};
 function* watchLoginAction() {
 	yield takeLatest(LOG_IN_REQUEST, login);
-}
+};
 function* watchLogoutAction() {
 	yield takeLatest(LOG_OUT_REQUEST, logout);
 };
@@ -276,10 +290,11 @@ export default function* userSaga() {
         fork(watchSignoutAction),
         fork(watchFollowAction),
         fork(watchUnfollowAction),
-        fork(watchLoadUserAction),
+        fork(watchLoadMyInfoAction),
         fork(watchChangeNickname),
         fork(watchLoadFollowers),
         fork(watchLoadFollowings),
         fork(watchRemoveFollowerAction),
+        fork(watchLoadUserAction),
     ]);
 }

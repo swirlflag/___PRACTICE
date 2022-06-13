@@ -1,19 +1,19 @@
 const express = require("express");
-const { nextTick } = require("process");
+const router = express.Router();
 const { Op } = require("sequelize");
 
-const router = express.Router();
 const db = require("../models/index.js");
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares.js");
 
-// 게시글들 불러오기
-// /api/posts
-router.get("/", async (req, res, next) => {
+router.get("/:hashtag", async (req, res, next) => {
     const lastId = req.query.lastId;
+    const hashtag = decodeURIComponent(req.params.hashtag);
+
 	try {
         const where = {};
         if(lastId !== "undefined") {
-            // lastid보다 작은쪽으로 찾아주는 개념? Op = operator 
-            where.id = { [Op.lt]: parseInt(lastId) };
+            // lastid보다 작은쪽으로 찾아주는 개념? Op = operator
+            where.id = { [Op.lt]: parseInt(lastId,10) };
         }
 
 		const posts = await db.Post.findAll({
@@ -24,6 +24,10 @@ router.get("/", async (req, res, next) => {
                 [db.Comment ,"createdAt", "DESC"],
             ],
 			include: [
+                {
+                    model: db.Hashtag,
+                    where: { name: hashtag },
+                },
                 // 게시글 작성자
 				{
 					model: db.User,
@@ -48,7 +52,6 @@ router.get("/", async (req, res, next) => {
                     as: "Likers",
                     attributes: ["id"],
                 },
-
                 // 리트윗
                 {
                     model: db.Post,
@@ -65,11 +68,12 @@ router.get("/", async (req, res, next) => {
                 },
 			],
 		});
-		res.status(200).json({posts});
+
+		return res.status(200).json({posts});
 
 	} catch (err) {
 		console.error(err);
-		next(err);
+		return next(err);
 	}
 });
 

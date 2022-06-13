@@ -1,6 +1,6 @@
 import produce from "immer";
 
-const emptyMe = {
+const emptyUser = {
     id: null,
     email: null,
     nickname: null,
@@ -10,6 +10,9 @@ const emptyMe = {
 };
 
 const dynamicStates = {
+    isLoadMyInfoLoading: false,
+    isLoadMyInfoDone: false,
+    isLoadMyInfoError: false,
     isLoadUserLoading: false,
     isLoadUserDone: false,
     isLoadUserError: false,
@@ -49,9 +52,8 @@ const initialState = {
     ...dynamicStates,
 
     isLogin: false,
-    me: {
-        ...emptyMe
-    },
+    me: {...emptyUser},
+    userInfo: {...emptyUser},
     signUpData: {},
     loginData: {},
 };
@@ -75,6 +77,10 @@ const dummyUser = (data) => ({
 export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
 export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
 export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
+
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST";
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS";
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -119,8 +125,12 @@ export const REMOVE_FOLLOWER_REQUEST = "REMOVE_FOLLOWER_REQUEST";
 export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
 export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
 
-export const loadUserAction = () => ({
+export const loadMyInfoAction = () => ({
     type: LOAD_MY_INFO_REQUEST,
+});
+export const loadUserAction = (userId) => ({
+    type: LOAD_USER_REQUEST,
+    data: { userId },
 });
 export const loginAction = (email, password) => ({
 	type: LOG_IN_REQUEST,
@@ -160,9 +170,9 @@ const reducer = (state = initialState, action) => (
     produce(state, (draft) => {
         switch (action.type) {
             case LOAD_MY_INFO_REQUEST: {
-                draft.isLoadUserLoading = true;
-                draft.isLoadUserDone = false;
-                draft.isLoadUserError = null;
+                draft.isLoadMyInfoLoading = true;
+                draft.isLoadMyInfoDone = false;
+                draft.isLoadMyInfoError = null;
                 break;
             }
             case LOAD_MY_INFO_SUCCESS: {
@@ -171,13 +181,33 @@ const reducer = (state = initialState, action) => (
                     draft.me = action.data
                 }
                 draft.isLogin = isLogin;
+                draft.isLoadMyInfoLoading = false;
+                draft.isLoadMyInfoDone = true;
+                draft.isLoadMyInfoError = null;
+                break;
+            }
+            case LOAD_MY_INFO_FAILURE: {
+                draft.isLogin = false;
+                draft.isLoadMyInfoLoading = false;
+                draft.isLoadMyInfoDone = false;
+                draft.isLoadMyInfoError = action.error;
+                break;
+            }
+            case LOAD_USER_REQUEST: {
+                draft.isLoadUserLoading = true;
+                draft.isLoadUserDone = false;
+                draft.isLoadUserError = null;
+                break;
+            }
+            case LOAD_USER_SUCCESS: {
+                const { user } = action.data;
+                draft.userInfo = user;
                 draft.isLoadUserLoading = false;
                 draft.isLoadUserDone = true;
                 draft.isLoadUserError = null;
                 break;
             }
-            case LOAD_MY_INFO_FAILURE: {
-                draft.isLogin = false;
+            case LOAD_USER_FAILURE: {
                 draft.isLoadUserLoading = false;
                 draft.isLoadUserDone = false;
                 draft.isLoadUserError = action.error;
@@ -199,7 +229,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LOG_IN_FAILURE: {
-                draft.me = {...emptyMe,};
+                draft.me = {...emptyUser,};
                 draft.isLoginLoading = false;
                 draft.isLoginDone = false;
                 draft.isLoginError = action.error;
@@ -212,7 +242,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case LOG_OUT_SUCCESS: {
-                draft.me = {...emptyMe,};
+                draft.me = {...emptyUser,};
                 draft.isLogin = false;
                 draft.isLogoutLoading = false;
                 draft.isLogoutDone = true;
@@ -232,7 +262,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case SIGN_UP_SUCCESS: {
-                draft.me = { ...emptyMe };
+                draft.me = { ...emptyUser };
                 draft.isLogin = false;
                 draft.isSignupLoading = false;
                 draft.isSignupDone = true;
@@ -252,7 +282,7 @@ const reducer = (state = initialState, action) => (
                 break;
             }
             case SIGN_OUT_SUCCESS: {
-                draft.me = {...emptyMe};
+                draft.me = {...emptyUser};
                 draft.isLogin = false;
                 draft.isSignoutLoading = false;
                 draft.isSignoutDone = true;

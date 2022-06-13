@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -9,7 +10,7 @@ import { logoutAction } from "/reducers/user";
 const UserProfile = (props) => {
 	const dispatch = useDispatch();
 
-    const { me, isLogoutLoading } = useSelector((state) => state.user);
+	const { me, isLogoutLoading } = useSelector((state) => state.user);
 
 	const onLogout = useCallback(() => {
 		dispatch(logoutAction());
@@ -19,19 +20,32 @@ const UserProfile = (props) => {
 		<Card
 			actions={[
 				<div key="twit">
-					짹쨱
-					<br />
-                    {me.Posts.length}
+					<Link href={`/user/${me.id}`}>
+						<a>
+                            트윗
+                            <br />
+                            {me.Posts.length}
+                        </a>
+					</Link>
 				</div>,
 				<div key="followings">
-					팔로잉
+					<Link href="/profile">
+						<a>
+							팔로잉
+							<br />
+							{me.Followings.length}
+						</a>
+					</Link>
 					<br />
-                    {me.Followings.length}
 				</div>,
 				<div key="followers">
-					팔로워
-					<br />
-                    {me.Followers.length}
+					<Link href="/profile">
+						<a>
+                            팔로워
+                            <br />
+                            {me.Followers.length}
+                        </a>
+					</Link>
 				</div>,
 			]}
 		>
@@ -39,7 +53,9 @@ const UserProfile = (props) => {
 				avatar={<Avatar>{me.nickname || me.id}</Avatar>}
 				title={me.nickname || me.id}
 			/>
-			<Button onClick={onLogout} loading={isLogoutLoading}>로그아웃</Button>
+			<Button onClick={onLogout} loading={isLogoutLoading}>
+				로그아웃
+			</Button>
 		</Card>
 	);
 };

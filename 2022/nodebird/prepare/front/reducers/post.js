@@ -1,52 +1,61 @@
-import shortid from 'shortid';
+// import shortid from 'shortid';
 import produce from 'immer';
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
 
-const mainPostsExample = [
-    {
-        id: 1,
-        User: {
-            id: 10,
-            nickname: "제련소",
-        },
-        content: "첫번째 게시글 입니다.. #첫번째 #해시태그_되나?",
-        Images: [
-            {
-                src: "https://i.picsum.photos/id/702/800/800.jpg?hmac=I3zFzdBlDPMNZCcLdhkhcOmpV1rGpMXY557ilz9JA9Y",
-            },
-            {
-                src: "https://i.picsum.photos/id/960/800/800.jpg?hmac=Wk7vp2DErAMJMv3rV1_OivBuvOWrAOLY0KqRYh_W77o",
-            },
-            {
-                src: "https://i.picsum.photos/id/876/800/800.jpg?hmac=On__m7iyhPlTIQpzjmHwRHqB1HvqSQaA3SvHzPIClMM",
-            },
-        ],
-        Comments: [
-            {
-                User: {
-                    nickname: "ㅇㅇ",
-                },
-                content: "안녕하세요",
-            },
-            {
-                User: {
-                    nickname: "ㅇㅇ2",
-                },
-                content: "안녕하세요2",
-            },
-            {
-                User: {
-                    nickname: "ㅇㅇ3~",
-                },
-                content: "안녕하세요3~ㅎㅎ",
-            },
-        ],
-        imagePaths: [],
-    },
-]
+// const mainPostsExample = [
+//     {
+//         id: 1,
+//         User: {
+//             id: 10,
+//             nickname: "제련소",
+//         },
+//         content: "첫번째 게시글 입니다.. #첫번째 #해시태그_되나?",
+//         Images: [
+//             {
+//                 src: "https://i.picsum.photos/id/702/800/800.jpg?hmac=I3zFzdBlDPMNZCcLdhkhcOmpV1rGpMXY557ilz9JA9Y",
+//             },
+//             {
+//                 src: "https://i.picsum.photos/id/960/800/800.jpg?hmac=Wk7vp2DErAMJMv3rV1_OivBuvOWrAOLY0KqRYh_W77o",
+//             },
+//             {
+//                 src: "https://i.picsum.photos/id/876/800/800.jpg?hmac=On__m7iyhPlTIQpzjmHwRHqB1HvqSQaA3SvHzPIClMM",
+//             },
+//         ],
+//         Comments: [
+//             {
+//                 User: {
+//                     nickname: "ㅇㅇ",
+//                 },
+//                 content: "안녕하세요",
+//             },
+//             {
+//                 User: {
+//                     nickname: "ㅇㅇ2",
+//                 },
+//                 content: "안녕하세요2",
+//             },
+//             {
+//                 User: {
+//                     nickname: "ㅇㅇ3~",
+//                 },
+//                 content: "안녕하세요3~ㅎㅎ",
+//             },
+//         ],
+//         imagePaths: [],
+//     },
+// ]
 
-const dynamicState = {
+const requestStates = {
     isNoMorePost: false,
+    isLoadPostsLoading: false,
+    isLoadPostsDone: false,
+    isLoadPostsError: null,
+    // isLoadUserPostsLoading: false,
+    // isLoadUserPostsDone: false,
+    // isLoadUserPostsError: null,
+    // isLoadHashtagPostsLoading: false,
+    // isLoadHashtagPostsDone: false,
+    // isLoadHashtagPostsError: null,
     isLoadPostLoading: false,
     isLoadPostDone: false,
     isLoadPostError: null,
@@ -74,46 +83,59 @@ const dynamicState = {
 };
 
 const initialState = {
-    ...dynamicState,
+    ...requestStates,
 	mainPosts: [],
+    singlePost: {},
     imagePaths: [],
 };
 
-export const generateDummyPost = (number) => (
-    new Array(number).fill().map(() => {
-        const dummey = {
-			id: shortid.generate(),
-			User: {
-				id: faker.datatype.number(),
-				nickname: faker.name.findName(),
-			},
-			content: faker.lorem.paragraph(),
-			Images: [
-                {
-                    src : `https://via.placeholder.com/100/${faker.color.rgb().split('#')[1]}`,
-                },
-                {
-                    src: faker.image.image(),
-                },
-            ],
-			Comments: [
-                {
-                    User: {
-                        id : shortid.generate(),
-                        nickname: faker.name.findName(),
-                    },
-                    content: faker.lorem.sentence(),
-                },
-            ],
-			imagePaths: [],
-		};
-        return dummey;
-    })
-);
+// export const generateDummyPost = (number) => (
+//     new Array(number).fill().map(() => {
+//         const dummey = {
+// 			id: shortid.generate(),
+// 			User: {
+// 				id: faker.datatype.number(),
+// 				nickname: faker.name.findName(),
+// 			},
+// 			content: faker.lorem.paragraph(),
+// 			Images: [
+//                 {
+//                     src : `https://via.placeholder.com/100/${faker.color.rgb().split('#')[1]}`,
+//                 },
+//                 {
+//                     src: faker.image.image(),
+//                 },
+//             ],
+// 			Comments: [
+//                 {
+//                     User: {
+//                         id : shortid.generate(),
+//                         nickname: faker.name.findName(),
+//                     },
+//                     content: faker.lorem.sentence(),
+//                 },
+//             ],
+// 			imagePaths: [],
+// 		};
+//         return dummey;
+//     })
+// );
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
 export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
+
+export const LOAD_USER_POSTS_REQUEST = "LOAD_USER_POSTS_REQUEST";
+export const LOAD_USER_POSTS_SUCCESS = "LOAD_USER_POSTS_SUCCESS";
+export const LOAD_USER_POSTS_FAILURE = "LOAD_USER_POSTS_FAILURE";
+
+export const LOAD_HASHTAG_POSTS_REQUEST = "LOAD_HASHTAG_POSTS_REQUEST";
+export const LOAD_HASHTAG_POSTS_SUCCESS = "LOAD_HASHTAG_POSTS_SUCCESS";
+export const LOAD_HASHTAG_POSTS_FAILURE = "LOAD_HASHTAG_POSTS_FAILURE";
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -168,7 +190,20 @@ export const removeImage = (index) => ({
 export const loadPostsAction = (lastId) => ({
     type: LOAD_POSTS_REQUEST,
     data: { lastId },
-})
+});
+export const loadUserPostsAction = (userId, lastId) => ({
+    type: LOAD_USER_POSTS_REQUEST,
+    data: { userId , lastId},
+});
+export const loadHashtagPostsAction = (hashtag, lastId) => ({
+    type: LOAD_HASHTAG_POSTS_REQUEST,
+    data: { hashtag , lastId},
+});
+
+export const loadPostAction = (postId) => ({
+    type: LOAD_POST_REQUEST,
+    data: { postId },
+});
 
 export const addCommentAction = (content, postId, userId) => ({
 	type: ADD_COMMENT_REQUEST,
@@ -195,22 +230,84 @@ export const unlikePostAction = (postId) => ({
 const reducer = (state = initialState, action) => (
     produce(state , (draft) => {
         switch (action.type) {
-            case LOAD_POSTS_REQUEST : {
+            case LOAD_POSTS_REQUEST :
+            case LOAD_USER_POSTS_REQUEST :
+            case LOAD_HASHTAG_POSTS_REQUEST : {
+                draft.isLoadPostsLoading = true;
+                draft.isLoadPostsDone = false;
+                draft.isLoadPostsError = null;
+                break;
+            }
+            case LOAD_POSTS_SUCCESS :
+            case LOAD_USER_POSTS_SUCCESS :
+            case LOAD_HASHTAG_POSTS_SUCCESS : {
+                // [...{ content, id, User, Images, Comments , Likers }]
+                const { posts } = action.data;
+                draft.mainPosts.push(...posts);
+                draft.isNoMorePost = posts.length < 10;
+                draft.isLoadPostsLoading = false;
+                draft.isLoadPostsDone = true;
+                draft.isLoadPostsError = null;
+                break;
+            }
+            case LOAD_POSTS_FAILURE :
+            case LOAD_USER_POSTS_FAILURE :
+            case LOAD_HASHTAG_POSTS_FAILURE : {
+                draft.isLoadPostsLoading = false;
+                draft.isLoadPostsDone = false;
+                draft.isLoadPostsError = action.error;
+                break;
+            }
+            // case LOAD_USER_POSTS_REQUEST : {
+            //     draft.isLoadUserPostsLoading = true;
+            //     draft.isLoadUserPostsDone = false;
+            //     draft.isLoadUserPostsError = null;
+            //     break;
+            // }
+            // case LOAD_USER_POSTS_SUCCESS : {
+            //     draft.isLoadUserPostsLoading = false;
+            //     draft.isLoadUserPostsDone = true;
+            //     draft.isLoadUserPostsError = null;
+            //     break;
+            // }
+            // case LOAD_USER_POSTS_FAILURE : {
+            //     draft.isLoadUserPostsLoading = false;
+            //     draft.isLoadUserPostsDone = false;
+            //     draft.isLoadUserPostsError = action.error;
+            //     break;
+            // }
+            // case LOAD_HASHTAG_POSTS_REQUEST : {
+            //     draft.isLoadHashtagPostsLoading = true;
+            //     draft.isLoadHashtagPostsDone = false;
+            //     draft.isLoadHashtagPostsError = null;
+            //     break;
+            // }
+            // case LOAD_HASHTAG_POSTS_SUCCESS : {
+            //     draft.isLoadHashtagPostsLoading = false;
+            //     draft.isLoadHashtagPostsDone = true;
+            //     draft.isLoadHashtagPostsError = null;
+            //     break;
+            // }
+            // case LOAD_HASHTAG_POSTS_FAILURE : {
+            //     draft.isLoadHashtagPostsLoading = false;
+            //     draft.isLoadHashtagPostsDone = false;
+            //     draft.isLoadHashtagPostsError = action.error;
+            //     break;
+            // }
+            case LOAD_POST_REQUEST : {
                 draft.isLoadPostLoading = true;
                 draft.isLoadPostDone = false;
                 draft.isLoadPostError = null;
                 break;
             }
-            case LOAD_POSTS_SUCCESS : {
-                // [...{ content, id, User, Images, Comments , Likers }]
-                draft.mainPosts.push(...action.data);
-                draft.isNoMorePost = action.data.length < 10;
+            case LOAD_POST_SUCCESS : {
+                draft.singlePost = action.data;
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = true;
                 draft.isLoadPostError = null;
                 break;
             }
-            case LOAD_POSTS_FAILURE : {
+            case LOAD_POST_FAILURE : {
                 draft.isLoadPostLoading = false;
                 draft.isLoadPostDone = false;
                 draft.isLoadPostError = action.error;

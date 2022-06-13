@@ -3,11 +3,12 @@ import Head from "next/head";
 import { useRouter } from 'next/router';
 import styled, { createGlobalStyle } from "styled-components";
 import { Form, Input, Checkbox, Button } from "antd";
-
+import { END } from "redux-saga";
 import { useInput , useDidUpdateEffect } from "../hooks";
 import AppLayout from "../components/AppLayout.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { signupAction } from "../reducers/user";
+import wrapper , {globalGetServerSideProps} from "../store/configureStore";
 
 const ErrorMessage = styled.div`
 	color: red;
@@ -145,5 +146,7 @@ const Signup = () => {
 		</>
 	);
 };
+
+export const getServerSideProps = globalGetServerSideProps();
 
 export default Signup;

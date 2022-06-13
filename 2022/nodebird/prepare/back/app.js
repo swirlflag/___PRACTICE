@@ -14,6 +14,7 @@ const app = express();
 const postRouter = require("./routes/post.js");
 const postsRouter = require("./routes/posts.js");
 const userRouter = require("./routes/user.js");
+const hashtagRouter = require("./routes/hashtag.js");
 
 const db = require("./models/index.js");
 const passportConfig = require("./passport/index.js");
@@ -56,6 +57,7 @@ app.get("/", (req, res) => {
 app.use('/api/post', postRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/user', userRouter);
+app.use('/api/hashtag', hashtagRouter);
 
 app.get('/api/test' , (req, res) => {
     const n = Math.round(Math.random() * 10);
@@ -65,6 +67,17 @@ app.get('/api/test' , (req, res) => {
 // error 미들웨어 : next에 변수가 오면 이곳으로이동 (이미 자동으로 있긴함)
 // app.use((err, req, res, next) => {});
 
+// const a = db.Hashtag.findAll();
+// a.then((res) => {
+//     [...res].forEach((b) => {
+//         if(b.name.slice(0,1) === "#") {
+//             b.update({name: b.name.slice(1)})
+//         }
+//     })
+// })
+
 app.listen(3065, () => {
 	console.log("서버 실행 !");
 });
+
+

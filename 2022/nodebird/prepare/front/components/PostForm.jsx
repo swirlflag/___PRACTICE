@@ -23,7 +23,6 @@ const PostForm = (props) => {
             formData.append("image" , v);
         });
         formData.append("content" , text);
-        console.log(formData);
 		dispatch(addPostAction(formData));
 	}, [text,imagePaths]);
 
