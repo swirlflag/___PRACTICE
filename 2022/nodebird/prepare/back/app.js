@@ -6,10 +6,21 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const hpp = require("hpp");
+const helmet = require("helmet");
+
+const isProd = process.env.NODE_ENV === "production";
+const app = express();
 
 dotenv.config();
 
-const app = express();
+if(isProd) {
+    app.use(morgan("combined"));
+    app.use(hpp());
+    app.use(helmet());
+}else {
+    app.use(morgan("dev"));
+}
 
 const postRouter = require("./routes/post.js");
 const postsRouter = require("./routes/posts.js");
@@ -48,7 +59,6 @@ app.use(passport.session({
     resave: false,
     secret: process.env.COOKIE_SECRET,
 }));
-app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
 	res.send("hello express");
@@ -76,7 +86,7 @@ app.get('/api/test' , (req, res) => {
 //     })
 // })
 
-const tempPort = process.env.LOGNAME === "maseunghyeon" ? 3065 : 80;
+const tempPort = process.env.SUDO_USER === "maseunghyeon" ? 3065 : 80;
 
 app.listen(tempPort, () => {
 	console.log("서버 실행 !");
