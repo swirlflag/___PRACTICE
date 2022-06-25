@@ -76,9 +76,9 @@ app.get('/api/test' , (req, res) => {
 //     })
 // })
 
-console.log(process.env)
+const tempPort = process.env.LOGNAME === "maseunghyeon" ? 3065 : 80;
 
-app.listen(3065, () => {
+app.listen(tempPort, () => {
 	console.log("서버 실행 !");
 });
 
