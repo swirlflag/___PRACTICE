@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Slick from "react-slick";
-import { backUrl } from "../config/config.js";
+import { backUrl } from "../../config/config.js";
 
 import {
     Overlay,

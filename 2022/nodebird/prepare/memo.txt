@@ -29,6 +29,13 @@ db설치
 npx sequelize db:create
 
 
+포트번호 실행중인지 조회
+sudo lsof -i :포트번호
+
+
+프론트 서버 실행
+npx pm2 start npm -- start
+
 
 힘들다흑흑
 
