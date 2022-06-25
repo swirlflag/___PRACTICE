@@ -1,0 +1,46 @@
+우분투에 node설치
+(node버전 https://github.com/nodesource/distributions)
+sudo apt-get update
+sudo apt-get install -y build-essential (이것뺴고 노드만 설치하면 에러가 난다.)
+sudo apt-get install curl
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+
+우분투에 mysql설치
+sudo apt-get install -y mysql-server
+sudo su
+mysql -u root -p
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by '10511051';
+exit
+mysql_secure_installation
+
+
+env파일
+vim .env
+esc
+a
+esc
+:wq
+(확인: cat .env)
+
+
+db설치
+npx sequelize db:create
+
+
+
+힘들다흑흑
+
+
+
+
+
+
+
+wget -c https://repo.mysql.com//mysql-apt-config_0.8.13-1.all.deb
+sudo dpkg -i mysql-apt-config_0.8.13-1_all.deb
+
+
+
+
