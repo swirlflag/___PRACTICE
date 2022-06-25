@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import { PlusOutlined } from "@ant-design/icons";
 import ImagesZoom from './imagesZoom/index';
+import { backUrl } from "../config/config.js";
 
 const ImagesWrap = styled.div`
 	display: flex;
@@ -21,7 +22,7 @@ const ImagesWrap = styled.div`
 	}
 `;
 const withHost = (src) => {
-    return `http://localhost:3065/${src}`;
+    return `${backUrl}/${src}`;
 };
 
 const PostImages = (props) => {

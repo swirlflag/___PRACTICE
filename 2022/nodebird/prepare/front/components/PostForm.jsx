@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useDidUpdateEffect } from "../hooks";
 import { addPostAction, uploadImage, removeImage } from "../reducers/post";
 import { CommentForm } from './CommentForm';
+import { backUrl } from "../config/config.js";
 
 const PostForm = (props) => {
     const dispatch = useDispatch();
@@ -76,7 +77,7 @@ const PostForm = (props) => {
 			<div>
 				{imagePaths.map((value,index) => (
                     <div key={value} style={{ display: "inline-block" }}>
-						<img src={`http://localhost:3065/${value}`} style={{ width: "200px" }} alt="" />
+						<img src={`${backUrl}/${value}`} style={{ width: "200px" }} alt="" />
                         <div>
                             <Button onClick={onRemoveImage(index)}>제거</Button>
                         </div>

@@ -42,7 +42,7 @@ db.sequelize.sync({ force: false })
 ;
 
 app.use(cors({
-    // origin: "http://localhost:3000",
+    // origin: ["http://localhost:3000" ,],
     origin: true,
     credentials: true,
 }));

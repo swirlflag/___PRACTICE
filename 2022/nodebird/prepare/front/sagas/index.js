@@ -2,6 +2,7 @@ import { all, fork, call, put, take, takeEvery, takeLatest, throttle, delay} fro
 import axios from 'axios';
 import userSaga from "./user";
 import postSaga from "./post";
+import { backUrl } from "../config/config.js";
 // put = dispatch
 // call = 동기모양 처럼 함수 호출 (await처럼)
 // fork = 비동기모양처럼 함수 호출 : 일반 이벤트루프 스타일
@@ -9,7 +10,8 @@ import postSaga from "./post";
 // takeLatest: 마지막 호출만 실행됨
 // takeLeading : 첫째 호출만 실행
 
-axios.defaults.baseURL = "http://localhost:3065";
+// axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.baseURL = backUrl;
 axios.defaults.withCredentials = true;
 
 export default function* rootSaga() {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Slick from "react-slick";
+import { backUrl } from "../config/config.js";
 
 import {
     Overlay,
@@ -13,7 +14,7 @@ import {
 } from './styles.js';
 
 const withHost = (src) => {
-    return `http://localhost:3065/${src}`;
+    return `${backUrl}/${src}`;
 };
 
 const ImagesZoom = (props) => {
