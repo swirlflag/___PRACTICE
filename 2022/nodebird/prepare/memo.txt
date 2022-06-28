@@ -40,6 +40,10 @@ npx pm2 start npm -- start
 힘들다흑흑
 
 
+pm2없이 대강하기
+프론트 sudo next -p 8080
+백 sudo node app.js
+
 
 
 

@@ -42,7 +42,7 @@ db.sequelize.sync({ force: false })
 ;
 
 app.use(cors({
-    // origin: ["http://localhost:3000" ,],
+    // origin: ["http://localhost:3000" , "15.164.50.126"],
     origin: true,
     credentials: true,
 }));
@@ -58,6 +58,11 @@ app.use(passport.session({
     saveUninitalized: false,
     resave: false,
     secret: process.env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        // domain: process.env.NODE_ENV === "production" && ".15.164.50.126"
+    }
 }));
 
 app.get("/", (req, res) => {
@@ -86,7 +91,7 @@ app.get('/api/test' , (req, res) => {
 //     })
 // })
 
-const tempPort = process.env.SUDO_USER === "maseunghyeon" ? 3065 : 80;
+const tempPort = 80;
 
 app.listen(tempPort, () => {
 	console.log("서버 실행 !");

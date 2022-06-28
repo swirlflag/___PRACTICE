@@ -10,7 +10,6 @@ import { backUrl } from "../config/config.js";
 // takeLatest: 마지막 호출만 실행됨
 // takeLeading : 첫째 호출만 실행
 
-// axios.defaults.baseURL = "http://localhost:3065";
 axios.defaults.baseURL = backUrl;
 axios.defaults.withCredentials = true;
 
