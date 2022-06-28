@@ -33,19 +33,15 @@ npx sequelize db:create
 sudo lsof -i :포트번호
 
 
-프론트 서버 실행
-npx pm2 start npm -- start
-
-
-힘들다흑흑
-
-
 pm2없이 대강하기
-프론트 sudo next -p 8080
-백 sudo node app.js
+프론트
+npm run build
+npm run start
+백
+sudo node app.js
 
 
-
+로그인 유지와 로그인 상태는 도메인 문제때문에 안되는중
 
 
 
