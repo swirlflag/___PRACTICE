@@ -4,6 +4,7 @@ const custom404 = () => {
      return (
         <div>
             my 404
+            
         </div>
      )
 };

@@ -17,9 +17,19 @@
     <a href="#">1</a>
 
     <script>
+
+        const scope = (action, isRun = false) => {
+            if(isRun) {
+                console.log('%cRUN BLOCK ', 'background: #222; color: dodgerblue');
+                action();
+            }
+        };
+
         // https://programmers.co.kr/learn/courses/30/lessons/43165?language=javascript
         // input 배열 값들을 더하거나 뺐을때 input 숫자값이 나올수 있는 수식 경우의 수 찾기 (완)
-        (() => {
+
+        scope(() => {
+
             let inputArray = [
                 4, 1, 2, 1
             ];
@@ -99,12 +109,12 @@
             //     result = answers.length;
             //     return result;
             // };
+        },false);
 
-        })();
 
         // 여행 경로 (완)
         // https://programmers.co.kr/learn/courses/30/lessons/43164?language=javascript
-        (() => {
+        scope(() => {
 
             let inputArray = [["ICN", "JFK"], ["HND", "IAD"], ["JFK", "HND"]]
 
@@ -186,12 +196,12 @@
 
             // const result = solution(inputArray);
             // console.log(result);
-        })();
+        },false);
 
         // 구명 보트 (완)
         // https://programmers.co.kr/learn/courses/30/lessons/42885?language=javascript
-        (() => {
-            // 
+        scope(() => {
+        
             let inputArray = [
                 70, 50, 80, 50
             ];
@@ -226,11 +236,13 @@
 
             // const result = solution(inputArray, inputNumber);
             // console.log('result:',result);
-        })();
+        },false);
+
 
         // 큰수 찾기
         // https://programmers.co.kr/learn/courses/30/lessons/42746?language=javascript
-        (() => {
+        scope(() => {
+        
             let inputArray =
                 [
                     // 1, 2, 3, 4, 20,
@@ -307,11 +319,11 @@
 
             // const result = solution(inputArray);
             // console.log(result);
-        })();
+        },false);
 
         // 크레인 인형뽑기 게임 (완)
         // https://programmers.co.kr/learn/courses/30/lessons/64061?language=javascript
-        (() => {
+        scope(() => {
             let inputArray = [
                 [0, 0, 0, 0, 0],
                 [0, 0, 1, 0, 3],
@@ -363,11 +375,12 @@
 
             // const result = solution(inputArray,inputArray2);
             // console.log(result);
-        })();
+        },false);
 
         // 괄호 정렬
         // https://programmers.co.kr/learn/courses/30/lessons/60058
-        (() => {
+        scope(() => {
+
             let inputString =
                 // "(()())()";
                 // "()))((()";
@@ -473,11 +486,11 @@
 
             // const result = solution(inputString);
             // console.log(result);
-        })();
+        },false);
 
         // H- index
         // https://programmers.co.kr/learn/courses/30/lessons/42747?language=javascript
-        (() => {
+        scope(() => {
             let inputArray = [
                 // 1, 4, 5, 9, 10, 10, 10, 9969968,
                 // 350, 452, 877,2,1,0,0,0,0,0,0,0,0,0,0
@@ -521,9 +534,10 @@
 
             // const result = solution(inputArray);
             // console.log(result);
-        })();
+        },false);
 
-        (() => {
+        // 코테1
+        scope(() => {
             let inputNumber = 8;
             let inputArray = [1, 2, 20, 8, 8, 1, 2, 5, 8, 0];
             let inputArray2 = [100, 2];
@@ -540,9 +554,10 @@
 
             // const result = solution(inputNumber, inputArray, inputArray2);
             // console.log(result);
-        })();
+        },false);
 
-        (() => {
+        // 코테2
+        scope(() => {
             let inputArray = [2, 10, 5, 4, 8]
             let inputArray2 = [3, 1, 7, 8];
             // [2,4]
@@ -552,7 +567,6 @@
             inputArray = [1, 4, 2, 4];
             inputArray2 = [3, 5];
 
-            
             // inputArray2 = [0];
             // inputArray2 = [10,0,0,0];
 
@@ -618,9 +632,11 @@
 
             // const result = solution(inputArray, inputArray2);
             // console.log(result);
-        })();
+        },false);
 
-        (() => {
+        // 코테3
+        scope(() => {
+        
             let inputNumber = 5;
             let inputArray = [1];
 
@@ -698,11 +714,11 @@
 
             // const result = solution(inputNumber, inputArray);
             // console.log(result);
-        })();
+        },false);
 
-    // 튜플
-    // https://programmers.co.kr/learn/courses/30/lessons/64065?language=javascript
-        (() => {
+        // 튜플
+        // https://programmers.co.kr/learn/courses/30/lessons/64065?language=javascript
+        scope(() => {
             let inputString = "{{1,2,3},{2,1},{1,2,4,3},{2}}";
             const complement = (first, second) => {
                 return ;
@@ -733,11 +749,11 @@
 
             // const result = solution(inputString);
             // console.log(result);
-        })();
+        },false);
 
-    // DFS, BFS 직접구현
+            // DFS, BFS 직접구현
     // https://velog.io/@sangbooom/JS-BFS-DFS
-        (() => {
+        scope(() => {
             const inputGraph = {
                 A: ["B", "C"],
                 B: ["A", "D"],
@@ -809,12 +825,12 @@
             // console.log(DFS(inputGraph,'A'));
             // console.log(BFS(inputGraph,'A'));
 
-        })();
+        },false);
 
 
-    // 예상 대진표
-    // https://programmers.co.kr/learn/courses/30/lessons/12985?language=javascript
-        (() => {
+        // 예상 대진표
+        // https://programmers.co.kr/learn/courses/30/lessons/12985?language=javascript
+        scope(() => {
             const inputN = 16;
             const inputA = 9;
             const inputB = 12;
@@ -844,13 +860,12 @@
 
             // const result = solution(inputN,inputA,inputB);
 
-        })();
+        },false);
 
 
-
-    // 메뉴 리뉴얼
-    // https://programmers.co.kr/learn/courses/30/lessons/72411?language=javascript
-        (() => {
+        // 메뉴 리뉴얼
+        // https://programmers.co.kr/learn/courses/30/lessons/72411?language=javascript
+        scope(() => {
             const inputArray = 	["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"];
             const inputArray2 = [2, 3, 4];
             const solution = (orders, course) => {
@@ -888,14 +903,283 @@
                 };
 
                 loop(orders,course);
-
-
                 // for(let i = 0; i < orders.length; ++i) {
-                    
+
                 // }
             };
 
             // solution(inputArray, inputArray2);
-        })();
+        },false);
+
+        // 로또의 최고순위와 최저순위 - 1
+        // https://school.programmers.co.kr/learn/courses/30/lessons/77484?language=javascript
+        // 1	6개 번호가 모두 일치
+        // 2	5개 번호가 일치
+        // 3	4개 번호가 일치
+        // 4	3개 번호가 일치
+        // 5	2개 번호가 일치
+        scope(() => {
+
+            const lottos = [
+                44, 1, 0, 0, 31, 25,
+            ];
+
+            const win_nums = [
+                31, 10, 45, 1, 6, 19
+            ];
+            const solution = (lottos, win_nums) => {
+                const table = {
+                    "2" : 5,
+                    "3" : 4,
+                    "4" : 3,
+                    "5" : 2,
+                    "6" : 1,
+                };
+
+                let lostCount = 0;
+                let matchCount = 0;
+                for(let i = 0, l = lottos.length; i < l; ++i) {
+                    const number = lottos[i];
+                    if(number === 0) {
+                        ++lostCount;
+                        continue;
+                    }
+
+                    if(win_nums.includes(number)) {
+                        ++matchCount;
+                    }
+                }
+
+                let maxRank = 6;
+                let minRank = 6;
+                if(matchCount > 1) {
+                    minRank = table[matchCount.toString()];
+                }
+                if(matchCount + lostCount > 1) {
+                    maxRank = table[(matchCount + lostCount).toString()];
+                }
+
+                return [maxRank, minRank];
+            };
+
+            const result = solution(lottos,win_nums);
+
+            console.log(result);
+        },false);
+
+        // 로또의 최고 순위와 최저 순위
+        // https://school.programmers.co.kr/learn/courses/30/lessons/77484
+        scope(() => {
+            let numbers = [
+                // 1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5,
+                // 1, 3, 4, 5, 8, 2, 1, 4, 5,
+                // 7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2,
+                7,0,8
+            ]
+            let hand = "right";
+            hand = "left";
+            const solution = (numbers, hand) => {
+                const keypad = [
+                    [1,3], //0
+                    [0,0], //1
+                    [1,0], //2
+                    [2,0], //3
+                    [0,1], //4
+                    [1,1], //5
+                    [2,1], //6
+                    [0,2], //7
+                    [1,2], //8
+                    [2,2], //9
+                ];
+                const hands = [
+                    [0,3], // left
+                    [2,3], // right
+                ];
+
+                let result = "";
+                for(let i = 0; i < numbers.length; ++i) {
+                    const number = numbers[i];
+                    const key = keypad[number];
+
+                    if([1,4,7].includes(number)) {
+                        result = result + "L";
+                        hands[0] = key;
+                        continue;
+                    }
+                    if([3,6,9].includes(number)) {
+                        result = result + "R";
+                        hands[1] = key;
+                        continue;
+                    }
+
+                    if([2,5,8,0].includes(number)) {
+                        let distanceL = Math.abs(hands[0][0] - key[0]) +  Math.abs(hands[0][1] - key[1]);
+                        let distanceR = Math.abs(hands[1][0] - key[0]) +  Math.abs(hands[1][1] - key[1]);
+
+                        if(distanceL === distanceR) {
+                            if(hand === "left") {
+                                ++distanceR;
+                            }
+                            if(hand === "right") {
+                                ++distanceL;
+                            }
+                        }
+
+                        if(distanceL > distanceR) {
+                            result = result + "R";
+                            hands[1] = key;
+                        }else {
+                            result = result + "L";
+                            hands[0] = key;
+                        }
+                    }
+                };
+
+                return result;
+            };
+
+            const result = solution(numbers, hand);
+            console.log(result);
+
+        },false);
+
+        // 신고 결과 받기
+        // https://school.programmers.co.kr/learn/courses/30/lessons/92334?language=javascript
+        scope(() => {
+            let id_list = [
+                "muzi", "frodo", "apeach", "neo"
+            ];
+            let report = [
+                "muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"
+            ];
+            let k = 2;
+
+            const solution = (id_list, report, k) => {
+                const reportList = {};
+                for(let i = 0, l = report.length; i < l; ++i) {
+                    const [reporter, target] = report[i].split(" ");
+                    if(!reportList[target]) {
+                        reportList[target] = new Set();
+                    }
+                    reportList[target].add(reporter);
+                }
+
+                const noticeList = {};
+                for(let [target, reporters] of Object.entries(reportList)) {
+                    if(reporters.size < k) {
+                        continue;
+                    }
+
+                    for(let reporter of reporters) {
+                        if(!noticeList[reporter]) {
+                            noticeList[reporter] = 0;
+                        }
+                        ++noticeList[reporter];
+                    }
+                }
+
+                const result = [];
+                for(let i = 0, l = id_list.length; i < l; ++i) {
+                    const id = id_list[i];
+                    result.push(noticeList[id] || 0);
+                }
+
+                return result;
+            };
+
+            const result = solution(id_list,report, k);
+        },false);
+
+        // 거리두기 확인하기
+        // https://school.programmers.co.kr/learn/courses/30/lessons/81302?language=javascript
+        scope(() => {
+            let places = [
+                [
+                    "POOOP",
+                    "OXXOX",
+                    "OPXPX",
+                    "OOXOX",
+                    "POXXP"
+                ],
+                [
+                    "POOPX",
+                    "OXPXP",
+                    "PXXXO",
+                    "OXXXO",
+                    "OOOPP"
+                ],
+                ["PXOPX", "OXOXP", "OXPOX", "OXXOP", "PXPOX"],
+                ["OOOXX", "XOOOX", "OOOXX", "OXOOX", "OOOOO"],
+                ["PXPXP", "XPXPX", "PXPXP", "XPXPX", "PXPXP"],
+            ];
+            const solution = (places) => {
+                const limit = 2;
+
+                const dfs = (map, x,y, progress,rest) => {
+                    // 검사
+                    if(progress > 0) {
+                        const target = map[y][x];
+                        const compare = map[y+rest[0]] && map[y+rest[0]][x+rest[1]];
+
+                        if(compare) {
+                            if(compare === "X") {
+                                ++progress;
+                            }
+                            if(compare === "P") {
+                                return false;
+                            }
+                        }
+                    }
+
+                    // 종료
+                    if(progress >= limit) {
+                        return true;
+                    }
+                    ++progress;
+
+                    const list = [];
+                    if(rest[0] >= 0 || progress === 1) {
+                        list.push(dfs(map, x,y, progress,[rest[0] +1, rest[1]]));
+                    }
+                    if(rest[0] <= 0 || progress === 1) {
+                        list.push(dfs(map, x,y, progress,[rest[0] -1, rest[1]]));
+                    }
+                    if(rest[1] >= 0 || progress === 1) {
+                        list.push(dfs(map, x,y, progress,[rest[0], rest[1] +1]));
+                    }
+                    if(rest[1] <= 0 || progress === 1) {
+                        list.push(dfs(map, x,y, progress,[rest[0], rest[1] -1]));
+                    }
+
+                    return list.every((v)=> v === true);
+                };
+
+                let result = new Array(places.length).fill().map(() => 1);
+
+                for(let i = 0, l = places.length; i < l; ++i) {
+                    const place = places[i];
+                    y: for(let y = 0; y < place.length; ++y) {
+                        const line = place[y];
+                        x: for(let x = 0; x < place[y].length; ++x) {
+                            const seat = place[y][x];
+                            if(seat !== "P") {
+                                continue;
+                            }
+                            const check = dfs(place, x,y, 0, [0,0]);
+                            if(!check) {
+                                result[i] = 0;
+                                break y;
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            };
+
+            const result = solution(places);
+            console.log(result);
+        },true);
+
     </script>
 </body>
