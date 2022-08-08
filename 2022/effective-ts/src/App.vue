@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
-        <Nav/>
-        <router-view></router-view>
+        <Nav />
+        <router-view class="page"></router-view>
     </div>
 </template>
 
@@ -13,4 +13,8 @@ import Nav from "./components/Nav.vue";
 </script>
 
 <style scoped>
+.page {
+    margin-top: 20px;
+}
+
 </style>

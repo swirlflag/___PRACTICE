@@ -1,14 +1,14 @@
 <template>
-	<div>item2</div>
+	<div>
+		- noImplicitAny
+		<br />
+		설정시 암묵적인 any를 오류로 표시
+	</div>
 </template>
 
 <script setup lang="ts">
-interface State {
-	name: string;
-}
-const a: State = {
-	name: "1",
+const testfunc = (a, b) => {
+	return a + b;
 };
-console.log(123);
 </script>
 <style scoped></style>

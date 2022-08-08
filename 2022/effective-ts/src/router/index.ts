@@ -8,4 +8,8 @@ const router = VueRouter.createRouter({
     routes: routesInfo,
 });
 
+router.afterEach((to, from) => {
+    console.clear();
+})
+
 export default router;

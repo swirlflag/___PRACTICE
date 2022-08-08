@@ -11,7 +11,9 @@
 		"isolatedModules": true,
 		"esModuleInterop": true,
 		"lib": ["ESNext", "DOM"],
-		"skipLibCheck": true
+		"skipLibCheck": true,
+        "noImplicitAny": true, // 설정시 암묵적인 any를 오류로 표시함
+        "noEmitOnError": false, // 오류가 있을때 컴파일 하지 않음
 	},
 	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
 	"references": [{ "path": "./tsconfig.node.json" }]
