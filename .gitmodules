@@ -1,0 +1,3 @@
+[submodule "2023/nextdocs/2023/nextdocs/nextjs-dashboard"]
+	path = 2023/nextdocs/2023/nextdocs/nextjs-dashboard
+	url = https://github.com/swirlflag/practice_nextdocs.git
