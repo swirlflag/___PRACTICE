@@ -1,1 +1,0 @@
-https://nextjs.org/learn/dashboard-app/partial-prerendering
