@@ -25,7 +25,6 @@ class ThreeProject {
         this.textureLoader = null;
         this.orbitControls = null;
         this.clock = null;
-        this.time = 0;
         this.scene = null;
         this.light = {};
         this.texture = {};
@@ -40,7 +39,6 @@ class ThreeProject {
     }
 
     addAnimate(fn) {
-        // this.animateFunctions.push(() => fn(this, this.THREE));
         this.animateFunctions.push(fn);
     }
 
@@ -118,21 +116,13 @@ class ThreeProject {
         this.camera = new THREE.PerspectiveCamera(
             75,
             this.screen.width / this.screen.height,
-            0.1,
+            1,
             2000
         );
-        this.camera.position.z = 3;
-        this.renderer = new THREE.WebGLRenderer({
-            canvas: this.canvas,
-            alpha: true,
-        });
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.camera.position.z = 5;
+        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.resizeHandler();
-        this.addAnimate(() => {
-            this.time = this.clock.getElapsedTime();
-        });
     }
 
     _setupWriteProcess() {
@@ -154,72 +144,57 @@ class ThreeProject {
 const canvas = document.querySelector("canvas");
 const project = new ThreeProject({ canvas });
 project.write((_t, THREE) => {
-    _t.setupOrbitControls();
-    _t.orbitControls.autoRotate = true;
-    _t.orbitControls.autoRotateSpeed = 5;
-    const geometry_b1 = new THREE.BoxGeometry(1, 1, 1);
-    const material_s1 = new THREE.MeshStandardMaterial({
-        color: "#fff",
-        wireframe: true,
-        metalness: 0.5,
-        roughness: 0.2,
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const edges = new THREE.EdgesGeometry(geometry);
+    const material = new THREE.LineBasicMaterial({ color: 0xffffff });
+    const line = new THREE.LineSegments(edges, material);
+    line.scale.set(0, 0, 1);
+    _t.scene.add(line);
+
+    const light = new THREE.AmbientLight();
+    _t.scene.add(light);
+
+    _t.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
+    _t.scene.add(_t.camera);
+    _t.resizeHandler();
+    _t.camera.position.z = 4;
+
+    const tl = gsap.timeline({
+        defaults: { ease: "power2.out", duration: 1, autoRound: false },
+        paused: true,
     });
-    const light_a1 = new THREE.AmbientLight("#fff", 1);
-    const light_d1 = new THREE.DirectionalLight("dodgerblue", 3);
+    tl.to(line.scale, { x: 1, ease: "power2.out", duration: 0.6 });
+    tl.to(line.scale, { y: 1, ease: "circ.inOut", duration: 0.6 }, ">-=0.2");
+    tl.to(
+        line.rotation,
+        {
+            x: 0.618,
+            y: Math.PI + Math.PI / 4,
+            ease: "circ.inOut",
+            duration: 1.5,
+        },
+        ">-=0.1"
+    );
+    tl.to(line.rotation, {
+        x: Math.PI / 2,
+        y: Math.PI,
+        z: -Math.PI,
+        ease: "circ.inOut",
+        duration: 1.7,
+    });
+    tl.to(line.scale, { x: 0, ease: "power2.inOut", duration: 0.6 });
+    tl.to(line.scale, { z: 0, ease: "power2.inOut", duration: 0.6 }, ">-=0.2");
+    tl.repeat(-1);
+    tl.play();
 
-    const mesh_m1 = new THREE.Mesh(geometry_b1, material_s1);
-    mesh_m1.rotation.x = 2;
-    mesh_m1.rotation.y = 1;
-    mesh_m1.rotation.z = 2;
-    _t.scene.add(light_a1);
-    _t.scene.add(light_d1);
-    _t.scene.add(mesh_m1);
+    _t.mesh.line = line;
+});
 
-    _t.geometry.b1 = geometry_b1;
-    _t.material.s1 = material_s1;
-    _t.light.a1 = light_a1;
-    _t.light.d1 = light_d1;
-    _t.mesh.m1 = mesh_m1;
-});
-project.write((_t) => {
-    if (_t.light.d1) {
-        const helper_d1 = new THREE.DirectionalLightHelper(_t.light.d1);
-        _t.scene.add(helper_d1);
-    }
-});
-project.write((_t) => {
+project.write((_t, THREE) => {
+    const { line } = _t.mesh;
     const gui = new dat.GUI();
-    const f_position = gui.addFolder("position");
-    const listens = {
-        materialColor: "#fff",
-    };
-    f_position.open();
-    f_position
-        .add(_t.mesh.m1.position, "x")
-        .name("x")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-    f_position
-        .add(_t.mesh.m1.position, "y")
-        .name("y")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-    f_position
-        .add(_t.mesh.m1.position, "z")
-        .name("z")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-
-    gui.add(_t.material.s1, "wireframe");
-    gui.addColor(listens, "materialColor").onChange((color) => {
-        console.log(color);
-        _t.material.s1.color.set(color);
-    });
+    gui.add(line.rotation, "x").min(-10).max(10).step(0.0001).listen();
+    gui.add(line.rotation, "y").min(-10).max(10).step(0.0001).listen();
+    gui.add(line.rotation, "z").min(-10).max(10).step(0.0001).listen();
 });
 project.init();

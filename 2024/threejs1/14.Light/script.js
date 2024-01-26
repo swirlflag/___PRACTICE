@@ -42,18 +42,55 @@ const ambientLight = new THREE.AmbientLight("#fff", 1);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight("#fff", 5);
+const directionalLightHelper = new THREE.DirectionalLightHelper(
+    directionalLight
+);
 directionalLight.position.set(0, 2, 0);
-scene.add(directionalLight);
+// scene.add(directionalLight);
+// scene.add(directionalLightHelper);
+
+// const hemisphereLight = new THREE.HemisphereLight("#3d3", "red", 1);
+// const hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight);
+// scene.add(hemisphereLight);
+// scene.add(hemisphereLightHelper);
+
+// const pointLight = new THREE.PointLight("red", 0.8);
+// const pointLightHelper = new THREE.PointLightHelper(pointLight);
+// scene.add(pointLight);
+// scene.add(pointLightHelper);
+
+const rectAreaLight = new THREE.RectAreaLight("#d3d", 3, 1, 1);
+// const rectAreaLightHelper = new THREE.RectAreaLightHelper(rectAreaLight);
+// scene.add(rectAreaLight);
+// scene.add(rectAreaLightHelper);
+
+const spotLight = new THREE.SpotLight("#d3d", 5, 8, Math.PI * 0.1, 1.02, 1);
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+spotLight.position.z = 0.2;
+spotLight.rotation.y = 0;
+spotLight.rotation.x = 1;
+
+scene.add(spotLight);
+scene.add(spotLightHelper);
+
+const light = {
+    spotLight,
+    // ambientLight,
+    // directionalLight,
+    // rectAreaLight,
+};
 
 // -- TEXTURE --------------------------------------------------
 const textureLoader = new THREE.TextureLoader(loadingManager);
 
 // -- MESH --------------------------------------------------
-const geometry = new THREE.TorusGeometry(0.3, 0.2, 32, 32);
+// const geometry = new THREE.TorusGeometry(0.3, 0.2, 32, 32);
+const geometry = new THREE.PlaneGeometry(2, 2, 64, 64);
+
 const material = new THREE.MeshStandardMaterial({
-    color: "lightgreen",
+    // color: "lightgreen",
     // wireframe: true,
-    metalness: 0.3,
+    metalness: 0.1,
     roughness: 0.01,
 });
 const mesh = new THREE.Mesh(geometry, material);

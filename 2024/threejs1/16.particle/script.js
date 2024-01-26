@@ -155,39 +155,54 @@ const canvas = document.querySelector("canvas");
 const project = new ThreeProject({ canvas });
 project.write((_t, THREE) => {
     _t.setupOrbitControls();
-    _t.orbitControls.autoRotate = true;
-    _t.orbitControls.autoRotateSpeed = 5;
-    const geometry_b1 = new THREE.BoxGeometry(1, 1, 1);
-    const material_s1 = new THREE.MeshStandardMaterial({
-        color: "#fff",
-        wireframe: true,
-        metalness: 0.5,
-        roughness: 0.2,
+    // _t.orbitControls.autoRotate = true;
+
+    const texture = _t.textureLoader.load("../texture/sprite.png");
+    // console.log(_t.textureLoader);
+    const geometry_b1 = new THREE.BufferGeometry();
+    const material_p1 = new THREE.PointsMaterial({
+        // color: "#fff",
+        // color: "orange",
+        // wireframe: true,
+        map: texture,
+        transparent: true,
+        depthTest: false,
     });
+    material_p1.size = 0.02;
+    const verticesAmount = 3000;
+    const positionArray = new Float32Array(verticesAmount * 3);
+    for (let i = 0, l = positionArray.length; i < l; ++i) {
+        positionArray[i] = (Math.random() - 0.5) * 6;
+    }
+    geometry_b1.setAttribute(
+        "position",
+        new THREE.BufferAttribute(positionArray, 3)
+    );
     const light_a1 = new THREE.AmbientLight("#fff", 1);
     const light_d1 = new THREE.DirectionalLight("dodgerblue", 3);
 
-    const mesh_m1 = new THREE.Mesh(geometry_b1, material_s1);
-    mesh_m1.rotation.x = 2;
-    mesh_m1.rotation.y = 1;
-    mesh_m1.rotation.z = 2;
+    const point_p1 = new THREE.Points(geometry_b1, material_p1);
+    // point_p1.rotation.x = 2;
+    // point_p1.rotation.y = 1;
+    // point_p1.rotation.z = 2;
     _t.scene.add(light_a1);
     _t.scene.add(light_d1);
-    _t.scene.add(mesh_m1);
+    _t.scene.add(point_p1);
 
-    _t.geometry.b1 = geometry_b1;
-    _t.material.s1 = material_s1;
-    _t.light.a1 = light_a1;
-    _t.light.d1 = light_d1;
-    _t.mesh.m1 = mesh_m1;
+    _t.addAnimate(() => {
+        point_p1.rotation.x = Math.sin(_t.time * 0.03);
+        point_p1.rotation.y = Math.sin(_t.time * 0.04);
+    });
 });
 project.write((_t) => {
+    return;
     if (_t.light.d1) {
         const helper_d1 = new THREE.DirectionalLightHelper(_t.light.d1);
         _t.scene.add(helper_d1);
     }
 });
 project.write((_t) => {
+    return;
     const gui = new dat.GUI();
     const f_position = gui.addFolder("position");
     const listens = {

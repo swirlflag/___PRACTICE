@@ -40,8 +40,9 @@ class ThreeProject {
     }
 
     addAnimate(fn) {
-        // this.animateFunctions.push(() => fn(this, this.THREE));
-        this.animateFunctions.push(fn);
+        this.animateFunctions.push(() => {
+            fn(this, this.THREE);
+        });
     }
 
     write(fn) {
@@ -118,14 +119,11 @@ class ThreeProject {
         this.camera = new THREE.PerspectiveCamera(
             75,
             this.screen.width / this.screen.height,
-            0.1,
+            1,
             2000
         );
         this.camera.position.z = 3;
-        this.renderer = new THREE.WebGLRenderer({
-            canvas: this.canvas,
-            alpha: true,
-        });
+        this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas });
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -154,72 +152,47 @@ class ThreeProject {
 const canvas = document.querySelector("canvas");
 const project = new ThreeProject({ canvas });
 project.write((_t, THREE) => {
+    const { scene } = _t;
     _t.setupOrbitControls();
-    _t.orbitControls.autoRotate = true;
-    _t.orbitControls.autoRotateSpeed = 5;
-    const geometry_b1 = new THREE.BoxGeometry(1, 1, 1);
-    const material_s1 = new THREE.MeshStandardMaterial({
+
+    const light_ambient = new THREE.AmbientLight("#fff", 1);
+    const light_directional = new THREE.DirectionalLight("#fff", 3);
+    light_directional.castShadow = true;
+    // light_directional.shadow.mapSize.width = 1024;
+    // light_directional.shadow.mapSize.height = 1024;
+    const light_directional_helper = new THREE.DirectionalLightHelper(
+        light_directional
+    );
+    scene.add(light_ambient);
+    scene.add(light_directional, light_directional_helper);
+
+    const material = new THREE.MeshStandardMaterial({
         color: "#fff",
-        wireframe: true,
-        metalness: 0.5,
-        roughness: 0.2,
+        side: THREE.DoubleSide,
+        // metalness: 0.9,
+        roughness: 0,
     });
-    const light_a1 = new THREE.AmbientLight("#fff", 1);
-    const light_d1 = new THREE.DirectionalLight("dodgerblue", 3);
+    const geometry_box = new THREE.TorusKnotGeometry(0.5, 0.03, 80, 30, 15, 4);
+    const geometry_plane = new THREE.PlaneGeometry(3, 3);
+    const mesh_box = new THREE.Mesh(geometry_box, material);
+    mesh_box.rotation.x = 2;
+    mesh_box.castShadow = true;
+    const mesh_plane = new THREE.Mesh(geometry_plane, material);
+    mesh_plane.receiveShadow = true;
+    mesh_plane.position.set(0, -1, 0);
+    mesh_plane.rotation.set(-Math.PI / 2, 0, 0);
+    // _t.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    _t.renderer.shadowMap.enabled = true;
 
-    const mesh_m1 = new THREE.Mesh(geometry_b1, material_s1);
-    mesh_m1.rotation.x = 2;
-    mesh_m1.rotation.y = 1;
-    mesh_m1.rotation.z = 2;
-    _t.scene.add(light_a1);
-    _t.scene.add(light_d1);
-    _t.scene.add(mesh_m1);
+    scene.add(mesh_box, mesh_plane);
 
-    _t.geometry.b1 = geometry_b1;
-    _t.material.s1 = material_s1;
-    _t.light.a1 = light_a1;
-    _t.light.d1 = light_d1;
-    _t.mesh.m1 = mesh_m1;
-});
-project.write((_t) => {
-    if (_t.light.d1) {
-        const helper_d1 = new THREE.DirectionalLightHelper(_t.light.d1);
-        _t.scene.add(helper_d1);
-    }
-});
-project.write((_t) => {
-    const gui = new dat.GUI();
-    const f_position = gui.addFolder("position");
-    const listens = {
-        materialColor: "#fff",
-    };
-    f_position.open();
-    f_position
-        .add(_t.mesh.m1.position, "x")
-        .name("x")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-    f_position
-        .add(_t.mesh.m1.position, "y")
-        .name("y")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-    f_position
-        .add(_t.mesh.m1.position, "z")
-        .name("z")
-        .min(-3)
-        .max(3)
-        .step(0.1)
-        .listen();
-
-    gui.add(_t.material.s1, "wireframe");
-    gui.addColor(listens, "materialColor").onChange((color) => {
-        console.log(color);
-        _t.material.s1.color.set(color);
+    _t.addAnimate(() => {
+        mesh_box.position.x = Math.sin(_t.time);
+        mesh_box.position.z = Math.cos(_t.time);
+        mesh_box.rotation.x = _t.time;
+        mesh_box.rotation.y = _t.time * 1.3;
+        mesh_box.rotation.z = _t.time / 2;
     });
 });
+
 project.init();
